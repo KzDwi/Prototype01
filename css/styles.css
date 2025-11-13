@@ -31,14 +31,14 @@ ul {
 .btn {
     display: inline-block;
     padding: 10px 20px;
-    background-color: #0088CC;
+    background-color: #003399;
     color: white;
     border-radius: 4px;
     transition: background-color 0.3s;
 }
 
 .btn:hover {
-    background-color: #0077b3;
+    background-color: #002280;
 }
 
 /* Header & Navigation */
@@ -72,7 +72,7 @@ header {
 
 .logo-text h1 {
     font-size: 1.2rem;
-    color: #0088CC;
+    color: #003399;
     transition: color 0.3s ease;
 }
 
@@ -101,13 +101,13 @@ nav ul li a {
 }
 
 nav ul li a:hover {
-    color: #0088CC;
+    color: #003399;
 }
 
 /* Scrolled header style */
 header.scrolled {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    background-color: #0088CC;
+    background-color: #003399;
 }
 
 header.scrolled .logo-text h1,
@@ -141,15 +141,134 @@ header.scrolled .mobile-menu-btn {
 
 .level-menu_second .level-menu-item_second a:hover,
 .level-menu_second .level-menu-item_second a.second-active {
-    color: #0088CC !important;
+    color: #003399 !important;
 }
 
 .level-menu_second .third-column_text:hover {
-    color: #0088CC !important;
+    color: #003399 !important;
 }
 
 .level-menu_second .agw-slide-in-underline {
-    color: #0088CC !important;
+    color: #003399 !important;
+}
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown-toggle {
+    cursor: pointer;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 600px;
+    background-color: white;
+    transform: translateX(-50%) translateY(10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 20px;
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.dropdown:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(10px);
+}
+
+.dropdown-section {
+    flex: 1;
+    min-width: 180px;
+}
+
+.dropdown-section h4 {
+    color: #003399;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #eee;
+    font-size: 0.9rem;
+}
+
+.dropdown-section a {
+    display: block;
+    padding: 8px 0;
+    color: #555;
+    transition: color 0.3s;
+    font-size: 0.85rem;
+}
+
+.dropdown-section a:hover {
+    color: #003399;
+}
+
+/* Hapus styles untuk dropdown lama */
+.level-menu_second,
+.border-divider,
+.agw-container,
+.agw-h-100,
+.agw-d-flex,
+.agw-col-3,
+.agw-col-9,
+.level-menu-items_second,
+.level-menu-item_second,
+.level-menu_third,
+.groupOpen,
+.third-column-box,
+.third-column,
+.divider,
+.third-column_images,
+.agw-slide-in-underline,
+.dropdown-close {
+    display: none !important;
+}
+
+/* Responsive Styles untuk Dropdown Baru */
+@media (max-width: 992px) {
+    .dropdown-menu {
+        width: 400px;
+    }
+}
+
+@media (max-width: 768px) {
+    .dropdown-menu {
+        position: static;
+        width: 100%;
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(10px);
+        box-shadow: none;
+        display: none;
+        padding: 0;
+        background-color: #f9f9f9;
+    }
+    
+    .dropdown.active .dropdown-menu {
+        display: block;
+    }
+    
+    .dropdown-section {
+        width: 100%;
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .dropdown:hover .dropdown-menu {
+        transform: translateY(0);
+    }
+    
+    .dropdown-section:last-child {
+        border-bottom: none;
+    }
 }
 
 /* Dropdown Menu Styles */
@@ -224,8 +343,8 @@ header.scrolled .mobile-menu-btn {
 .level-menu-item_second a:hover,
 .level-menu-item_second a.second-active {
     background-color: #e6f7ff;
-    color: #0088CC;
-    border-left-color: #0088CC;
+    color: #003399;
+    border-left-color: #003399;
 }
 
 .level-menu_third {
@@ -270,7 +389,7 @@ header.scrolled .mobile-menu-btn {
 }
 
 .third-column_text:hover {
-    color: #0088CC;
+    color: #003399;
 }
 
 .divider {
@@ -292,7 +411,7 @@ header.scrolled .mobile-menu-btn {
 .agw-slide-in-underline {
     display: inline-block;
     margin-top: 10px;
-    color: #0088CC;
+    color: #003399;
     font-weight: 500;
     position: relative;
     cursor: pointer;
@@ -305,7 +424,7 @@ header.scrolled .mobile-menu-btn {
     height: 2px;
     bottom: -2px;
     left: 0;
-    background-color: #0088CC;
+    background-color: #003399;
     transition: width 0.3s;
 }
 
@@ -370,7 +489,7 @@ section {
 
 .section-title h2 {
     font-size: 2rem;
-    color: #0088CC;
+    color: #003399;
     display: inline-block;
     padding-bottom: 10px;
 }
@@ -430,7 +549,7 @@ section {
 }
 
 .pimpinan-info h3 {
-    color: #0088CC;
+    color: #003399;
     margin-bottom: 5px;
 }
 
@@ -484,7 +603,7 @@ section {
 }
 
 .visi h3, .misi h3 {
-    color: #2BAAB1;
+    color: #2B557E;
     margin-bottom: 20px;
     padding-bottom: 10px;
     border-bottom: 2px solid #e36159;
@@ -549,7 +668,7 @@ section {
 }
 
 .banner-content h3 {
-    color: #0088CC;
+    color: #003399;
     margin-bottom: 10px;
 }
 
@@ -637,12 +756,12 @@ section {
 
 .layanan-icon {
     font-size: 2.5rem;
-    color: #0088CC;
+    color: #003399;
     margin-bottom: 15px;
 }
 
 .layanan-card h3 {
-    color: #2BAAB1;
+    color: #2B557E;
     margin-bottom: 15px;
 }
 
@@ -666,7 +785,7 @@ footer {
 }
 
 .footer-section h3 {
-    color: #2BAAB1;
+    color: #4484a9;
     margin-bottom: 20px;
     padding-bottom: 10px;
     border-bottom: 1px solid #444;
@@ -677,7 +796,7 @@ footer {
 }
 
 .footer-section ul li a:hover {
-    color: #2BAAB1;
+    color: #4484a9;
 }
 
 .footer-bottom {
@@ -695,7 +814,7 @@ footer {
     border: none;
     font-size: 1.5rem;
     cursor: pointer;
-    color: #0088CC;
+    color: #003399;
     transition: color 0.3s ease;
 }
 
@@ -823,6 +942,32 @@ footer {
     }
 }
 
+.breadcrumb {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    padding: .75rem 1rem;
+    margin-bottom: 1rem;
+    list-style: none;
+    background-color: #e9ecef;
+    border-radius: .25rem
+}
+.breadcrumb-nav {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.breadcrumb nav a {
+    color: #003399;
+}
+.breadcrumb li + li:before {
+    display: inline-block;
+    padding-right: .5rem;
+    color: #6c757d;
+    content: "/"
+}
+
 @media (max-width: 576px) {
     .pimpinan-grid {
         grid-template-columns: 1fr;
@@ -867,5 +1012,312 @@ footer {
 @media (max-width: 768px) {
     .dropdown-close {
         display: block;
+    }
+}
+
+/*=============================================*/
+/*=============================================*/
+/*=============================================*/
+/*            Untuk File Profil.html           */
+/*=============================================*/
+/*=============================================*/
+/*=============================================*/
+/*=============================================*/
+
+
+
+/* Fade In Animation */
+.fade-in {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Profil Hero Section */
+.profil-hero {
+    background: linear-gradient(135deg, #003399 0%, #002280 100%);
+    color: white;
+    padding: 60px 0;
+    text-align: center;
+}
+
+.profil-hero-content h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.profil-hero-content p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+/* Visi Misi Profil Section */
+.visi-misi-profil {
+    background-color: #f9f9f9;
+    padding: 60px 0;
+}
+
+.visi-misi-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-top: 30px;
+}
+
+.visi-card, .misi-card {
+    background-color: white;
+    padding: 40px 30px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.visi-card:hover, .misi-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.visi-icon, .misi-icon {
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+.visi-card h3, .misi-card h3 {
+    color: #003399;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+.visi-card p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #333;
+}
+
+.misi-card ul {
+    text-align: left;
+}
+
+.misi-card ul li {
+    margin-bottom: 12px;
+    padding-left: 20px;
+    position: relative;
+    line-height: 1.6;
+}
+
+.misi-card ul li:before {
+    content: '✓';
+    color: #003399;
+    position: absolute;
+    left: 0;
+    font-weight: bold;
+}
+
+/* Struktur Organisasi Section */
+.struktur-organisasi {
+    padding: 60px 0;
+    background-color: white;
+}
+
+.struktur-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 40px;
+    align-items: start;
+    margin-top: 30px;
+}
+
+.struktur-image {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.struktur-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.struktur-info {
+    padding: 20px;
+}
+
+.struktur-info h3 {
+    color: #003399;
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+}
+
+.struktur-info p {
+    margin-bottom: 15px;
+    line-height: 1.6;
+    color: #555;
+}
+
+.struktur-info ul {
+    margin-bottom: 20px;
+}
+
+.struktur-info ul li {
+    margin-bottom: 8px;
+    padding-left: 15px;
+    position: relative;
+}
+
+.struktur-info ul li:before {
+    content: '•';
+    color: #003399;
+    position: absolute;
+    left: 0;
+    font-weight: bold;
+}
+
+/* Tugas Pokok dan Fungsi Section (Gabungan) */
+.tugas-fungsi {
+    background-color: #f0f8ff;
+    padding: 60px 0;
+}
+
+.tugas-fungsi-content {
+    margin-top: 30px;
+}
+
+.tugas-fungsi-card {
+    background-color: white;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+.tugas-fungsi-card h3 {
+    color: #003399;
+    margin: 25px 0 15px 0;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e36159;
+    font-size: 1.4rem;
+}
+
+.tugas-fungsi-card h3:first-child {
+    margin-top: 0;
+}
+
+.tugas-fungsi-card p {
+    line-height: 1.6;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+.tugas-fungsi-card ul {
+    margin-bottom: 10px;
+}
+
+.tugas-fungsi-card ul li {
+    margin-bottom: 10px;
+    padding-left: 20px;
+    position: relative;
+    line-height: 1.6;
+    color: #555;
+}
+
+.tugas-fungsi-card ul li:before {
+    content: '•';
+    color: #003399;
+    position: absolute;
+    left: 0;
+    font-weight: bold;
+}
+
+/* Pimpinan Dinas Section */
+.pimpinan-dinas {
+    padding: 60px 0;
+    background-color: #f9f9f9;
+}
+
+.pimpinan-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+/* Active state untuk navigasi */
+nav ul li a.active {
+    color: #003399;
+    font-weight: 600;
+    position: relative;
+}
+
+nav ul li a.active:after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 15px;
+    right: 15px;
+    height: 2px;
+    background-color: #003399;
+}
+
+/* Responsive Styles untuk Laman Profil */
+@media (max-width: 992px) {
+    .visi-misi-content,
+    .struktur-content {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    
+    .struktur-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .profil-hero-content h1 {
+        font-size: 2rem;
+    }
+    
+    .tugas-fungsi-card {
+        padding: 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .visi-card, .misi-card {
+        padding: 30px 20px;
+    }
+    
+    .tugas-fungsi-card {
+        padding: 20px 15px;
+    }
+    
+    .pimpinan-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .struktur-info {
+        padding: 15px 0;
+    }
+}
+
+@media (max-width: 576px) {
+    .profil-hero-content h1 {
+        font-size: 1.8rem;
+    }
+    
+    .profil-hero-content p {
+        font-size: 1rem;
+    }
+    
+    .breadcrumb-nav {
+        font-size: 0.8rem;
+    }
+    
+    .tugas-fungsi-card {
+        padding: 15px;
     }
 }

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css" />
+    <title>Profil - Dinas Pendidikan dan Kebudayaan Kabupaten Paser</title>
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header id="main-header">
+        <div class="container">
+            <div class="header-top">
+                <div class="logo">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3938/3938887.png" alt="Logo Pemerintahan">
+                    <div class="logo-text">
+                        <h1>Dinas Pendidikan dan Kebudayaan</h1>
+                        <p>Kabupaten Paser</p>
+                    </div>
+                </div>
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+                <nav id="main-nav">
+                    <ul>
+                        <li><a href="index.html" onclick="closeMobileMenu()">Beranda</a></li>
+                        <li><a href="profil.html" onclick="closeMobileMenu()" class="active">Profil</a></li>
+                        <li><a href="#" onclick="closeMobileMenu()">PPID</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle">Layanan</a>
+                            <div class="dropdown-menu">
+                                <div class="dropdown-section">
+                                    <h4>Layanan Kesiswaan</h4>
+                                    <a href="#">Legalisir Ijazah/Dokumen Kelulusan</a>
+                                    <a href="#">Penerbitan Surat Keterangan Pindah Sekolah (mutasi)</a>
+                                </div>
+                                <div class="dropdown-section">
+                                    <h4>Layanan Pendidikan & Tenaga Kependidikan</h4>
+                                    <a href="#">Pengusulan Tunjangan Profesi Guru (TPG)</a>
+                                    <a href="#">Pengurusan Izin Belajar dan Tugas Belajar bagi ASN</a>
+                                </div>
+                                <div class="dropdown-section">
+                                    <h4>Layanan Perizinan</h4>
+                                    <a href="#">Izin Pendirian Satuan Pendidikan (PAUD/SD/SMP/LKP)</a>
+                                </div>
+                            </div>
+                        </li>
+                        <li><a href="#" onclick="closeMobileMenu()">Berita</a></li>
+                        <li><a href="#" onclick="closeMobileMenu()">Kontak</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <section class="breadcrumb-section">
+        <div class="container">
+            <nav class="breadcrumb-nav">
+                <a href="index.html">Halaman Utama</a>
+                <span>/</span>
+                <a href="profil.html" class="active">Profil</a>
+            </nav>
+        </div>
+    </section>
+
+    <!-- Hero Section Profil -->
+    <section class="profil-hero fade-in">
+        <div class="container">
+            <div class="profil-hero-content">
+                <h1>Profil Dinas Pendidikan dan Kebudayaan</h1>
+                <p>Kabupaten Paser</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Visi Misi Section -->
+    <section class="visi-misi-profil">
+        <div class="container">
+            <div class="section-title fade-in">
+                <h2>Visi dan Misi</h2>
+            </div>
+            <div class="visi-misi-content">
+                <div class="visi-card fade-in">
+                    <h3>Visi</h3>
+                    <p>“Terwujudnya Paser yang Sejahtera, Berakhlak Mulia dan Berdaya Saing”</p>
+                </div>
+                <div class="misi-card fade-in">
+                    <h3>Misi</h3>
+                    <ul>
+                        <li>Mewujudkan Sumber Daya Manusia yang handal dan berdaya saing melalui Peningkatan Mutu Pendidikan, Derajat Kesehatan serta Kesejahteraan Sosial</li>
+                        <li>Mewujudkan tata kelola pemerintahan yang baik (Good Governance) yang bersih, efektif, efesien, transparan dan akuntabel berbasis Teknologi Informasi dan Komunikasi</li>
+                        <li>Mewujudkan Pembangunan yang merata dan berkesinambungan yang berwawasan lingkungan</li>
+                        <li>Meningkatkan kemandirian ekonomi daerah dan masyarakat berbasis potensi lokal</li>
+                        <li>Menciptakan Kota yang Aman, Nyaman, dan Kondusif</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Struktur Organisasi Section -->
+    <!-- <section class="struktur-organisasi">
+        <div class="container">
+            <div class="section-title fade-in">
+                <h2>Struktur Organisasi</h2>
+            </div>
+            <div class="struktur-content">
+                <div class="struktur-image fade-in">
+                    <img src="https://via.placeholder.com/800x400/003399/ffffff?text=Struktur+Organisasi+Dinas+Pendidikan+dan+Kebudayaan+Kabupaten+Paser" alt="Struktur Organisasi Dinas Pendidikan dan Kebudayaan Kabupaten Paser">
+                </div>
+                <div class="struktur-info fade-in">
+                    <h3>Struktur Organisasi Dinas Pendidikan dan Kebudayaan</h3>
+                    <p>Struktur organisasi Dinas Pendidikan dan Kebudayaan Kabupaten Paser terdiri dari:</p>
+                    <ul>
+                        <li>Kepala Dinas</li>
+                        <li>Sekretariat (Bagian Umum dan Kepegawaian, Bagian Perencanaan dan Keuangan)</li>
+                        <li>Bidang Pendidikan Dasar</li>
+                        <li>Bidang Pendidikan Menengah</li>
+                        <li>Bidang Kebudayaan</li>
+                        <li>Unit Pelaksana Teknis Daerah (UPTD)</li>
+                    </ul>
+                    <a href="#" class="btn">Download Struktur Lengkap</a>
+                </div>
+            </div>
+        </div>
+    </section> -->
+
+    <!-- Tugas Pokok dan Fungsi Section -->
+    <section class="tugas-fungsi">
+        <div class="container">
+            <div class="section-title fade-in">
+                <h2>Tugas Pokok dan Fungsi</h2>
+            </div>
+            <div class="tugas-fungsi-content fade-in">
+                <div class="tugas-fungsi-card">
+                    <!-- <h3>Tugas Pokok dan Fungsi (Tupoksi)</h3> -->
+                    <ul>
+                        <li>Perumusan kebijakan teknis di bidang pendidikan dan kebudayaan</li>
+                        <li>Pelaksanaan kebijakan di bidang pengelolaan PAUD, SD, SMP, serta pendidikan kesetaraan dan keaksaraan.</li>
+                        <li>Pembinaan, pengawasan, dan pengendalian pelaksanaan tugas di bidang pendidikan.</li>
+                        <li>Pengelolaan dan pembinaan pendidik dan tenaga kependidikan.</li>
+                        <li>Pelaksanaan evaluasi dan pelaporan bidang pendidikan.</li>
+                        <li>Pelaksanaan administrasi dinas sesuai dengan lingkup tugasnya.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pimpinan Dinas Section -->
+    <!-- <section class="pimpinan-dinas">
+        <div class="container">
+            <div class="section-title fade-in">
+                <h2>Pimpinan Dinas</h2>
+            </div>
+            <div class="pimpinan-grid">
+                <div class="pimpinan-card fade-in">
+                    <div class="pimpinan-img">
+                        <div class="placeholder-avatar">
+                            <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="60" cy="60" r="60" fill="#003399" fill-opacity="0.1"/>
+                                <circle cx="60" cy="45" r="20" fill="#003399" fill-opacity="0.3"/>
+                                <path d="M60 75 C40 75 30 85 30 95 C30 105 40 115 60 115 C80 115 90 105 90 95 C90 85 80 75 60 75 Z" fill="#003399" fill-opacity="0.3"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="pimpinan-info">
+                        <h3>H. M. YUSUF M., S.Pd., M.M.</h3>
+                        <p>Kepala Dinas Pendidikan dan Kebudayaan</p>
+                    </div>
+                </div>
+                <div class="pimpinan-card fade-in">
+                    <div class="pimpinan-img">
+                        <div class="placeholder-avatar">
+                            <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="60" cy="60" r="60" fill="#003399" fill-opacity="0.1"/>
+                                <circle cx="60" cy="45" r="20" fill="#003399" fill-opacity="0.3"/>
+                                <path d="M60 75 C40 75 30 85 30 95 C30 105 40 115 60 115 C80 115 90 105 90 95 C90 85 80 75 60 75 Z" fill="#003399" fill-opacity="0.3"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="pimpinan-info">
+                        <h3>Drs. H. SYAIFUDDIN, M.M.</h3>
+                        <p>Sekretaris Dinas</p>
+                    </div>
+                </div>
+                <div class="pimpinan-card fade-in">
+                    <div class="pimpinan-img">
+                        <div class="placeholder-avatar">
+                            <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="60" cy="60" r="60" fill="#003399" fill-opacity="0.1"/>
+                                <circle cx="60" cy="45" r="20" fill="#003399" fill-opacity="0.3"/>
+                                <path d="M60 75 C40 75 30 85 30 95 C30 105 40 115 60 115 C80 115 90 105 90 95 C90 85 80 75 60 75 Z" fill="#003399" fill-opacity="0.3"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="pimpinan-info">
+                        <h3>SULISTYANINGSIH, S.Pd., M.Pd.</h3>
+                        <p>Kepala Bidang Pendidikan Dasar</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section> -->
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Kontak Kami</h3>
+                    <ul>
+                        <li>Jl. Jenderal Sudirman No. 27, Tanah Grogot, Kabupaten Paser, Kalimantan Timur 76251</li>
+                        <li>Telp: (0543) 21023</li>
+                        <li>Email: disdik@paserkab.go.id</li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Layanan Cepat</h3>
+                    <ul>
+                        <li><a href="#">Pengaduan Masyarakat</a></li>
+                        <li><a href="#">Informasi Publik</a></li>
+                        <li><a href="#">Perizinan Online</a></li>
+                        <li><a href="#">Data Statistik</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Tautan Terkait</h3>
+                    <ul>
+                        <li><a href="#">Kementerian Dalam Negeri</a></li>
+                        <li><a href="#">Badan Pusat Statistik</a></li>
+                        <li><a href="#">Kementerian Keuangan</a></li>
+                        <li><a href="#">Portal Nasional</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Media Sosial</h3>
+                    <ul>
+                        <li><a href="#">Facebook</a></li>
+                        <li><a href="#">Twitter</a></li>
+                        <li><a href="#">Instagram</a></li>
+                        <li><a href="#">YouTube</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Pemerintah Daerah. Hak Cipta Dilindungi.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

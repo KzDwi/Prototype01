@@ -95,6 +95,53 @@ window.addEventListener('scroll', function() {
     }
 });
 
+// Mobile menu functionality
+function toggleMobileMenu() {
+    const nav = document.getElementById('main-nav');
+    nav.classList.toggle('active');
+}
+
+function closeMobileMenu() {
+    const nav = document.getElementById('main-nav');
+    nav.classList.remove('active');
+    
+    // Tutup semua dropdown di mobile
+    const dropdowns = document.querySelectorAll('.dropdown');
+    dropdowns.forEach(dropdown => {
+        dropdown.classList.remove('active');
+    });
+}
+
+// Mobile dropdown toggle
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+    
+    dropdownToggles.forEach(toggle => {
+        toggle.addEventListener('click', function(e) {
+            if (window.innerWidth <= 768) {
+                e.preventDefault();
+                const dropdown = this.parentElement;
+                dropdown.classList.toggle('active');
+            }
+        });
+    });
+});
+
+// Tutup dropdown saat klik di luar (untuk desktop)
+document.addEventListener('click', function(event) {
+    if (window.innerWidth > 768) {
+        const dropdowns = document.querySelectorAll('.dropdown');
+        dropdowns.forEach(dropdown => {
+            if (!dropdown.contains(event.target)) {
+                // Reset state jika diperlukan
+            }
+        });
+    }
+});
+
+// Kode untuk berita banner slider tetap sama
+// ...
+
 // Berita Banner Slider
 document.addEventListener('DOMContentLoaded', function() {
     const slides = document.querySelectorAll('.banner-slide');
@@ -142,4 +189,113 @@ document.addEventListener('DOMContentLoaded', function() {
     // Make functions globally available for button clicks
     window.nextSlide = nextSlide;
     window.prevSlide = prevSlide;
+});
+
+// Efek Tamabahan dari Profil.html
+// Efek Tamabahan dari Profil.html
+// Efek Tamabahan dari Profil.html
+// Efek Tamabahan dari Profil.html
+// Efek Tamabahan dari Profil.html
+// Efek Tamabahan dari Profil.html
+
+
+// Fade in animation on scroll
+function fadeInOnScroll() {
+    const fadeElements = document.querySelectorAll('.fade-in');
+    
+    fadeElements.forEach(element => {
+        const elementTop = element.getBoundingClientRect().top;
+        const elementVisible = 150;
+        
+        if (elementTop < window.innerHeight - elementVisible) {
+            element.classList.add('visible');
+        }
+    });
+}
+
+// Initialize fade in effect
+document.addEventListener('DOMContentLoaded', function() {
+    // Trigger initial check
+    fadeInOnScroll();
+    
+    // Check on scroll
+    window.addEventListener('scroll', fadeInOnScroll);
+    
+    // Mobile dropdown toggle (existing code)
+    const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+    
+    dropdownToggles.forEach(toggle => {
+        toggle.addEventListener('click', function(e) {
+            if (window.innerWidth <= 768) {
+                e.preventDefault();
+                const dropdown = this.parentElement;
+                dropdown.classList.toggle('active');
+            }
+        });
+    });
+    
+    // Atur posisi dropdown secara dinamis
+    adjustDropdownPosition();
+    window.addEventListener('resize', adjustDropdownPosition);
+});
+
+// Fungsi untuk menyesuaikan posisi dropdown
+function adjustDropdownPosition() {
+    if (window.innerWidth > 768) {
+        const dropdowns = document.querySelectorAll('.dropdown');
+        dropdowns.forEach(dropdown => {
+            const dropdownMenu = dropdown.querySelector('.dropdown-menu');
+            const rect = dropdown.getBoundingClientRect();
+            const viewportWidth = window.innerWidth;
+            
+            // Reset posisi
+            dropdownMenu.style.left = '50%';
+            dropdownMenu.style.transform = 'translateX(-50%) translateY(10px)';
+            
+            // Cek jika dropdown keluar dari viewport di kanan
+            const dropdownWidth = dropdownMenu.offsetWidth;
+            const rightEdge = rect.left + (dropdownWidth / 2);
+            
+            if (rightEdge > viewportWidth - 20) {
+                const overflow = rightEdge - viewportWidth + 20;
+                dropdownMenu.style.left = `calc(50% - ${overflow}px)`;
+            }
+            
+            // Cek jika dropdown keluar dari viewport di kiri
+            const leftEdge = rect.left - (dropdownWidth / 2);
+            if (leftEdge < 20) {
+                const overflow = 20 - leftEdge;
+                dropdownMenu.style.left = `calc(50% + ${overflow}px)`;
+            }
+        });
+    }
+}
+
+// Mobile menu functionality (existing code)
+function toggleMobileMenu() {
+    const nav = document.getElementById('main-nav');
+    nav.classList.toggle('active');
+}
+
+function closeMobileMenu() {
+    const nav = document.getElementById('main-nav');
+    nav.classList.remove('active');
+    
+    // Tutup semua dropdown di mobile
+    const dropdowns = document.querySelectorAll('.dropdown');
+    dropdowns.forEach(dropdown => {
+        dropdown.classList.remove('active');
+    });
+}
+
+// Tutup dropdown saat klik di luar (untuk desktop)
+document.addEventListener('click', function(event) {
+    if (window.innerWidth > 768) {
+        const dropdowns = document.querySelectorAll('.dropdown');
+        dropdowns.forEach(dropdown => {
+            if (!dropdown.contains(event.target)) {
+                // Reset state jika diperlukan
+            }
+        });
+    }
 });
