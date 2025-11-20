@@ -1,3 +1,129 @@
+// Smooth Scroll Functionality
+function smoothScrollTo(targetId, duration = 1000) {
+    const targetElement = document.getElementById(targetId);
+    if (!targetElement) return;
+
+    const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+    const startPosition = window.pageYOffset;
+    const distance = targetPosition - startPosition - 80; // Adjust for header height
+    let startTime = null;
+
+    function animation(currentTime) {
+        if (startTime === null) startTime = currentTime;
+        const timeElapsed = currentTime - startTime;
+        const run = easeInOutQuad(timeElapsed, startPosition, distance, duration);
+        window.scrollTo(0, run);
+        
+        if (timeElapsed < duration) {
+            requestAnimationFrame(animation);
+        } else {
+            // Add highlight effect when scroll completes
+            targetElement.classList.add('highlight-section');
+            setTimeout(() => {
+                targetElement.classList.remove('highlight-section');
+            }, 2000);
+        }
+    }
+
+    // Easing function for smooth acceleration and deceleration
+    function easeInOutQuad(t, b, c, d) {
+        t /= d / 2;
+        if (t < 1) return c / 2 * t * t + b;
+        t--;
+        return -c / 2 * (t * (t - 2) - 1) + b;
+    }
+
+    requestAnimationFrame(animation);
+}
+
+// Enhanced scroll function with progress indicator
+function enhancedScrollTo(targetId) {
+    const targetElement = document.getElementById(targetId);
+    if (!targetElement) return;
+
+    // Calculate scroll distance
+    const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+    const startPosition = window.pageYOffset;
+    const distance = targetPosition - startPosition;
+    
+    // Only animate if distance is significant
+    if (Math.abs(distance) < 100) {
+        targetElement.scrollIntoView({ behavior: 'smooth' });
+        return;
+    }
+
+    // Create scroll progress indicator
+    const progressBar = document.createElement('div');
+    progressBar.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 0%;
+        height: 3px;
+        background: linear-gradient(90deg, #003399, #002280);
+        z-index: 10000;
+        transition: width 0.1s;
+    `;
+    document.body.appendChild(progressBar);
+
+    let startTime = null;
+    const duration = 800; // ms
+
+    function scrollStep(timestamp) {
+        if (!startTime) startTime = timestamp;
+        const progress = timestamp - startTime;
+        const percentage = Math.min(progress / duration, 1);
+        
+        // Easing function for smooth scroll
+        const easeOutQuart = 1 - Math.pow(1 - percentage, 4);
+        const scrollTo = startPosition + distance * easeOutQuart;
+        
+        window.scrollTo(0, scrollTo);
+        progressBar.style.width = `${percentage * 100}%`;
+        
+        if (progress < duration) {
+            requestAnimationFrame(scrollStep);
+        } else {
+            // Clean up
+            document.body.removeChild(progressBar);
+            // Add highlight effect
+            targetElement.classList.add('highlight-section');
+            setTimeout(() => {
+                targetElement.classList.remove('highlight-section');
+            }, 2000);
+        }
+    }
+
+    requestAnimationFrame(scrollStep);
+}
+
+// Initialize smooth scroll functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Add click event to "Jelajahi Layanan" button
+    const exploreButton = document.querySelector('.hero-content .btn[href="#layanan"]');
+    if (exploreButton) {
+        exploreButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            enhancedScrollTo('layanan');
+        });
+    }
+
+    // Add smooth scroll to all anchor links with hash
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            if (href === '#') return;
+            
+            const targetId = href.substring(1);
+            const targetElement = document.getElementById(targetId);
+            
+            if (targetElement) {
+                e.preventDefault();
+                enhancedScrollTo(targetId);
+            }
+        });
+    });
+});
 
 // Dropdown Menu Functionality
 let activeDropdown = null;

@@ -1265,6 +1265,45 @@ nav ul li a.active:after {
     background-color: #003399;
 }
 
+/* Smooth Scroll Behavior */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Enhanced Smooth Scroll dengan custom easing */
+.smooth-scroll {
+    scroll-behavior: smooth;
+    transition: scroll-behavior 0.5s ease-in-out;
+}
+
+/* Custom scroll animation */
+@keyframes smoothScroll {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-100px);
+    }
+}
+
+/* Style untuk highlight section saat di-scroll */
+.highlight-section {
+    animation: highlightPulse 2s ease-in-out;
+}
+
+@keyframes highlightPulse {
+    0% {
+        background-color: transparent;
+    }
+    50% {
+        background-color: rgba(0, 51, 153, 0.1);
+    }
+    100% {
+        background-color: transparent;
+    }
+}
+
+
 /* Responsive Styles untuk Laman Profil */
 @media (max-width: 992px) {
     .visi-misi-content,
