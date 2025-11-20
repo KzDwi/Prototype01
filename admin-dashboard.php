@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once 'functions.php';
 
 // Cek jika admin sudah login
 if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
@@ -13,14 +14,192 @@ if (isset($_GET['logout'])) {
     header("Location: login.php");
     exit;
 }
+
+// Handle form tambah berita
+$pesan_sukses = '';
+$pesan_error = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tambah_berita'])) {
+    try {
+        $gambar_path = '';
+        $thumbnail_path = '';
+        
+        // Upload gambar jika ada
+        if (isset($_FILES['gambar']) && $_FILES['gambar']['error'] === 0) {
+            $gambar_path = uploadGambar($_FILES['gambar']);
+            $thumbnail_path = $gambar_path;
+        }
+        
+        $data_berita = [
+            'judul' => $_POST['judul'],
+            'excerpt' => $_POST['excerpt'],
+            'konten' => $_POST['konten'],
+            'kategori' => $_POST['kategori'],
+            'gambar' => $gambar_path,
+            'thumbnail' => $thumbnail_path,
+            'penulis' => $_SESSION['admin_username'],
+            'tanggal_publish' => $_POST['tanggal_publish']
+        ];
+        
+        if (tambahBerita($data_berita)) {
+            $pesan_sukses = 'Berita berhasil ditambahkan!';
+            // Refresh halaman untuk menampilkan berita baru
+            echo "<script>alert('Berita berhasil ditambahkan!'); window.location.href = 'admin-dashboard.php';</script>";
+            exit;
+        } else {
+            $pesan_error = 'Gagal menambahkan berita. Silakan coba lagi.';
+        }
+    } catch (Exception $e) {
+        $pesan_error = $e->getMessage();
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Dinas Pendidikan dan Kebudayaan Kabupaten Paser</title>
+    <title>Dasbor Admin - Dinas Pendidikan dan Kebudayaan Kabupaten Paser</title>
     <link rel="stylesheet" href="css/admin-styles.css">
+    <style>
+        /* Popup Styles */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .popup-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .popup-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            transform: scale(0.7);
+            transition: transform 0.3s ease;
+        }
+
+        .popup-overlay.active .popup-content {
+            transform: scale(1);
+        }
+
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .popup-title {
+            color: #003399;
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .popup-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+            padding: 5px;
+        }
+
+        .popup-close:hover {
+            color: #003399;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #003399;
+            box-shadow: 0 0 0 2px rgba(0, 51, 153, 0.1);
+        }
+        
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+        
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .alert {
+            padding: 12px 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
     <!-- Navbar -->
@@ -78,11 +257,11 @@ if (isset($_GET['logout'])) {
                 <li class="sidebar-menu-item">
                     <a href="#" class="sidebar-menu-link active">
                         <span class="icon icon-dashboard"></span>
-                        <span class="sidebar-menu-text">Dashboard</span>
+                        <span class="sidebar-menu-text">Dasbor</span>
                     </a>
                 </li>
                 <li class="sidebar-menu-item">
-                    <a href="#" class="sidebar-menu-link">
+                    <a href="admin-berita.php" class="sidebar-menu-link">
                         <span class="icon icon-news"></span>
                         <span class="sidebar-menu-text">Berita</span>
                     </a>
@@ -204,7 +383,7 @@ if (isset($_GET['logout'])) {
                         </div>
                         <div class="card-body">
                             <div class="quick-actions">
-                                <button class="btn btn-primary w-100 mb-2">
+                                <button class="btn btn-primary w-100 mb-2" onclick="bukaPopupTambahBerita()">
                                     <span class="icon icon-plus"></span>Tambah Berita
                                 </button>
                                 <button class="btn btn-outline-primary w-100 mb-2">
@@ -288,7 +467,95 @@ if (isset($_GET['logout'])) {
         </main>
     </div>
 
+    <!-- Popup Tambah Berita -->
+    <div class="popup-overlay" id="popupTambahBerita">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h3 class="popup-title">Tambah Berita Baru</h3>
+                <button class="popup-close" onclick="tutupPopupTambahBerita()">&times;</button>
+            </div>
+            
+            <?php if ($pesan_error): ?>
+                <div class="alert alert-error"><?php echo $pesan_error; ?></div>
+            <?php endif; ?>
+            
+            <form method="POST" enctype="multipart/form-data" id="formTambahBerita">
+                <div class="form-group">
+                    <label for="judul">Judul Berita</label>
+                    <input type="text" id="judul" name="judul" class="form-control" required placeholder="Masukkan judul berita">
+                </div>
+                
+                <div class="form-group">
+                    <label for="excerpt">Ringkasan Berita</label>
+                    <textarea id="excerpt" name="excerpt" class="form-control" required placeholder="Tulis ringkasan singkat berita"></textarea>
+                    <small style="color: #666;">Ringkasan singkat yang akan ditampilkan di halaman berita.</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="konten">Konten Lengkap</label>
+                    <textarea id="konten" name="konten" class="form-control" required placeholder="Tulis konten lengkap berita" rows="6"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="kategori">Kategori</label>
+                    <select id="kategori" name="kategori" class="form-control" required>
+                        <option value="">Pilih Kategori</option>
+                        <option value="Pendidikan">Pendidikan</option>
+                        <option value="Kebudayaan">Kebudayaan</option>
+                        <option value="Pengumuman">Pengumuman</option>
+                        <option value="Kegiatan">Kegiatan</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="gambar">Gambar Berita</label>
+                    <input type="file" id="gambar" name="gambar" class="form-control" accept="image/*">
+                    <small style="color: #666;">Format: JPG, PNG, GIF. Maksimal 5MB.</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="tanggal_publish">Tanggal Publish</label>
+                    <input type="date" id="tanggal_publish" name="tanggal_publish" class="form-control" required value="<?php echo date('Y-m-d'); ?>">
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline-primary" onclick="tutupPopupTambahBerita()">Batal</button>
+                    <button type="submit" name="tambah_berita" class="btn-success">
+                        <span class="icon icon-plus"></span> Tambah Berita
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
+        // Fungsi untuk popup
+        function bukaPopupTambahBerita() {
+            document.getElementById('popupTambahBerita').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function tutupPopupTambahBerita() {
+            document.getElementById('popupTambahBerita').classList.remove('active');
+            document.body.style.overflow = 'auto';
+            // Reset form
+            document.getElementById('formTambahBerita').reset();
+        }
+
+        // Tutup popup ketika klik di luar content
+        document.getElementById('popupTambahBerita').addEventListener('click', function(e) {
+            if (e.target === this) {
+                tutupPopupTambahBerita();
+            }
+        });
+
+        // Tutup popup dengan ESC key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                tutupPopupTambahBerita();
+            }
+        });
+
         // Dropdown functionality
         document.addEventListener('DOMContentLoaded', function() {
             const userDropdown = document.getElementById('userDropdown');
