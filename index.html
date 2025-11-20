@@ -12,7 +12,7 @@
         <div class="container">
             <div class="header-top">
                 <div class="logo">
-                    <img src="https://cdn-icons-png.flaticon.com/512/3938/3938887.png" alt="Logo Pemerintahan">
+                    <img src="assets/logo-kabupaten.png" alt="Logo Pemerintahan">
                     <div class="logo-text">
                         <h1>Dinas Pendidikan dan Kebudayaan</h1>
                         <p>Kabupaten Paser</p>
@@ -25,7 +25,7 @@
                         <li><a href="profil.html" onclick="closeMobileMenu()">Profil</a></li>
                         <li><a href="#" onclick="closeMobileMenu()">PPID</a></li>
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle">Layanan</a>
+                           <li><a href="#layanan-section" onclick="closeMobileMenu(); scrollToLayanan();">Layanan</a></li>
                             <div class="dropdown-menu">
                                 <div class="dropdown-section">
                                     <h4>Layanan Kesiswaan</h4>
@@ -63,7 +63,7 @@
         </div>
     </section>
 
-    <!-- Pimpinan Daerah Section -->
+            <!-- Pimpinan Daerah Section -->
     <section class="pimpinan">
         <div class="container">
             <div class="section-title">
@@ -71,14 +71,8 @@
             </div>
             <div class="pimpinan-grid">
                 <div class="pimpinan-card">
-                    <div class="pimpinan-img">
-                        <div class="placeholder-avatar">
-                            <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="60" cy="60" r="60" fill="#003399" fill-opacity="0.1"/>
-                                <circle cx="60" cy="45" r="20" fill="#003399" fill-opacity="0.3"/>
-                                <path d="M60 75 C40 75 30 85 30 95 C30 105 40 115 60 115 C80 115 90 105 90 95 C90 85 80 75 60 75 Z" fill="#003399" fill-opacity="0.3"/>
-                            </svg>
-                        </div>
+                    <div class="pimpinan-img portrait">
+                        <img src="assets/Bupati_Paser_Fahmi_Fadli.jpg" alt="Dr. Fahmi Fadli - Bupati Paser">
                     </div>
                     <div class="pimpinan-info">
                         <h3>Dr. Fahmi Fadli</h3>
@@ -86,14 +80,8 @@
                     </div>
                 </div>
                 <div class="pimpinan-card">
-                    <div class="pimpinan-img">
-                        <div class="placeholder-avatar">
-                            <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="60" cy="60" r="60" fill="#003399" fill-opacity="0.1"/>
-                                <circle cx="60" cy="45" r="20" fill="#003399" fill-opacity="0.3"/>
-                                <path d="M60 75 C40 75 30 85 30 95 C30 105 40 115 60 115 C80 115 90 105 90 95 C90 85 80 75 60 75 Z" fill="#003399" fill-opacity="0.3"/>
-                            </svg>
-                        </div>
+                    <div class="pimpinan-img portrait">
+                        <img src="assets/Wakil_Bupati_Paser_Ikhwan_Antasari.jpg" alt="H. Ikhwan Antasari, S.Sos. - Wakil Bupati Paser">
                     </div>
                     <div class="pimpinan-info">
                         <h3>H. Ikhwan Antasari, S.Sos.</h3>
@@ -101,14 +89,8 @@
                     </div>
                 </div>
                 <div class="pimpinan-card">
-                    <div class="pimpinan-img">
-                        <div class="placeholder-avatar">
-                            <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="60" cy="60" r="60" fill="#003399" fill-opacity="0.1"/>
-                                <circle cx="60" cy="45" r="20" fill="#003399" fill-opacity="0.3"/>
-                                <path d="M60 75 C40 75 30 85 30 95 C30 105 40 115 60 115 C80 115 90 105 90 95 C90 85 80 75 60 75 Z" fill="#003399" fill-opacity="0.3"/>
-                            </svg>
-                        </div>
+                    <div class="pimpinan-img portrait">
+                        <img src="assets/sekda-paser-2024.jpg" alt="Drs. Katsul Wijaya, M.Si - Sekretaris Daerah">
                     </div>
                     <div class="pimpinan-info">
                         <h3>Drs. Katsul Wijaya, M.Si</h3>
@@ -183,35 +165,35 @@
     <!-- Layanan Section -->
     <section class="layanan" id="layanan">
         <div class="container">
-            <div class="section-title">
-                <h2>Layanan Publik</h2>
+            <div class="section-title fade-in">
+                <h2>Layanan Kami</h2>
+                <p>Berbagai layanan yang disediakan oleh Dinas Pendidikan dan Kebudayaan Kabupaten Paser</p>
+            </div>
             </div>
             <div class="layanan-grid">
-                <div class="layanan-card">
-                    <div class="layanan-icon">📋</div>
+                <div class="layanan-card fade-in" onclick="openLayananPopup('legalisir-ijazah')">
                     <h3>Legalisir Ijazah/Dokumen Kelulusan</h3>
-                    <p>Layanan legalisir ijazah dan dokumen kelulusan lainnya.</p>
-                    <a href="#" class="btn">Akses Layanan</a>
+                    <p>Layanan legalisir ijazah dan dokumen kelulusan untuk berbagai keperluan administrasi.</p>
+                    <button class="layanan-btn">Lihat Detail</button>
                 </div>
-                <div class="layanan-card">
-                    <div class="layanan-icon">🏢</div>
-                    <h3>Pendirian Satuan Pendidikan</h3>
-                    <p>Pengurusan izin pendirian satuan pendidikan baru.</p>
-                    <a href="#" class="btn">Akses Layanan</a>
+                
+                <div class="layanan-card fade-in" onclick="openLayananPopup('surat-mutasi')">
+                    <h3>Surat Keterangan Pindah Sekolah</h3>
+                    <p>Layanan penerbitan surat mutasi untuk siswa yang akan berpindah sekolah.</p>
+                    <button class="layanan-btn">Lihat Detail</button>
                 </div>
-                <div class="layanan-card">
-                    <div class="layanan-icon">📝</div>
-                    <h3>Terbit Surat Keterangan Pindah Sekolah (mutasi)</h3>
-                    <p>Pengurusan terbit surat keterangan pindah sekolah (mutasi) bagi siswa yang pindah sekolah.</p>
-                    <a href="#" class="btn">Akses Layanan</a>
+                
+                <div class="layanan-card fade-in" onclick="openLayananPopup('tunjangan-guru')">
+                    <h3>Tunjangan Profesi Guru</h3>
+                    <p>Layanan pengusulan tunjangan profesi guru bagi guru yang memenuhi syarat.</p>
+                    <button class="layanan-btn">Lihat Detail</button>
                 </div>
-                <div class="layanan-card">
-                    <div class="layanan-icon">📞</div>
-                    <h3>Pengurusan Izin Belajar dan Tugas Belajar ASN</h3>
-                    <p>Pengurusan izin belajar dan tugas belajar ASN di lingkungan Dinas Pendidikan dan Kebudayaan Kabupaten Paser.</p>
-                    <a href="#" class="btn">Akses Layanan</a>
+                
+                <div class="layanan-card fade-in" onclick="openLayananPopup('izin-pendirian')">
+                    <h3>Izin Pendirian Satuan Pendidikan</h3>
+                    <p>Layanan perizinan pendirian PAUD, SD, SMP, dan Lembaga Kursus.</p>
+                    <button class="layanan-btn">Lihat Detail</button>
                 </div>
-            </div>
         </div>
     </section>
 
@@ -230,10 +212,10 @@
                 <div class="footer-section">
                     <h3>Layanan Cepat</h3>
                     <ul>
-                        <li><a href="#">Legalisir Dokumen Kelulusan</a></li>
-                        <li><a href="#">Pendirian Satuan Pendidikan</a></li>
-                        <li><a href="#">Terbit Surat Keterangan Pindah Sekolah (mutasi)</a></li>
-                        <li><a href="#">Pengusulan Tunjangan Profesi Guru (TPG)</a></li>
+                        <li><a href="#layanan-section" onclick="scrollToLayanan()">Legalisir Ijazah/Dokumen Kelulusan</a></li>
+                        <li><a href="#layanan-section" onclick="scrollToLayanan()">Surat Keterangan Pindah Sekolah</a></li>
+                        <li><a href="#layanan-section" onclick="scrollToLayanan()">Tunjangan Profesi Guru</a></li>
+                        <li><a href="#layanan-section" onclick="scrollToLayanan()">Izin Pendirian Satuan Pendidikan</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
