@@ -578,3 +578,24 @@ document.addEventListener('keydown', function(event) {
         closeLayananPopup();
     }
 });
+
+// BACKUP GAMBAR PEMIMPIN JIKA TIDAK TERTAMPILKAN
+// Handle error gambar pimpinan
+document.addEventListener('DOMContentLoaded', function() {
+    const pimpinanImages = document.querySelectorAll('.pimpinan-img img');
+    
+    pimpinanImages.forEach(img => {
+        img.addEventListener('error', function() {
+            // Jika gambar gagal dimuat, gunakan placeholder SVG
+            const placeholderSVG = `
+                <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="60" cy="60" r="60" fill="#003399" fill-opacity="0.1"/>
+                    <circle cx="60" cy="45" r="20" fill="#003399" fill-opacity="0.3"/>
+                    <path d="M60 75 C40 75 30 85 30 95 C30 105 40 115 60 115 C80 115 90 105 90 95 C90 85 80 75 60 75 Z" fill="#003399" fill-opacity="0.3"/>
+                </svg>
+            `;
+            this.parentElement.innerHTML = placeholderSVG;
+            this.parentElement.classList.add('placeholder-avatar');
+        });
+    });
+});
