@@ -425,3 +425,177 @@ document.addEventListener('click', function(event) {
         });
     }
 });
+
+// ===== FUNGSI UNTUK POPUP DESKRIPSI LAYANAN =====
+
+// Data deskripsi layanan
+const layananData = {
+    'legalisir-ijazah': {
+        title: 'Legalisir Ijazah/Dokumen Kelulusan',
+        description: 'Layanan legalisir ijazah dan dokumen kelulusan untuk keperluan administrasi seperti melamar pekerjaan, melanjutkan pendidikan, atau keperluan lainnya.',
+        caraKerja: [
+            'Pemohon datang ke kantor Dinas Pendidikan dengan membawa dokumen asli',
+            'Mengisi formulir permohonan legalisir',
+            'Petugas memverifikasi dokumen asli',
+            'Dokumen dicap dan ditandatangani oleh pejabat berwenang',
+            'Pemohon menerima dokumen yang telah dilegalisir'
+        ],
+        persyaratan: [
+            'Ijazah asli yang akan dilegalisir',
+            'KTP asli dan fotokopi',
+            'Formulir permohonan yang telah diisi',
+            'Bukti pembayaran (jika ada)'
+        ]
+    },
+    'surat-mutasi': {
+        title: 'Penerbitan Surat Keterangan Pindah Sekolah',
+        description: 'Layanan penerbitan surat keterangan pindah sekolah untuk siswa yang akan berpindah ke sekolah lain.',
+        caraKerja: [
+            'Orang tua/wali mengajukan permohonan mutasi ke sekolah asal',
+            'Sekolah asal menerbitkan surat keterangan pindah',
+            'Permohonan diajukan ke Dinas Pendidikan',
+            'Petugas memverifikasi dokumen dan alasan mutasi',
+            'Surat mutasi diterbitkan dan diberikan kepada pemohon'
+        ],
+        persyaratan: [
+            'Surat permohonan dari orang tua/wali',
+            'Rapor siswa',
+            'Surat keterangan dari sekolah asal',
+            'KTP orang tua/wali',
+            'Alasan pindah yang jelas'
+        ]
+    },
+    'tunjangan-guru': {
+        title: 'Pengusulan Tunjangan Profesi Guru (TPG)',
+        description: 'Layanan pengusulan tunjangan profesi guru bagi guru yang memenuhi persyaratan.',
+        caraKerja: [
+            'Guru mengajukan berkas persyaratan ke Dinas Pendidikan',
+            'Petugas memverifikasi kelengkapan dan keabsahan dokumen',
+            'Data diverifikasi dan divalidasi',
+            'Pengusulan diajukan ke pemerintah provinsi/pusat',
+            'Monitoring proses pencairan tunjangan'
+        ],
+        persyaratan: [
+            'Foto kopi sertifikat pendidik',
+            'SK pengangkatan sebagai guru',
+            'SK mengajar minimal 24 jam/minggu',
+            'Laporan kinerja guru',
+            'Berkas administrasi lainnya'
+        ]
+    },
+    'izin-pendirian': {
+        title: 'Izin Pendirian Satuan Pendidikan',
+        description: 'Layanan perizinan pendirian satuan pendidikan baru meliputi PAUD, SD, SMP, dan Lembaga Kursus dan Pelatihan (LKP).',
+        caraKerja: [
+            'Pemohon mengajukan permohonan izin pendirian',
+            'Kelengkapan administrasi diverifikasi',
+            'Survey lokasi dan fasilitas dilakukan',
+            'Evaluasi kelayakan satuan pendidikan',
+            'Izin diterbitkan jika memenuhi syarat'
+        ],
+        persyaratan: [
+            'Proposal pendirian satuan pendidikan',
+            'Dokumen kepemilikan tanah/bangunan',
+            'Rencana induk pengembangan',
+            'Struktur organisasi dan tenaga pendidik',
+            'Dokumen administrasi lainnya'
+        ]
+    }
+};
+
+// Fungsi untuk membuka popup deskripsi layanan
+function openLayananPopup(layananId) {
+    const layanan = layananData[layananId];
+    if (!layanan) return;
+    
+    const stepsHTML = layanan.caraKerja.map((step, index) => 
+        `<li>${step}</li>`
+    ).join('');
+    
+    const requirementsHTML = layanan.persyaratan.map(req => 
+        `<li>${req}</li>`
+    ).join('');
+    
+    const popupHTML = `
+        <div class="popup-overlay" id="layananPopup">
+            <div class="popup-content">
+                <button class="popup-close" onclick="closeLayananPopup()">×</button>
+                <h2 class="popup-title">${layanan.title}</h2>
+                <p class="popup-description">${layanan.description}</p>
+                
+                <div class="popup-steps">
+                    <h4>Cara Kerja Layanan:</h4>
+                    <ol>${stepsHTML}</ol>
+                </div>
+                
+                <div class="popup-requirements">
+                    <h4>Persyaratan:</h4>
+                    <ul>${requirementsHTML}</ul>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Tambahkan popup ke body
+    document.body.insertAdjacentHTML('beforeend', popupHTML);
+    
+    // Tampilkan popup
+    setTimeout(() => {
+        document.getElementById('layananPopup').style.display = 'flex';
+    }, 10);
+}
+
+// Fungsi untuk menutup popup layanan
+function closeLayananPopup() {
+    const popup = document.getElementById('layananPopup');
+    if (popup) {
+        popup.remove();
+    }
+}
+
+// Fungsi untuk scroll ke bagian layanan
+function scrollToLayanan() {
+    const layananSection = document.getElementById('layanan-section');
+    if (layananSection) {
+        layananSection.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }
+}
+
+// Tutup popup ketika klik di luar konten
+document.addEventListener('click', function(event) {
+    const popup = document.getElementById('layananPopup');
+    if (popup && event.target === popup) {
+        closeLayananPopup();
+    }
+});
+
+// Tutup popup dengan tombol ESC
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        closeLayananPopup();
+    }
+});
+
+// BACKUP GAMBAR PEMIMPIN JIKA TIDAK TERTAMPILKAN
+// Handle error gambar pimpinan
+document.addEventListener('DOMContentLoaded', function() {
+    const pimpinanImages = document.querySelectorAll('.pimpinan-img img');
+    
+    pimpinanImages.forEach(img => {
+        img.addEventListener('error', function() {
+            // Jika gambar gagal dimuat, gunakan placeholder SVG
+            const placeholderSVG = `
+                <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="60" cy="60" r="60" fill="#003399" fill-opacity="0.1"/>
+                    <circle cx="60" cy="45" r="20" fill="#003399" fill-opacity="0.3"/>
+                    <path d="M60 75 C40 75 30 85 30 95 C30 105 40 115 60 115 C80 115 90 105 90 95 C90 85 80 75 60 75 Z" fill="#003399" fill-opacity="0.3"/>
+                </svg>
+            `;
+            this.parentElement.innerHTML = placeholderSVG;
+            this.parentElement.classList.add('placeholder-avatar');
+        });
+    });
+});
