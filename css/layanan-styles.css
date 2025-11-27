@@ -1,0 +1,434 @@
+/* ===== STYLING KHUSUS UNTUK HALAMAN LAYANAN ===== */
+
+/* Fullscreen Section Base Styles */
+.fullscreen-section {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 0;
+}
+
+/* Breadcrumb Section */
+.breadcrumb-section {
+    background-color: #f9f9f9;
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.breadcrumb-nav {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #ddd;
+}
+
+.breadcrumb-nav a {
+    color: #e36159;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.breadcrumb-nav a:hover {
+    color: #D25048;
+}
+
+.breadcrumb-nav .active {
+    color: #DDD;
+    font-weight: 600;
+}
+
+/* Hero Section Layanan */
+.layanan-hero {
+    background: linear-gradient(135deg, #003399 0%, #002280 100%);
+    color: white;
+    text-align: center;
+    clip-path: polygon(0 0, 100% 0, 100% 90%, 0% 100%);
+    position: relative;
+}
+
+.layanan-hero-content h1 {
+    font-size: 2.8rem;
+    margin-bottom: 15px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    line-height: 1.2;
+}
+
+.layanan-hero-content p {
+    font-size: 1.3rem;
+    opacity: 0.9;
+    margin-bottom: 10px;
+}
+
+.hero-subtitle {
+    font-size: 1.1rem !important;
+    margin-bottom: 30px !important;
+    opacity: 0.8 !important;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Profile Section */
+.profile-section {
+    background-color: white;
+}
+
+.profile-card {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    padding: 50px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    max-width: 900px;
+    margin: 0 auto;
+    border: 1px solid #f0f0f0;
+}
+
+.profile-img {
+    margin-right: 40px;
+    flex-shrink: 0;
+}
+
+.profile-info h2 {
+    color: #003399;
+    margin-bottom: 8px;
+    font-size: 1.8rem;
+}
+
+.profile-title {
+    color: #4b5563;
+    font-weight: 600;
+    margin-bottom: 20px;
+    display: block;
+    font-size: 1.1rem;
+}
+
+.profile-description {
+    color: #555;
+    line-height: 1.7;
+    font-size: 1.05rem;
+}
+
+/* Layanan Section */
+.layanan-section {
+    background-color: #f9f9f9;
+}
+
+.layanan-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.layanan-card {
+    background-color: white;
+    border-radius: 12px;
+    padding: 35px 30px;
+    text-align: center;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s ease;
+    cursor: pointer;
+    border: 2px solid transparent;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.layanan-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    border-color: #003399;
+}
+
+.layanan-icon {
+    font-size: 3.5em;
+    color: #003399;
+    margin-bottom: 20px;
+}
+
+.layanan-card h3 {
+    color: #003399;
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+    line-height: 1.4;
+    min-height: 3.5em;
+}
+
+.layanan-card p {
+    color: #666;
+    margin-bottom: 20px;
+    line-height: 1.6;
+    flex-grow: 1;
+}
+
+.card-footer {
+    margin-top: auto;
+}
+
+.btn-detail {
+    background-color: #003399;
+    color: white;
+    padding: 12px 25px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-block;
+    width: 100%;
+    transition: all 0.3s;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.btn-detail:hover {
+    background-color: #002280;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 51, 153, 0.3);
+}
+
+/* FAQ Section */
+.faq-section {
+    background-color: white;
+}
+
+.faq-list {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border: 1px solid #f0f0f0;
+}
+
+.faq-item {
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+}
+
+.faq-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.faq-question {
+    font-size: 1.2em;
+    font-weight: 600;
+    color: #003399;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    transition: color 0.2s;
+}
+
+.faq-question:hover {
+    color: #002280;
+}
+
+.faq-answer {
+    padding: 15px 0 0 25px;
+    color: #4b5563;
+    display: none;
+    animation: fadeIn 0.5s;
+    line-height: 1.6;
+}
+
+.faq-question i {
+    transition: transform 0.3s ease;
+    color: #003399;
+}
+
+.faq-question.active i {
+    transform: rotate(180deg);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Contact Section */
+.contact-section {
+    background-color: #f9f9f9;
+}
+
+.contact-form {
+    max-width: 500px;
+    margin: 30px auto 0;
+}
+
+.contact-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background: white;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid #f0f0f0;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.contact-form input, 
+.contact-form textarea, 
+.contact-form select {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    font-size: 1rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.contact-form input:focus, 
+.contact-form textarea:focus, 
+.contact-form select:focus {
+    outline: none;
+    border-color: #003399;
+    box-shadow: 0 0 0 3px rgba(0, 51, 153, 0.1);
+}
+
+.btn-primary {
+    background-color: #003399;
+    color: white;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    padding: 15px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s;
+    font-size: 1.1rem;
+    margin-top: 10px;
+}
+
+.btn-primary:hover {
+    background-color: #002280;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 51, 153, 0.3);
+}
+
+/* Navigation Scroll */
+.nav-scroll-indicator {
+    position: fixed;
+    right: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.nav-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(0, 51, 153, 0.3);
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 2px solid transparent;
+}
+
+.nav-dot.active {
+    background: #003399;
+    transform: scale(1.3);
+    border-color: #003399;
+}
+
+.nav-dot:hover {
+    background: rgba(0, 51, 153, 0.6);
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .profile-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 40px 30px;
+    }
+    
+    .profile-img {
+        margin-right: 0;
+        margin-bottom: 25px;
+    }
+    
+    .layanan-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+    }
+}
+
+@media (max-width: 768px) {
+    .fullscreen-section {
+        padding: 100px 0;
+    }
+    
+    .layanan-hero-content h1 {
+        font-size: 2.2rem;
+    }
+    
+    .layanan-hero-content p {
+        font-size: 1.1rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1rem !important;
+    }
+    
+    .profile-card,
+    .faq-list,
+    .contact-form form {
+        padding: 30px 20px;
+    }
+    
+    .layanan-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .nav-scroll-indicator {
+        right: 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .layanan-hero-content h1 {
+        font-size: 1.8rem;
+    }
+    
+    .layanan-hero-content p {
+        font-size: 1rem;
+    }
+    
+    .profile-card,
+    .faq-list,
+    .contact-form form {
+        padding: 25px 15px;
+    }
+    
+    .layanan-card {
+        padding: 25px 20px;
+    }
+    
+    .layanan-icon {
+        font-size: 3em;
+    }
+    
+    .breadcrumb-nav {
+        font-size: 0.9rem;
+    }
+}

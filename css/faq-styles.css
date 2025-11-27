@@ -1,0 +1,110 @@
+/* ======================================= */
+/* 📝 FAQ ACCORDION STYLES                 */
+/* ======================================= */
+
+.faq-item {
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.faq-question {
+    padding: 18px 20px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.2s;
+}
+
+.faq-question:hover {
+    background-color: #f9f9f9;
+}
+
+.faq-question h3 {
+    font-weight: 600;
+    margin: 0;
+    font-size: 1.1rem;
+    color: #003399;
+}
+
+.faq-icon {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #003399;
+    transition: transform 0.3s;
+}
+
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.4s ease;
+    padding: 0 20px;
+    background-color: #fafafa;
+}
+
+.faq-item.active .faq-answer {
+    max-height: 500px; /* cukup besar untuk konten panjang */
+    padding: 0 20px 20px;
+}
+
+.faq-item.active .faq-icon {
+    transform: rotate(45deg); /* + jadi x */
+}
+
+/* ======================================= */
+/* 📌 FAQ SECTION HEADERS (Custom Style)   */
+/* ======================================= */
+
+.faq-section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    padding-left: 15px;
+    border-left: 4px solid #003399;
+    color: #2B557E;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.faq-section-header .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background-color: #003399;
+    color: white;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+/* Untuk header "Layanan Kesiswaan", "Seputar GTK", dll */
+.faq-section-header.green {
+    border-left-color: #4CAF50;
+}
+
+.faq-section-header.orange {
+    border-left-color: #FF9800;
+}
+
+.faq-section-header.purple {
+    border-left-color: #9C27B0;
+}
+
+.section-title h2:after {
+    content: '';
+    position: absolute;
+    width: 240px;
+    height: 3px;
+    background-color: #e36159;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}

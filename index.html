@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=arrow_forward" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css" />
-    <title>Prototype Website</title>
+    <title>Dinas Pendidikan dan Kebudayaan Kabupaten Paser</title>
 </head>
 <body>
     <!-- Header & Navigation -->
@@ -23,48 +25,69 @@
                     <ul>
                         <li><a href="#" onclick="closeMobileMenu()">Beranda</a></li>
                         <li><a href="profil.html" onclick="closeMobileMenu()">Profil</a></li>
-                        <li><a href="#" onclick="closeMobileMenu()">PPID</a></li>
                         <li class="dropdown">
-                           <li><a href="#layanan-section" onclick="closeMobileMenu(); scrollToLayanan();">Layanan</a></li>
+                           <li><a href="layanan.html #layanan" onclick="closeMobileMenu(); scrollToLayanan();">Layanan</a></li>
                             <div class="dropdown-menu">
                                 <div class="dropdown-section">
                                     <h4>Layanan Kesiswaan</h4>
-                                    <a href="#">Legalisir Ijazah/Dokumen Kelulusan</a>
-                                    <a href="#">Penerbitan Surat Keterangan Pindah Sekolah (mutasi)</a>
+                                    <a href="layanan.html layanan">Legalisir Ijazah/Dokumen Kelulusan</a>
+                                    <a href="layanan.html layanan">Penerbitan Surat Keterangan Pindah Sekolah (mutasi)</a>
                                 </div>
                                 <div class="dropdown-section">
                                     <h4>Layanan Pendidikan & Tenaga Kependidikan</h4>
-                                    <a href="#">Pengusulan Tunjangan Profesi Guru (TPG)</a>
-                                    <a href="#">Pengurusan Izin Belajar dan Tugas Belajar bagi ASN</a>
+                                    <a href="layanan.html layanan">Pengusulan Tunjangan Profesi Guru (TPG)</a>
+                                    <a href="layanan.html layanan">Pengurusan Izin Belajar dan Tugas Belajar bagi ASN</a>
                                 </div>
                                 <div class="dropdown-section">
                                     <h4>Layanan Perizinan</h4>
-                                    <a href="#">Izin Pendirian Satuan Pendidikan (PAUD/SD/SMP/LKP)</a>
+                                    <a href="layanan.html layanan">Izin Pendirian Satuan Pendidikan (PAUD/SD/SMP/LKP)</a>
                                 </div>
                             </div>
                         </li>
                         <li><a href="berita.php" onclick="closeMobileMenu()">Berita</a></li>
                         <li><a href="#kontak" onclick="closeMobileMenu()">Kontak</a></li>
+                        <li><a href="faq.html" onclick="closeMobileMenu()">FAQ</a></li>
                     </ul>
                 </nav>
             </div>
         </div>
     </header>
 
-    <!-- Hero Section -->
+    <!-- Hero Section dengan Slider -->
     <section class="hero">
-        <div class="hero-bg"></div>
+        <div class="hero-slider">
+            <div class="slide active" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/c/c1/Pemandangan_Tanah_Grogot.jpg?20100504072853')">
+                <div class="slide-overlay"></div>
+            </div>
+            <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.1&auto=format&fit=crop&w=1350&q=80')">
+                <div class="slide-overlay"></div>
+            </div>
+            <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-4.0.1&auto=format&fit=crop&w=1350&q=80')">
+                <div class="slide-overlay"></div>
+            </div>
+            <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?ixlib=rb-4.0.1&auto=format&fit=crop&w=1350&q=80')">
+                <div class="slide-overlay"></div>
+            </div>
+        </div>
         <div class="hero-content">
-            <br>
-            <br>
             <h2>Pusat Layanan dan Informasi Pendidikan dan Kebudayaan Kabupaten Paser</h2>
             <p>Bersama Paser TUNTAS (TANGGUH, UNGGUL, TRANSFORMATIF, ADIL, DAN SEJAHTERA)</p>
-            <a href="#layanan-section" class="btn">Jelajahi Layanan</a>
+            <a href="#layanan-section" class="btn" onclick="scrollToLayanan()">Jelajahi Layanan</a>
+        </div>
+        <div class="slider-controls">
+            <button class="slider-btn prev-btn" onclick="prevHeroSlide()">❮</button>
+            <div class="slider-dots">
+                <span class="dot active" onclick="goToHeroSlide(0)"></span>
+                <span class="dot" onclick="goToHeroSlide(1)"></span>
+                <span class="dot" onclick="goToHeroSlide(2)"></span>
+                <span class="dot" onclick="goToHeroSlide(3)"></span>
+            </div>
+            <button class="slider-btn next-btn" onclick="nextHeroSlide()">❯</button>
         </div>
     </section>
 
-            <!-- Pimpinan Daerah Section -->
-    <section class="pimpinan">
+    <!-- Pimpinan Daerah Section -->
+    <section class="pimpinan fullscreen-section">
         <div class="container">
             <div class="section-title">
                 <h2>Pimpinan Daerah</h2>
@@ -72,7 +95,7 @@
             <div class="pimpinan-grid">
                 <div class="pimpinan-card">
                     <div class="pimpinan-img portrait">
-                        <img src="assets/Bupati_Paser_Fahmi_Fadli.jpg" alt="Dr. Fahmi Fadli - Bupati Paser">
+                        <img src="assets/Bupati_Paser_Fahmi_Fadli.jpg" alt="Dr. Fahmi Fadli - Bupati Paser" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiBmaWxsPSIjMDAzMzk5IiBmaWxsLW9wYWNpdHk9IjAuMSIvPgo8Y2lyY2xlIGN4PSI2MCIgY3k9IjQ1IiByPSIyMCIgZmlsbD0iIzAwMzM5OSIgZmlsbC1vcGFjaXR5PSIwLjMiLz4KPHBhdGggZD0iTTYwIDc1IEM0MCA3NSAzMCA4NSAzMCA5NSBDMzAgMTA1IDQwIDExNSA2MCAxMTUgQzgwIDExNSA5MCAxMDUgOTAgOTUgQzkwIDg1IDgwIDc1IDYwIDc1IFoiIGZpbGw9IiMwMDMzOTkiIGZpbGwtb3BhY2l0eT0iMC4zIi8+Cjwvc3ZnPg=='">
                     </div>
                     <div class="pimpinan-info">
                         <h3>Dr. Fahmi Fadli</h3>
@@ -81,7 +104,7 @@
                 </div>
                 <div class="pimpinan-card">
                     <div class="pimpinan-img portrait">
-                        <img src="assets/Wakil_Bupati_Paser_Ikhwan_Antasari.jpg" alt="H. Ikhwan Antasari, S.Sos. - Wakil Bupati Paser">
+                        <img src="assets/Wakil_Bupati_Paser_Ikhwan_Antasari.jpg" alt="H. Ikhwan Antasari, S.Sos. - Wakil Bupati Paser" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiBmaWxsPSIjMDAzMzk5IiBmaWxsLW9wYWNpdHk9IjAuMSIvPgo8Y2lyY2xlIGN4PSI2MCIgY3k9IjQ1IiByPSIyMCIgZmlsbD0iIzAwMzM5OSIgZmlsbC1vcGFjaXR5PSIwLjMiLz4KPHBhdGggZD0iTTYwIDc1IEM0MCA3NSAzMCA4NSAzMCA5NSBDMzAgMTA1IDQwIDExNSA2MCAxMTUgQzgwIDExNSA5MCAxMDUgOTAgOTUgQzkwIDg1IDgwIDc1IDYwIDc1IFoiIGZpbGw9IiMwMDMzOTkiIGZpbGwtb3BhY2l0eT0iMC4zIi8+Cjwvc3ZnPg=='">
                     </div>
                     <div class="pimpinan-info">
                         <h3>H. Ikhwan Antasari, S.Sos.</h3>
@@ -90,7 +113,7 @@
                 </div>
                 <div class="pimpinan-card">
                     <div class="pimpinan-img portrait">
-                        <img src="assets/sekda-paser-2024.jpg" alt="Drs. Katsul Wijaya, M.Si - Sekretaris Daerah">
+                        <img src="assets/sekda-paser-2024.jpg" alt="Drs. Katsul Wijaya, M.Si - Sekretaris Daerah" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiBmaWxsPSIjMDAzMzk5IiBmaWxsLW9wYWNpdHk9IjAuMSIvPgo8Y2lyY2xlIGN4PSI2MCIgY3k9IjQ1IiByPSIyMCIgZmlsbD0iIzAwMzM5OSIgZmlsbC1vcGFjaXR5PSIwLjMiLz4KPHBhdGggZD0iTTYwIDc1IEM0MCA3NSAzMCA4NSAzMCA5NSBDMzAgMTA1IDQwIDExNSA2MCAxMTUgQzgwIDExNSA5MCAxMDUgOTAgOTUgQzkwIDg1IDgwIDc1IDYwIDc1IFoiIGZpbGw9IiMwMDMzOTkiIGZpbGwtb3BhY2l0eT0iMC4zIi8+Cjwvc3ZnPg=='">
                     </div>
                     <div class="pimpinan-info">
                         <h3>Drs. Katsul Wijaya, M.Si</h3>
@@ -102,7 +125,7 @@
     </section>
 
     <!-- Visi Misi Section -->
-    <section class="visi-misi">
+    <section class="visi-misi fullscreen-section">
         <div class="container">
             <div class="section-title">
                 <h2>Visi dan Misi</h2>
@@ -127,73 +150,179 @@
     </section>
 
     <!-- Berita Cepat Section -->
-    <section class="berita-cepat">
+    <section class="berita-cepat fullscreen-section">
         <div class="container">
             <div class="section-title">
                 <h2>Berita Cepat</h2>
             </div>
             
-            <div class="berita-banner">
-                <button class="nav-btn prev-btn" onclick="prevSlide()">❮</button>
-                <!-- Tambahkan tombol navigasi -->
-                <div class="banner-slide active" style="background-image: url('https://png.pngtree.com/background/20210710/original/pngtree-blue-geometric-business-minimalistic-business-card-background-picture-image_1010390.jpg');">
-                    <div class="banner-content">
-                        <h3>Melibatkan Komunitas dalam Upaya Menekan Angka Putus Sekolah</h3>
-                        <p>Melibatkan komunitas dalam upaya menekan angka putus sekolah menjadi strategi yang semakin penting ...</p>
-                        <a href="#" class="btn">Baca Selengkapnya</a>
+            <div class="berita-slider-container">
+                <div class="berita-slider">
+                    <div class="slide-content active">
+                        <article class="post--overlay post--overlay-bottom post--overlay-floorfade">
+                            <div class="background-img" style="background-image:url('https://png.pngtree.com/background/20210710/original/pngtree-blue-geometric-business-minimalistic-business-card-background-picture-image_1010390.jpg')"></div>
+                            <div class="post__text inverse-text">
+                                <div class="post__text-wrap">
+                                    <div class="post__text-inner text-center max-width-sm">
+                                        <a href="#" class="post__cat post__cat--bg cat-theme-bg">
+                                            Berita Pendidikan
+                                        </a>
+                                        <h3 class="post__title typescale-5">
+                                            Melibatkan Komunitas dalam Upaya Menekan Angka Putus Sekolah
+                                        </h3>
+                                        <div class="post__meta">
+                                            <span class="entry-author">
+                                                <i class="mdicon mdicon-person"></i> 
+                                                <a href="#" class="entry-author__name">
+                                                    Tim Disdik
+                                                </a>
+                                            </span> 
+                                            <time class="time published">
+                                                <i class="mdicon mdicon-schedule"></i> 
+                                                2 hari yang lalu
+                                            </time>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="#" class="link-overlay"></a>
+                        </article>
+                    </div>
+                    
+                    <div class="slide-content">
+                        <article class="post--overlay post--overlay-bottom post--overlay-floorfade">
+                            <div class="background-img" style="background-image:url('https://png.pngtree.com/background/20250518/original/pngtree-colorful-gradient-background-with-geometric-pattern-blue-to-orange-and-pink-picture-image_16555805.jpg')"></div>
+                            <div class="post__text inverse-text">
+                                <div class="post__text-wrap">
+                                    <div class="post__text-inner text-center max-width-sm">
+                                        <a href="#" class="post__cat post__cat--bg cat-theme-bg">
+                                            Berita Pendidikan
+                                        </a>
+                                        <h3 class="post__title typescale-5">
+                                            Strategi Disdik Paser dalam Mendorong Siswa untuk Terus Bersekolah
+                                        </h3>
+                                        <div class="post__meta">
+                                            <span class="entry-author">
+                                                <i class="mdicon mdicon-person"></i> 
+                                                <a href="#" class="entry-author__name">
+                                                    Tim Disdik
+                                                </a>
+                                            </span> 
+                                            <time class="time published">
+                                                <i class="mdicon mdicon-schedule"></i> 
+                                                3 hari yang lalu
+                                            </time>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="#" class="link-overlay"></a>
+                        </article>
+                    </div>
+                    
+                    <div class="slide-content">
+                        <article class="post--overlay post--overlay-bottom post--overlay-floorfade">
+                            <div class="background-img" style="background-image:url('https://png.pngtree.com/background/20250415/original/pngtree-minimalist-white-and-gray-abstract-geometric-background-picture-image_16435762.jpg')"></div>
+                            <div class="post__text inverse-text">
+                                <div class="post__text-wrap">
+                                    <div class="post__text-inner text-center max-width-sm">
+                                        <a href="#" class="post__cat post__cat--bg cat-theme-bg">
+                                            Berita Pendidikan
+                                        </a>
+                                        <h3 class="post__title typescale-5">
+                                            Peran Orang Tua dalam Menekan Angka Putus Sekolah di Paser
+                                        </h3>
+                                        <div class="post__meta">
+                                            <span class="entry-author">
+                                                <i class="mdicon mdicon-person"></i> 
+                                                <a href="#" class="entry-author__name">
+                                                    Tim Disdik
+                                                </a>
+                                            </span> 
+                                            <time class="time published">
+                                                <i class="mdicon mdicon-schedule"></i> 
+                                                1 minggu yang lalu
+                                            </time>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="#" class="link-overlay"></a>
+                        </article>
                     </div>
                 </div>
-                <div class="banner-slide" style="background-image: url('https://png.pngtree.com/background/20250518/original/pngtree-colorful-gradient-background-with-geometric-pattern-blue-to-orange-and-pink-picture-image_16555805.jpg');">
-                    <div class="banner-content">
-                        <h3>Strategi Disdik Paser dalam Mendorong Siswa untuk Terus Bersekolah</h3>
-                        <p>Pendidikan merupakan salah satu pilar utama dalam pembangunan sumber daya manusia. Di Paser, Kalimantan Timur, Dinas ...</p>
-                        <a href="#" class="btn">Baca Selengkapnya</a>
-                    </div>
+                
+                <!-- Slider Controls -->
+                <button class="slider-nav-btn prev-btn" type="button" aria-label="previous">
+                    <svg viewBox="0 0 100 100" width="20" height="20">
+                        <path d="M 10,50 L 60,100 L 70,90 L 30,50 L 70,10 L 60,0 Z" fill="#003399"></path>
+                    </svg>
+                </button>
+                <button class="slider-nav-btn next-btn" type="button" aria-label="next">
+                    <svg viewBox="0 0 100 100" width="20" height="20">
+                        <path d="M 10,50 L 60,100 L 70,90 L 30,50 L 70,10 L 60,0 Z" fill="#003399" transform="translate(100, 100) rotate(180)"></path>
+                    </svg>
+                </button>
+                
+                <!-- Pagination Dots -->
+                <div class="slider-pagination">
+                    <span class="dot active" data-index="0"></span>
+                    <span class="dot" data-index="1"></span>
+                    <span class="dot" data-index="2"></span>
                 </div>
-                <div class="banner-slide" style="background-image: url('https://png.pngtree.com/background/20250415/original/pngtree-minimalist-white-and-gray-abstract-geometric-background-picture-image_16435762.jpg');">
-                    <div class="banner-content">
-                        <h3>Peran Orang Tua dalam Menekan Angka Putus Sekolah di Kabupaten Paser</h3>
-                        <p>Data menunjukkan bahwa jumlah siswa yang tidak menyelesaikan pendidikan dasar dan menengah masih cukup signifikan ...</p>
-                        <a href="#" class="btn">Baca Selengkapnya</a>
-                    </div>
-                </div>
-                <button class="nav-btn next-btn" onclick="nextSlide()">❯</button>
+            </div>
+            
+            <div class="text-center" style="margin-top: 30px;">
+                <a href="berita.php" class="btn btn-default">
+                    Lihat Semua Berita
+                    <span class="material-symbols-outlined">arrow_forward</span>
+                </a>
             </div>
         </div>
     </section>
 
     <!-- Layanan Section -->
-    <section class="layanan" id="layanan-section">
+    <section class="layanan fullscreen-section" id="layanan-section">
         <div class="container">
             <div class="section-title fade-in">
                 <h2>Layanan Kami</h2>
                 <p>Berbagai layanan yang disediakan oleh Dinas Pendidikan dan Kebudayaan Kabupaten Paser</p>
-            </div>
+                <br>
             </div>
             <div class="layanan-grid">
                 <div class="layanan-card fade-in" onclick="openLayananPopup('legalisir-ijazah')">
-                    <h3>Legalisir Ijazah/Dokumen Kelulusan</h3>
-                    <p>Layanan legalisir ijazah dan dokumen kelulusan untuk berbagai keperluan administrasi.</p>
-                    <button class="layanan-btn">Lihat Detail</button>
+                    <div class="layanan-card-content">
+                        <h3>Legalisir Ijazah/Dokumen Kelulusan</h3>
+                        <p>Layanan legalisir ijazah dan dokumen kelulusan untuk berbagai keperluan administrasi.</p>
+                        <button class="layanan-btn">Lihat Detail</button>
+                    </div>
                 </div>
                 
                 <div class="layanan-card fade-in" onclick="openLayananPopup('surat-mutasi')">
-                    <h3>Surat Keterangan Pindah Sekolah</h3>
-                    <p>Layanan penerbitan surat mutasi untuk siswa yang akan berpindah sekolah.</p>
-                    <button class="layanan-btn">Lihat Detail</button>
+                    <div class="layanan-card-content">
+                        <h3>Surat Keterangan Pindah Sekolah</h3>
+                        <p>Layanan penerbitan surat mutasi untuk siswa yang akan berpindah sekolah.</p>
+                        <button class="layanan-btn">Lihat Detail</button>
+                    </div>
                 </div>
                 
                 <div class="layanan-card fade-in" onclick="openLayananPopup('tunjangan-guru')">
-                    <h3>Tunjangan Profesi Guru</h3>
-                    <p>Layanan pengusulan tunjangan profesi guru bagi guru yang memenuhi syarat.</p>
-                    <button class="layanan-btn">Lihat Detail</button>
+                    <div class="layanan-card-content">
+                        <img src="https://www.flaticon.com/free-icon/teacher_18991849?term=teacher&page=1&position=82&origin=tag&related_id=18991849" alt="">
+                        <h3>Pengusulan Tunjangan Profesi Guru</h3>
+                        <p>Layanan pengusulan tunjangan profesi guru bagi guru yang memenuhi syarat.</p>
+                        <button class="layanan-btn">Lihat Detail</button>
+                    </div>
                 </div>
                 
                 <div class="layanan-card fade-in" onclick="openLayananPopup('izin-pendirian')">
-                    <h3>Izin Pendirian Satuan Pendidikan</h3>
-                    <p>Layanan perizinan pendirian PAUD, SD, SMP, dan Lembaga Kursus.</p>
-                    <button class="layanan-btn">Lihat Detail</button>
+                    <div class="layanan-card-content">
+                        <h3>Izin Pendirian Satuan Pendidikan</h3>
+                        <p>Layanan perizinan pendirian PAUD, SD, SMP, dan Lembaga Kursus.</p>
+                        <button class="layanan-btn">Lihat Detail</button>
+                    </div>
                 </div>
+            </div>
         </div>
     </section>
 
@@ -201,21 +330,36 @@
     <footer>
         <div class="container">
             <div class="footer-content" id="kontak">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3987.6060327839327!2d116.1914303!3d-1.9081035!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2df047988e6b3c0b%3A0xdaa84941bfe1b7df!2sJl.%20Jenderal%20Sudirman%20No.27%2C%20Tanah%20Grogot%2C%20Kec.%20Tanah%20Grogot%2C%20Kabupaten%20Paser%2C%20Kalimantan%20Timur%2076251!5e0!3m2!1sid!2sid!4v1764218368388!5m2!1sid!2sid" width="250" height="200" style="border:0; border-radius: 0.3rem;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                 <div class="footer-section">
                     <h3>Kontak Kami</h3>
                     <ul>
                         <li>Jl. Jenderal Sudirman No. 27, Tanah Grogot, Kabupaten Paser, Kalimantan Timur 76251</li>
                         <li>Telp: (0543) 21023</li>
                         <li>Email: disdik@paserkab.go.id</li>
+                        <li class="social-icons">
+                            <a href="#" aria-label="Facebook">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" aria-label="Twitter">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" aria-label="Instagram">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" aria-label="YouTube">
+                                <i class="fab fa-youtube"></i>
+                            </a>
+                        </li>
                     </ul>
                 </div>
                 <div class="footer-section">
                     <h3>Layanan Cepat</h3>
                     <ul>
-                        <li><a href="#layanan-section" onclick="scrollToLayanan()">Legalisir Ijazah/Dokumen Kelulusan</a></li>
-                        <li><a href="#layanan-section" onclick="scrollToLayanan()">Surat Keterangan Pindah Sekolah</a></li>
-                        <li><a href="#layanan-section" onclick="scrollToLayanan()">Tunjangan Profesi Guru</a></li>
-                        <li><a href="#layanan-section" onclick="scrollToLayanan()">Izin Pendirian Satuan Pendidikan</a></li>
+                        <li><a href="layanan.html #layanan" onclick="scrollToLayanan()">Legalisir Ijazah/Dokumen Kelulusan</a></li>
+                        <li><a href="layanan.html #layanan" onclick="scrollToLayanan()">Surat Keterangan Pindah Sekolah</a></li>
+                        <li><a href="layanan.html #layanan" onclick="scrollToLayanan()">Tunjangan Profesi Guru</a></li>
+                        <li><a href="layanan.html #layanan" onclick="scrollToLayanan()">Izin Pendirian Satuan Pendidikan</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
@@ -227,18 +371,9 @@
                         <li><a href="#">Portal Nasional</a></li>
                     </ul>
                 </div>
-                <div class="footer-section">
-                    <h3>Media Sosial</h3>
-                    <ul>
-                        <li><a href="#">Facebook</a></li>
-                        <li><a href="#">Twitter</a></li>
-                        <li><a href="#">Instagram</a></li>
-                        <li><a href="#">YouTube</a></li>
-                    </ul>
-                </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 Pemerintah Daerah. Hak Cipta Dilindungi.</p>
+                <p>&copy; 2025 Dinas Pendidikan dan Kebudayaan Kabupaten Paser. Hak Cipta Dilindungi.</p>
             </div>
         </div>
     </footer>

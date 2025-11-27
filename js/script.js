@@ -264,58 +264,227 @@ document.addEventListener('click', function(event) {
         });
     }
 });
-
-// Kode untuk berita banner slider tetap sama
-// ...
-
-// Berita Banner Slider
-document.addEventListener('DOMContentLoaded', function() {
-    const slides = document.querySelectorAll('.banner-slide');
+// Berita Slider Functionality - FIXED VERSION
+function initBeritaSlider() {
+    const slides = document.querySelectorAll('.berita-slider .slide-content');
+    const dots = document.querySelectorAll('.slider-pagination .dot');
+    const prevBtn = document.querySelector('.slider-nav-btn.prev-btn');
+    const nextBtn = document.querySelector('.slider-nav-btn.next-btn');
+    
+    console.log('Slider Elements Found:', {
+        slides: slides.length,
+        dots: dots.length,
+        prevBtn: !!prevBtn,
+        nextBtn: !!nextBtn
+    });
+    
+    if (slides.length === 0) {
+        console.error('No slides found!');
+        return;
+    }
+    
     let currentSlide = 0;
     let slideInterval;
     
     function showSlide(index) {
+        console.log('Showing slide:', index);
+        
+        // Validate index
+        if (index < 0) index = slides.length - 1;
+        if (index >= slides.length) index = 0;
+        
         // Hide all slides
         slides.forEach(slide => {
             slide.classList.remove('active');
         });
         
+        // Remove active class from all dots
+        dots.forEach(dot => {
+            dot.classList.remove('active');
+        });
+        
         // Show the selected slide
         currentSlide = index;
         slides[currentSlide].classList.add('active');
+        
+        // Update dots if they exist
+        if (dots.length > 0 && dots[currentSlide]) {
+            dots[currentSlide].classList.add('active');
+        }
     }
     
     function nextSlide() {
+        console.log('Next slide triggered');
         let next = (currentSlide + 1) % slides.length;
         showSlide(next);
     }
     
     function prevSlide() {
+        console.log('Prev slide triggered');
         let prev = (currentSlide - 1 + slides.length) % slides.length;
         showSlide(prev);
     }
     
-    function startSlideShow() {
-        slideInterval = setInterval(nextSlide, 5000);
+    function goToSlide(index) {
+        console.log('Go to slide:', index);
+        showSlide(index);
+        resetSliderInterval();
     }
     
-    function stopSlideShow() {
+    function startSlider() {
+        console.log('Starting slider interval');
+        slideInterval = setInterval(nextSlide, 5000); // Change slide every 5 seconds
+    }
+    
+    function resetSliderInterval() {
+        console.log('Resetting slider interval');
         clearInterval(slideInterval);
+        startSlider();
+    }
+    
+    // Event Listeners for buttons
+    if (prevBtn) {
+        prevBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Prev button clicked');
+            prevSlide();
+            resetSliderInterval();
+        });
+    } else {
+        console.error('Previous button not found!');
+    }
+    
+    if (nextBtn) {
+        nextBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Next button clicked');
+            nextSlide();
+            resetSliderInterval();
+        });
+    } else {
+        console.error('Next button not found!');
+    }
+    
+    // Dot navigation
+    dots.forEach((dot, index) => {
+        dot.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Dot clicked:', index);
+            goToSlide(index);
+        });
+    });
+    
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') {
+            prevSlide();
+            resetSliderInterval();
+        } else if (e.key === 'ArrowRight') {
+            nextSlide();
+            resetSliderInterval();
+        }
+    });
+    
+    // Pause on hover
+    const sliderContainer = document.querySelector('.berita-slider-container');
+    if (sliderContainer) {
+        sliderContainer.addEventListener('mouseenter', () => {
+            console.log('Slider paused');
+            clearInterval(slideInterval);
+        });
+        
+        sliderContainer.addEventListener('mouseleave', () => {
+            console.log('Slider resumed');
+            startSlider();
+        });
+    }
+    
+    // Touch swipe support for mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+    
+    if (sliderContainer) {
+        sliderContainer.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+        
+        sliderContainer.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+    }
+    
+    function handleSwipe() {
+        const swipeThreshold = 50;
+        
+        if (touchEndX < touchStartX - swipeThreshold) {
+            // Swipe left - next slide
+            nextSlide();
+            resetSliderInterval();
+        }
+        
+        if (touchEndX > touchStartX + swipeThreshold) {
+            // Swipe right - previous slide
+            prevSlide();
+            resetSliderInterval();
+        }
     }
     
     // Start the slideshow
+    console.log('Initializing slider with first slide');
     showSlide(currentSlide);
-    startSlideShow();
+    startSlider();
     
-    // Pause on hover
-    const banner = document.querySelector('.berita-banner');
-    banner.addEventListener('mouseenter', stopSlideShow);
-    banner.addEventListener('mouseleave', startSlideShow);
+    // Make functions globally available for testing
+    window.nextBeritaSlide = nextSlide;
+    window.prevBeritaSlide = prevSlide;
+    window.goToBeritaSlide = goToSlide;
+    window.showBeritaSlide = showSlide;
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, initializing berita slider...');
+    initBeritaSlider();
     
-    // Make functions globally available for button clicks
-    window.nextSlide = nextSlide;
-    window.prevSlide = prevSlide;
+    // Existing initializations...
+    if (typeof initHeroSlider === 'function') {
+        initHeroSlider();
+    }
+    if (typeof fadeInOnScroll === 'function') {
+        fadeInOnScroll();
+        window.addEventListener('scroll', fadeInOnScroll);
+    }
+    
+    // Mobile dropdown toggle
+    const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+    dropdownToggles.forEach(toggle => {
+        toggle.addEventListener('click', function(e) {
+            if (window.innerWidth <= 768) {
+                e.preventDefault();
+                const dropdown = this.parentElement;
+                dropdown.classList.toggle('active');
+            }
+        });
+    });
+    
+    if (typeof adjustDropdownPosition === 'function') {
+        adjustDropdownPosition();
+        window.addEventListener('resize', adjustDropdownPosition);
+    }
 });
+
+// Fallback: Also try initializing after a short delay
+setTimeout(() => {
+    if (document.querySelector('.berita-slider')) {
+        console.log('Fallback initialization...');
+        initBeritaSlider();
+    }
+}, 1000);
+
 
 // Efek Tamabahan dari Profil.html
 // Efek Tamabahan dari Profil.html
@@ -500,7 +669,27 @@ const layananData = {
             'Struktur organisasi dan tenaga pendidik',
             'Dokumen administrasi lainnya'
         ]
-    }
+    },
+    'izin-belajar': {
+        title: 'Pengurusan Izin Belajar dan Tugas Belajar bagi ASN',
+        description: 'Penerbitan surat rekomendasi atau izin untuk melanjutkan pendidikan ke jenjang yang lebih tinggi bagi guru dan tenaga kependidikan ASN.',
+        caraKerja: [
+            'ASN mengajukan permohonan izin belajar ke Dinas Pendidikan',
+            'Melampirkan dokumen persyaratan yang diperlukan',
+            'Verifikasi kelengkapan dan keabsahan dokumen',
+            'Evaluasi kesesuaian dengan kebutuhan dinas',
+            'Penerbitan surat rekomendasi atau izin belajar',
+            'Monitoring pelaksanaan tugas belajar'
+        ],
+        persyaratan: [
+            'Surat permohonan izin belajar dari yang bersangkutan',
+            'Rekomendasi dari atasan langsung',
+            'Proposal rencana studi dan jadwal perkuliahan',
+            'Fotokopi ijazah terakhir yang telah dilegalisir',
+            'Surat keterangan diterima di perguruan tinggi',
+            'SK pengangkatan sebagai ASN'
+        ]
+    },
 };
 
 // Fungsi untuk membuka popup deskripsi layanan
@@ -598,4 +787,93 @@ document.addEventListener('DOMContentLoaded', function() {
             this.parentElement.classList.add('placeholder-avatar');
         });
     });
+});
+
+// Hero Slider Functionality
+let currentHeroSlide = 0;
+let heroSlideInterval;
+
+function initHeroSlider() {
+    const slides = document.querySelectorAll('.hero-slider .slide');
+    const dots = document.querySelectorAll('.slider-dots .dot');
+    
+    function showHeroSlide(index) {
+        // Hide all slides
+        slides.forEach(slide => {
+            slide.classList.remove('active');
+        });
+        
+        // Remove active class from all dots
+        dots.forEach(dot => {
+            dot.classList.remove('active');
+        });
+        
+        // Show the selected slide
+        currentHeroSlide = index;
+        slides[currentHeroSlide].classList.add('active');
+        dots[currentHeroSlide].classList.add('active');
+    }
+    
+    function nextHeroSlide() {
+        let next = (currentHeroSlide + 1) % slides.length;
+        showHeroSlide(next);
+    }
+    
+    function prevHeroSlide() {
+        let prev = (currentHeroSlide - 1 + slides.length) % slides.length;
+        showHeroSlide(prev);
+    }
+    
+    function goToHeroSlide(index) {
+        showHeroSlide(index);
+        resetHeroSliderInterval();
+    }
+    
+    function startHeroSlider() {
+        heroSlideInterval = setInterval(nextHeroSlide, 5000); // Change slide every 5 seconds
+    }
+    
+    function resetHeroSliderInterval() {
+        clearInterval(heroSlideInterval);
+        startHeroSlider();
+    }
+    
+    // Start the slideshow
+    showHeroSlide(currentHeroSlide);
+    startHeroSlider();
+    
+    // Make functions globally available
+    window.nextHeroSlide = nextHeroSlide;
+    window.prevHeroSlide = prevHeroSlide;
+    window.goToHeroSlide = goToHeroSlide;
+    
+    // Pause on hover
+    const heroSection = document.querySelector('.hero');
+    heroSection.addEventListener('mouseenter', () => {
+        clearInterval(heroSlideInterval);
+    });
+    
+    heroSection.addEventListener('mouseleave', startHeroSlider);
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    initHeroSlider();
+    
+    // Existing code...
+    fadeInOnScroll();
+    
+    const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+    dropdownToggles.forEach(toggle => {
+        toggle.addEventListener('click', function(e) {
+            if (window.innerWidth <= 768) {
+                e.preventDefault();
+                const dropdown = this.parentElement;
+                dropdown.classList.toggle('active');
+            }
+        });
+    });
+    
+    adjustDropdownPosition();
+    window.addEventListener('resize', adjustDropdownPosition);
 });

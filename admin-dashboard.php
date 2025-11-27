@@ -213,7 +213,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tambah_berita'])) {
         <div class="navbar-menu-wrapper">
             <!-- Logo dan Nama Instansi -->
             <div class="navbar-brand">
-                <img src="https://cdn-icons-png.flaticon.com/512/3938/3938887.png" alt="Logo">
+                <img src="assets/logo-kabupaten.png" alt="Logo">
                 <span class="brand-text">Dinas Pendidikan dan Kebudayaan Kabupaten Paser</span>
             </div>
             
