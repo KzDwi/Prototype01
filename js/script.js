@@ -877,3 +877,250 @@ document.addEventListener('DOMContentLoaded', function() {
     adjustDropdownPosition();
     window.addEventListener('resize', adjustDropdownPosition);
 });
+
+// Initialize Swiper for Layanan Section - VERSION FIXED
+function initLayananSwiper() {
+    // Pastikan elemen swiper ada
+    const swiperEl = document.querySelector('.layanan-swiper');
+    if (!swiperEl) {
+        console.error('Swiper element not found');
+        return null;
+    }
+
+    const layananSwiper = new Swiper('.layanan-swiper', {
+        slidesPerView: 3,
+        spaceBetween: 25,
+        loop: true,
+        autoplay: {
+            delay: 2000,
+            disableOnInteraction: false,
+            pauseOnMouseEnter: true,
+        },
+        speed: 800,
+        navigation: {
+            nextEl: '.swiper-custom-next',
+            prevEl: '.swiper-custom-prev',
+        },
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+            dynamicBullets: true,
+        },
+        breakpoints: {
+            // When window width is >= 320px
+            320: {
+                slidesPerView: 1,
+                spaceBetween: 15,
+            },
+            // When window width is >= 768px
+            768: {
+                slidesPerView: 2,
+                spaceBetween: 20,
+            },
+            // When window width is >= 1024px
+            1024: {
+                slidesPerView: 3,
+                spaceBetween: 25,
+            }
+        },
+        // Event handlers untuk debugging
+        on: {
+            init: function() {
+                console.log('✅ Layanan Swiper initialized successfully');
+                console.log('Navigation elements:', {
+                    prev: this.navigation.prevEl,
+                    next: this.navigation.nextEl
+                });
+            },
+            slideChange: function() {
+                console.log('Slide changed to index:', this.realIndex);
+            }
+        }
+    });
+
+    // Debug: Cek apakah button navigasi terdeteksi
+    console.log('Navigation buttons detected:', {
+        prev: document.querySelector('.swiper-custom-prev'),
+        next: document.querySelector('.swiper-custom-next')
+    });
+
+    // Tambahkan event listeners manual sebagai fallback
+    const prevBtn = document.querySelector('.swiper-custom-prev');
+    const nextBtn = document.querySelector('.swiper-custom-next');
+
+    if (prevBtn) {
+        prevBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('Prev button clicked');
+            layananSwiper.slidePrev();
+            // Stop autoplay sementara saat interaksi manual
+            layananSwiper.autoplay.stop();
+            setTimeout(() => {
+                layananSwiper.autoplay.start();
+            }, 5000);
+        });
+    }
+
+    if (nextBtn) {
+        nextBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('Next button clicked');
+            layananSwiper.slideNext();
+            // Stop autoplay sementara saat interaksi manual
+            layananSwiper.autoplay.stop();
+            setTimeout(() => {
+                layananSwiper.autoplay.start();
+            }, 5000);
+        });
+    }
+
+    return layananSwiper;
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Tunggu sedikit untuk memastikan semua element sudah terrender
+    setTimeout(() => {
+        // Initialize layanan swiper if on layanan page
+        if (document.querySelector('.layanan-swiper')) {
+            console.log('🔄 Initializing Layanan Swiper...');
+            const swiper = initLayananSwiper();
+            
+            if (swiper) {
+                console.log('🎉 Layanan Swiper ready!');
+                
+                // Test manual navigation
+                window.testSwiper = swiper;
+                console.log('Test commands:');
+                console.log('testSwiper.slideNext() - untuk next slide');
+                console.log('testSwiper.slidePrev() - untuk previous slide');
+            }
+        }
+    }, 100);
+});
+
+// Fallback initialization
+window.addEventListener('load', function() {
+    if (document.querySelector('.layanan-swiper') && !window.layananSwiper) {
+        console.log('🔄 Fallback initialization...');
+        window.layananSwiper = initLayananSwiper();
+    }
+});
+
+        // Smooth scroll to section
+        function scrollToSection(sectionId) {
+            document.getElementById(sectionId).scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+
+        // Update active nav dot based on scroll position
+        function updateActiveNav() {
+            const sections = document.querySelectorAll('.profil-fullscreen-section');
+            const navDots = document.querySelectorAll('.nav-dot');
+            
+            let currentSection = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.scrollY >= sectionTop - 100 && window.scrollY < sectionTop + sectionHeight - 100) {
+                    currentSection = section.id;
+                }
+            });
+            
+            navDots.forEach(dot => {
+                dot.classList.remove('active');
+                if (dot.getAttribute('data-section') === currentSection) {
+                    dot.classList.add('active');
+                }
+            });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Update nav on scroll
+            window.addEventListener('scroll', updateActiveNav);
+            
+            // Click event for nav dots
+            document.querySelectorAll('.nav-dot').forEach(dot => {
+                dot.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const sectionId = this.getAttribute('data-section');
+                    scrollToSection(sectionId);
+                });
+            });
+            
+            // Initial update
+            updateActiveNav();
+        });
+
+// Smooth scroll to section
+function scrollToSection(sectionId) {
+    document.getElementById(sectionId).scrollIntoView({
+        behavior: 'smooth'
+    });
+}
+
+// Update active nav dot based on scroll position
+function updateActiveNav() {
+    const sections = document.querySelectorAll('.profil-fullscreen-section');
+    const navDots = document.querySelectorAll('.nav-dot');
+    
+    let currentSection = '';
+    
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+        if (window.scrollY >= sectionTop - 100 && window.scrollY < sectionTop + sectionHeight - 100) {
+            currentSection = section.id;
+        }
+    });
+    
+    navDots.forEach(dot => {
+        dot.classList.remove('active');
+        if (dot.getAttribute('data-section') === currentSection) {
+            dot.classList.add('active');
+        }
+    });
+}
+
+// Fade in on scroll function
+function fadeInOnScroll() {
+    const fadeElements = document.querySelectorAll('.fade-in');
+    
+    fadeElements.forEach(element => {
+        const elementTop = element.getBoundingClientRect().top;
+        const elementVisible = 150;
+        
+        if (elementTop < window.innerHeight - elementVisible) {
+            element.classList.add('visible');
+        }
+    });
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    // Update nav on scroll
+    window.addEventListener('scroll', updateActiveNav);
+    
+    // Fade in on scroll
+    window.addEventListener('scroll', fadeInOnScroll);
+    
+    // Initial fade in check
+    fadeInOnScroll();
+    
+    // Click event for nav dots
+    document.querySelectorAll('.nav-dot').forEach(dot => {
+        dot.addEventListener('click', function(e) {
+            e.preventDefault();
+            const sectionId = this.getAttribute('data-section');
+            scrollToSection(sectionId);
+        });
+    });
+    
+    // Initial update
+    updateActiveNav();
+    
+    console.log('Fade in initialized for', document.querySelectorAll('.fade-in').length, 'elements');
+});

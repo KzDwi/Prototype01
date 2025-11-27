@@ -65,6 +65,10 @@ if ($halaman_aktif > $total_halaman && $total_halaman > 0) $halaman_aktif = $tot
             border-bottom: 1px solid #eee;
         }
 
+        body {
+            background: #f9f9f9;
+        }
+
         .filter-container {
             display: flex;
             gap: 15px;
@@ -257,6 +261,21 @@ if ($halaman_aktif > $total_halaman && $total_halaman > 0) $halaman_aktif = $tot
             margin-bottom: 10px;
         }
 
+        .breadcrumb-nav a {
+            color: #e36159;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .breadcrumb-nav a:hover {
+            color: #D25048;
+        }
+
+        .breadcrumb-nav .active {
+            color: #DDD;
+            font-weight: 600;
+        }
+
         /* Responsive Styles */
         @media (max-width: 768px) {
             .berita-hero {
@@ -314,7 +333,7 @@ if ($halaman_aktif > $total_halaman && $total_halaman > 0) $halaman_aktif = $tot
         <div class="container">
             <div class="header-top">
                 <div class="logo">
-                    <img src="https://cdn-icons-png.flaticon.com/512/3938/3938887.png" alt="Logo Pemerintahan">
+                    <img src="assets/logo-kabupaten.png" alt="Logo Pemerintahan">
                     <div class="logo-text">
                         <h1>Dinas Pendidikan dan Kebudayaan</h1>
                         <p>Kabupaten Paser</p>
@@ -325,36 +344,18 @@ if ($halaman_aktif > $total_halaman && $total_halaman > 0) $halaman_aktif = $tot
                     <ul>
                         <li><a href="index.html" onclick="closeMobileMenu()">Beranda</a></li>
                         <li><a href="profil.html" onclick="closeMobileMenu()">Profil</a></li>
-                        <li><a href="#" onclick="closeMobileMenu()">PPID</a></li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle">Layanan</a>
-                            <div class="dropdown-menu">
-                                <div class="dropdown-section">
-                                    <h4>Layanan Kesiswaan</h4>
-                                    <a href="#">Legalisir Ijazah/Dokumen Kelulusan</a>
-                                    <a href="#">Penerbitan Surat Keterangan Pindah Sekolah (mutasi)</a>
-                                </div>
-                                <div class="dropdown-section">
-                                    <h4>Layanan Pendidikan & Tenaga Kependidikan</h4>
-                                    <a href="#">Pengusulan Tunjangan Profesi Guru (TPG)</a>
-                                    <a href="#">Pengurusan Izin Belajar dan Tugas Belajar bagi ASN</a>
-                                </div>
-                                <div class="dropdown-section">
-                                    <h4>Layanan Perizinan</h4>
-                                    <a href="#">Izin Pendirian Satuan Pendidikan (PAUD/SD/SMP/LKP)</a>
-                                </div>
-                            </div>
-                        </li>
+                        <li><a href="layanan.html" onclick="closeMobileMenu(); scrollToLayanan();">Layanan</a></li>
                         <li><a href="berita.php" onclick="closeMobileMenu()" class="active">Berita</a></li>
-                        <li><a href="#" onclick="closeMobileMenu()">Kontak</a></li>
+                        <li><a href="#kontak" onclick="closeMobileMenu()">Kontak</a></li>
+                        <li><a href="faq.html" onclick="closeMobileMenu()">FAQ</a></li>
                     </ul>
                 </nav>
             </div>
         </div>
     </header>
 
-    <!-- Breadcrumb -->
-    <section class="breadcrumb-section">
+    <!-- Berita Hero Section -->
+    <section class="berita-hero fullscreen-section" style="margin-top: -80px; height: 120vh; clip-path: polygon(0 0, 100% 0, 100% 85%, 0% 100%);">
         <div class="container">
             <nav class="breadcrumb-nav">
                 <a href="index.html">Halaman Utama</a>
@@ -370,10 +371,6 @@ if ($halaman_aktif > $total_halaman && $total_halaman > 0) $halaman_aktif = $tot
                 <?php endif; ?>
             </nav>
         </div>
-    </section>
-
-    <!-- Berita Hero Section -->
-    <section class="berita-hero">
         <div class="container">
             <h1>Berita Terkini</h1>
             <p>Informasi terbaru seputar pendidikan dan kebudayaan di Kabupaten Paser</p>
@@ -474,22 +471,37 @@ if ($halaman_aktif > $total_halaman && $total_halaman > 0) $halaman_aktif = $tot
     <!-- Footer -->
     <footer>
         <div class="container">
-            <div class="footer-content">
+            <div class="footer-content" id="kontak">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3987.6060327839327!2d116.1914303!3d-1.9081035!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2df047988e6b3c0b%3A0xdaa84941bfe1b7df!2sJl.%20Jenderal%20Sudirman%20No.27%2C%20Tanah%20Grogot%2C%20Kec.%20Tanah%20Grogot%2C%20Kabupaten%20Paser%2C%20Kalimantan%20Timur%2076251!5e0!3m2!1sid!2sid!4v1764218368388!5m2!1sid!2sid" width="250" height="200" style="border:0; border-radius: 0.3rem;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                 <div class="footer-section">
                     <h3>Kontak Kami</h3>
                     <ul>
                         <li>Jl. Jenderal Sudirman No. 27, Tanah Grogot, Kabupaten Paser, Kalimantan Timur 76251</li>
                         <li>Telp: (0543) 21023</li>
                         <li>Email: disdik@paserkab.go.id</li>
+                        <li class="social-icons">
+                            <a href="#" aria-label="Facebook">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" aria-label="Twitter">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" aria-label="Instagram">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" aria-label="YouTube">
+                                <i class="fab fa-youtube"></i>
+                            </a>
+                        </li>
                     </ul>
                 </div>
                 <div class="footer-section">
                     <h3>Layanan Cepat</h3>
                     <ul>
-                        <li><a href="#">Pengaduan Masyarakat</a></li>
-                        <li><a href="#">Informasi Publik</a></li>
-                        <li><a href="#">Perizinan Online</a></li>
-                        <li><a href="#">Data Statistik</a></li>
+                        <li><a href="layanan.html%20#layanan" onclick="scrollToLayanan()">Legalisir Ijazah/Dokumen Kelulusan</a></li>
+                        <li><a href="layanan.html%20#layanan" onclick="scrollToLayanan()">Surat Keterangan Pindah Sekolah</a></li>
+                        <li><a href="layanan.html%20#layanan" onclick="scrollToLayanan()">Tunjangan Profesi Guru</a></li>
+                        <li><a href="layanan.html%20#layanan" onclick="scrollToLayanan()">Izin Pendirian Satuan Pendidikan</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
@@ -501,22 +513,14 @@ if ($halaman_aktif > $total_halaman && $total_halaman > 0) $halaman_aktif = $tot
                         <li><a href="#">Portal Nasional</a></li>
                     </ul>
                 </div>
-                <div class="footer-section">
-                    <h3>Media Sosial</h3>
-                    <ul>
-                        <li><a href="#">Facebook</a></li>
-                        <li><a href="#">Twitter</a></li>
-                        <li><a href="#">Instagram</a></li>
-                        <li><a href="#">YouTube</a></li>
-                    </ul>
-                </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 Dinas Pendidikan dan Kebudayaan Kabupaten Paser. Hak Cipta Dilindungi.</p>
+                <p>&copy; 2025 Dinas Pendidikan dan Kebudayaan Kabupaten Paser. Hak Cipta Dilindungi.</p>
             </div>
         </div>
     </footer>
-
+    
+    <script src="js/script.js"></script>
     <script>
         // Filter functionality
         document.addEventListener('DOMContentLoaded', function() {

@@ -9,6 +9,12 @@
     margin-bottom: 15px;
     overflow: hidden;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+}
+
+.faq-item.active {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border-color: #003399;
 }
 
 .faq-question {
@@ -18,10 +24,16 @@
     justify-content: space-between;
     align-items: center;
     transition: background-color 0.2s;
+    background: white;
 }
 
 .faq-question:hover {
-    background-color: #f9f9f9;
+    background-color: #f5f9ff;
+}
+
+.faq-item.active .faq-question {
+    background-color: #f0f7ff;
+    border-bottom: 1px solid #e1f0ff;
 }
 
 .faq-question h3 {
@@ -29,13 +41,17 @@
     margin: 0;
     font-size: 1.1rem;
     color: #003399;
+    flex: 1;
+    padding-right: 20px;
 }
 
 .faq-icon {
-    font-size: 1.2rem;
-    font-weight: bold;
+    font-size: 1.5rem;
+    font-weight: 300;
     color: #003399;
-    transition: transform 0.3s;
+    transition: transform 0.3s ease;
+    min-width: 20px;
+    text-align: center;
 }
 
 .faq-answer {
@@ -47,12 +63,43 @@
 }
 
 .faq-item.active .faq-answer {
-    max-height: 500px; /* cukup besar untuk konten panjang */
-    padding: 0 20px 20px;
+    max-height: 1000px; /* Nilai besar untuk mengakomodasi konten panjang */
+    padding: 20px;
 }
 
 .faq-item.active .faq-icon {
     transform: rotate(45deg); /* + jadi x */
+    font-weight: bold;
+}
+
+/* Style untuk konten dalam answer */
+.faq-answer p {
+    margin-bottom: 15px;
+    line-height: 1.6;
+    color: #555;
+}
+
+.faq-answer ol, .faq-answer ul {
+    margin: 15px 0;
+    padding-left: 20px;
+}
+
+.faq-answer li {
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+.faq-answer strong {
+    color: #003399;
+}
+
+.faq-answer a {
+    color: #003399;
+    text-decoration: underline;
+}
+
+.faq-answer a:hover {
+    color: #002280;
 }
 
 /* ======================================= */
@@ -90,12 +137,24 @@
     border-left-color: #4CAF50;
 }
 
+.faq-section-header.green .icon {
+    background-color: #4CAF50;
+}
+
 .faq-section-header.orange {
     border-left-color: #FF9800;
 }
 
+.faq-section-header.orange .icon {
+    background-color: #FF9800;
+}
+
 .faq-section-header.purple {
     border-left-color: #9C27B0;
+}
+
+.faq-section-header.purple .icon {
+    background-color: #9C27B0;
 }
 
 .section-title h2:after {
@@ -107,4 +166,66 @@
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
+}
+
+/* Animation untuk smooth opening */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.faq-answer p, .faq-answer ol, .faq-answer ul {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* CSS-Only Fallback */
+.faq-question {
+    position: relative;
+}
+
+/* Hide checkbox */
+.faq-toggle {
+    display: none;
+}
+
+/* CSS-only accordion fallback */
+.faq-toggle:checked ~ .faq-answer {
+    max-height: 1000px;
+    padding: 20px;
+}
+
+.faq-toggle:checked ~ .faq-question .faq-icon {
+    transform: rotate(45deg);
+}
+
+/* Tambahkan ini di akhir file faq-styles.css */
+
+/* Override untuk memastikan FAQ berfungsi */
+.faq-item.active .faq-answer {
+    max-height: 5000px !important; /* Nilai lebih besar */
+    padding: 20px !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Pastikan transition bekerja */
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.4s ease;
+    padding: 0 20px;
+    background-color: #fafafa;
+    display: block; /* Pastikan selalu block */
+}
+
+/* Hapus animasi fadeIn yang mungkin mengganggu */
+.faq-answer p, .faq-answer ol, .faq-answer ul {
+    animation: none; /* Nonaktifkan animasi yang mungkin mengganggu */
 }

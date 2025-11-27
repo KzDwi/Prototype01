@@ -23,27 +23,9 @@
                 <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
                 <nav id="main-nav">
                     <ul>
-                        <li><a href="#" onclick="closeMobileMenu()">Beranda</a></li>
+                        <li><a href="#" onclick="closeMobileMenu()" class="active">Beranda</a></li>
                         <li><a href="profil.html" onclick="closeMobileMenu()">Profil</a></li>
-                        <li class="dropdown">
-                           <li><a href="layanan.html #layanan" onclick="closeMobileMenu(); scrollToLayanan();">Layanan</a></li>
-                            <div class="dropdown-menu">
-                                <div class="dropdown-section">
-                                    <h4>Layanan Kesiswaan</h4>
-                                    <a href="layanan.html layanan">Legalisir Ijazah/Dokumen Kelulusan</a>
-                                    <a href="layanan.html layanan">Penerbitan Surat Keterangan Pindah Sekolah (mutasi)</a>
-                                </div>
-                                <div class="dropdown-section">
-                                    <h4>Layanan Pendidikan & Tenaga Kependidikan</h4>
-                                    <a href="layanan.html layanan">Pengusulan Tunjangan Profesi Guru (TPG)</a>
-                                    <a href="layanan.html layanan">Pengurusan Izin Belajar dan Tugas Belajar bagi ASN</a>
-                                </div>
-                                <div class="dropdown-section">
-                                    <h4>Layanan Perizinan</h4>
-                                    <a href="layanan.html layanan">Izin Pendirian Satuan Pendidikan (PAUD/SD/SMP/LKP)</a>
-                                </div>
-                            </div>
-                        </li>
+                        <li><a href="layanan.html" onclick="closeMobileMenu(); scrollToLayanan();">Layanan</a></li>
                         <li><a href="berita.php" onclick="closeMobileMenu()">Berita</a></li>
                         <li><a href="#kontak" onclick="closeMobileMenu()">Kontak</a></li>
                         <li><a href="faq.html" onclick="closeMobileMenu()">FAQ</a></li>
@@ -53,19 +35,28 @@
         </div>
     </header>
 
+
+    <!-- <div class="section-nav">
+        <a href="#hero" class="nav-dot active" data-section="hero"></a>
+        <a href="#pimpinan" class="nav-dot" data-section="pimpinan"></a>
+        <a href="#visi-misi" class="nav-dot" data-section="visi-misi"></a>
+        <a href="#berita" class="nav-dot" data-section="berita cepat"></a>
+        <a href="#layanan-section" class="nav-dot" data-section="layanan"></a>
+    </div> -->
+
     <!-- Hero Section dengan Slider -->
     <section class="hero">
         <div class="hero-slider">
             <div class="slide active" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/c/c1/Pemandangan_Tanah_Grogot.jpg?20100504072853')">
                 <div class="slide-overlay"></div>
             </div>
-            <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.1&auto=format&fit=crop&w=1350&q=80')">
+            <div class="slide" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Tari_Ronggeng_Paser.JPG/1200px-Tari_Ronggeng_Paser.JPG')">
                 <div class="slide-overlay"></div>
             </div>
             <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-4.0.1&auto=format&fit=crop&w=1350&q=80')">
                 <div class="slide-overlay"></div>
             </div>
-            <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?ixlib=rb-4.0.1&auto=format&fit=crop&w=1350&q=80')">
+            <div class="slide" style="background-image: url('https://media.suara.com/images/2024/12/30/68716-ilustrasi-wisata-di-kabupaten-paser-kaltim.jpg')">
                 <div class="slide-overlay"></div>
             </div>
         </div>
@@ -87,7 +78,7 @@
     </section>
 
     <!-- Pimpinan Daerah Section -->
-    <section class="pimpinan fullscreen-section">
+    <section id="pimpinan" class="pimpinan fullscreen-section">
         <div class="container">
             <div class="section-title">
                 <h2>Pimpinan Daerah</h2>
@@ -125,7 +116,7 @@
     </section>
 
     <!-- Visi Misi Section -->
-    <section class="visi-misi fullscreen-section">
+    <section id="visi-misi" class="visi-misi fullscreen-section">
         <div class="container">
             <div class="section-title">
                 <h2>Visi dan Misi</h2>
@@ -150,7 +141,7 @@
     </section>
 
     <!-- Berita Cepat Section -->
-    <section class="berita-cepat fullscreen-section">
+    <section id="berita" class="berita-cepat fullscreen-section">
         <div class="container">
             <div class="section-title">
                 <h2>Berita Cepat</h2>
@@ -160,7 +151,7 @@
                 <div class="berita-slider">
                     <div class="slide-content active">
                         <article class="post--overlay post--overlay-bottom post--overlay-floorfade">
-                            <div class="background-img" style="background-image:url('https://png.pngtree.com/background/20210710/original/pngtree-blue-geometric-business-minimalistic-business-card-background-picture-image_1010390.jpg')"></div>
+                            <div class="background-img" style="background-image:url('https://disdikpaser.com/wp-content/uploads/2025/11/g43bed19078c7749d0a07ba78b8604d7b2e839c7419e8461a47a3b3d455a2fe29f3ae757969c574601e0519355fbbbe8ba80b90e7284b02ef97d59c4ca188278f_1280.jpg')"></div>
                             <div class="post__text inverse-text">
                                 <div class="post__text-wrap">
                                     <div class="post__text-inner text-center max-width-sm">
@@ -191,7 +182,7 @@
                     
                     <div class="slide-content">
                         <article class="post--overlay post--overlay-bottom post--overlay-floorfade">
-                            <div class="background-img" style="background-image:url('https://png.pngtree.com/background/20250518/original/pngtree-colorful-gradient-background-with-geometric-pattern-blue-to-orange-and-pink-picture-image_16555805.jpg')"></div>
+                            <div class="background-img" style="background-image:url('https://disdikpaser.com/wp-content/uploads/2025/11/gc44398306c26cd28e042a86a15bc4929687884bf8d5e17130b286b3ba09083a81816c01e13605d34bcbfa157f0f00ac63e9a9d7c059d2aa314f7a1fda509cf2c_1280.jpg')"></div>
                             <div class="post__text inverse-text">
                                 <div class="post__text-wrap">
                                     <div class="post__text-inner text-center max-width-sm">
@@ -222,7 +213,7 @@
                     
                     <div class="slide-content">
                         <article class="post--overlay post--overlay-bottom post--overlay-floorfade">
-                            <div class="background-img" style="background-image:url('https://png.pngtree.com/background/20250415/original/pngtree-minimalist-white-and-gray-abstract-geometric-background-picture-image_16435762.jpg')"></div>
+                            <div class="background-img" style="background-image:url('https://disdikpaser.com/wp-content/uploads/2025/11/gdfb80a135cdd08bd908cade9757af8f9ce85735030a74f4261a4c5d29358cd17b633d2458e0041a10ae00234a27f6431e3ef28fb942655079ee07ce3f3037cc0_1280.jpg')"></div>
                             <div class="post__text inverse-text">
                                 <div class="post__text-wrap">
                                     <div class="post__text-inner text-center max-width-sm">
@@ -291,6 +282,7 @@
             </div>
             <div class="layanan-grid">
                 <div class="layanan-card fade-in" onclick="openLayananPopup('legalisir-ijazah')">
+                    <img src="assets/legalisir.png" alt="Legalisir Dokumen" class="icon-layanan" style="width: 100px; height: 100px;">
                     <div class="layanan-card-content">
                         <h3>Legalisir Ijazah/Dokumen Kelulusan</h3>
                         <p>Layanan legalisir ijazah dan dokumen kelulusan untuk berbagai keperluan administrasi.</p>
@@ -299,6 +291,7 @@
                 </div>
                 
                 <div class="layanan-card fade-in" onclick="openLayananPopup('surat-mutasi')">
+                    <img src="assets/document.png" alt="Surat Keterangan" class="icon-layanan" style="width: 100px; height: 100px;">
                     <div class="layanan-card-content">
                         <h3>Surat Keterangan Pindah Sekolah</h3>
                         <p>Layanan penerbitan surat mutasi untuk siswa yang akan berpindah sekolah.</p>
@@ -307,6 +300,7 @@
                 </div>
                 
                 <div class="layanan-card fade-in" onclick="openLayananPopup('tunjangan-guru')">
+                    <img src="assets/tunjangan.png" alt="Pengusulan Tunjangan" class="icon-layanan" style="width: 100px; height: 100px;">
                     <div class="layanan-card-content">
                         <img src="https://www.flaticon.com/free-icon/teacher_18991849?term=teacher&page=1&position=82&origin=tag&related_id=18991849" alt="">
                         <h3>Pengusulan Tunjangan Profesi Guru</h3>
@@ -316,6 +310,7 @@
                 </div>
                 
                 <div class="layanan-card fade-in" onclick="openLayananPopup('izin-pendirian')">
+                    <img src="assets/institusi.png" alt="Izin Pendirian" class="icon-layanan" style="width: 100px; height: 100px;">
                     <div class="layanan-card-content">
                         <h3>Izin Pendirian Satuan Pendidikan</h3>
                         <p>Layanan perizinan pendirian PAUD, SD, SMP, dan Lembaga Kursus.</p>

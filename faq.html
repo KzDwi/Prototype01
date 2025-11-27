@@ -24,30 +24,12 @@
                 <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
                 <nav id="main-nav">
                     <ul>
-                        <li><a href="#" onclick="closeMobileMenu()">Beranda</a></li>
+                        <li><a href="index.html" onclick="closeMobileMenu()">Beranda</a></li>
                         <li><a href="profil.html" onclick="closeMobileMenu()">Profil</a></li>
-                        <li class="dropdown">
-                           <li><a href="layanan.html #layanan" onclick="closeMobileMenu(); scrollToLayanan();">Layanan</a></li>
-                            <div class="dropdown-menu">
-                                <div class="dropdown-section">
-                                    <h4>Layanan Kesiswaan</h4>
-                                    <a href="layanan.html layanan">Legalisir Ijazah/Dokumen Kelulusan</a>
-                                    <a href="layanan.html layanan">Penerbitan Surat Keterangan Pindah Sekolah (mutasi)</a>
-                                </div>
-                                <div class="dropdown-section">
-                                    <h4>Layanan Pendidikan & Tenaga Kependidikan</h4>
-                                    <a href="layanan.html layanan">Pengusulan Tunjangan Profesi Guru (TPG)</a>
-                                    <a href="layanan.html layanan">Pengurusan Izin Belajar dan Tugas Belajar bagi ASN</a>
-                                </div>
-                                <div class="dropdown-section">
-                                    <h4>Layanan Perizinan</h4>
-                                    <a href="layanan.html layanan">Izin Pendirian Satuan Pendidikan (PAUD/SD/SMP/LKP)</a>
-                                </div>
-                            </div>
-                        </li>
+                        <li><a href="layanan.html" onclick="closeMobileMenu(); scrollToLayanan();">Layanan</a></li>
                         <li><a href="berita.php" onclick="closeMobileMenu()">Berita</a></li>
                         <li><a href="#kontak" onclick="closeMobileMenu()">Kontak</a></li>
-                        <li><a href="faq.html" onclick="closeMobileMenu()">FAQ</a></li>
+                        <li><a href="#faq-content" onclick="closeMobileMenu()" class="active">FAQ</a></li>
                     </ul>
                 </nav>
             </div>
@@ -79,7 +61,7 @@
     <section id="faq-content" class="visi-misi" style="padding: 80px 0; background-color: #fff;">
         <div class="container">
             <div class="section-title">
-                <h2>Temukan jawaban atas pertanyaan-pertanyaan yang paling sering diajukan seputar layanan, kebijakan, dan program di Dinas Pendidikan Kabupaten Paser.</h2> <br> <br> 
+                <h2>Temukan jawaban atas pertanyaan-pertanyaan yang paling sering diajukan seputar layanan, kebijakan, dan program di Dinas Pendidikan Kabupaten Paser.</h2> <br><br>
             </div>
 
             <!-- Informasi Umum -->
@@ -89,7 +71,8 @@
             </div>
 
             <div class="faq-item">
-                <div class="faq-question" onclick="toggleFAQ(this)">
+            <input type="checkbox" id="faq1" class="faq-toggle">
+            <div class="faq-question" onclick="toggleFAQ(this)">
                     <h3>Dimana alamat kantor Dinas Pendidikan Kabupaten Paser?</h3>
                     <span class="faq-icon">+</span>
                 </div>
@@ -99,7 +82,8 @@
             </div>
 
             <div class="faq-item">
-                <div class="faq-question" onclick="toggleFAQ(this)">
+            <input type="checkbox" id="faq1" class="faq-toggle">
+            <div class="faq-question" onclick="toggleFAQ(this)">
                     <h3>Bagaimana cara menghubungi Dinas Pendidikan?</h3>
                     <span class="faq-icon">+</span>
                 </div>
@@ -114,7 +98,8 @@
                 Layanan Kesiswaan
             </div>
 
-            <div class="faq-item">
+                <div class="faq-item">
+                <input type="checkbox" id="faq1" class="faq-toggle">
                 <div class="faq-question" onclick="toggleFAQ(this)">
                     <h3>Bagaimana prosedur legalisir ijazah yang hilang atau rusak?</h3>
                     <span class="faq-icon">+</span>
@@ -130,7 +115,8 @@
             </div>
 
             <div class="faq-item">
-                <div class="faq-question" onclick="toggleFAQ(this)">
+            <input type="checkbox" id="faq1" class="faq-toggle">
+            <div class="faq-question" onclick="toggleFAQ(this)">
                     <h3>Apakah pindah sekolah (mutasi) antar kabupaten/kota dikenakan biaya?</h3>
                     <span class="faq-icon">+</span>
                 </div>
@@ -146,7 +132,8 @@
             </div>
 
             <div class="faq-item">
-                <div class="faq-question" onclick="toggleFAQ(this)">
+            <input type="checkbox" id="faq1" class="faq-toggle">
+            <div class="faq-question" onclick="toggleFAQ(this)">
                     <h3>Bagaimana cara memeriksa status validasi data untuk Tunjangan Profesi Guru (TPG)?</h3>
                     <span class="faq-icon">+</span>
                 </div>
@@ -156,7 +143,8 @@
             </div>
 
             <div class="faq-item">
-                <div class="faq-question" onclick="toggleFAQ(this)">
+            <input type="checkbox" id="faq1" class="faq-toggle">
+            <div class="faq-question" onclick="toggleFAQ(this)">
                     <h3>Saya adalah guru honorer, apakah bisa mendapatkan bantuan/insentif dari dinas?</h3>
                     <span class="faq-icon">+</span>
                 </div>
@@ -172,7 +160,8 @@
             </div>
 
             <div class="faq-item">
-                <div class="faq-question" onclick="toggleFAQ(this)">
+            <input type="checkbox" id="faq1" class="faq-toggle">
+            <div class="faq-question" onclick="toggleFAQ(this)">
                     <h3>Kapan jadwal pelaksanaan PPDB tahun ini?</h3>
                     <span class="faq-icon">+</span>
                 </div>
@@ -182,7 +171,8 @@
             </div>
 
             <div class="faq-item">
-                <div class="faq-question" onclick="toggleFAQ(this)">
+            <input type="checkbox" id="faq1" class="faq-toggle">
+            <div class="faq-question" onclick="toggleFAQ(this)">
                     <h3>Apa yang harus dilakukan jika ada kendala saat pendaftaran PPDB online?</h3>
                     <span class="faq-icon">+</span>
                 </div>
@@ -224,10 +214,10 @@
                 <div class="footer-section">
                     <h3>Layanan Cepat</h3>
                     <ul>
-                        <li><a href="layanan.html #layanan" onclick="scrollToLayanan()">Legalisir Ijazah/Dokumen Kelulusan</a></li>
-                        <li><a href="layanan.html #layanan" onclick="scrollToLayanan()">Surat Keterangan Pindah Sekolah</a></li>
-                        <li><a href="layanan.html #layanan" onclick="scrollToLayanan()">Tunjangan Profesi Guru</a></li>
-                        <li><a href="layanan.html #layanan" onclick="scrollToLayanan()">Izin Pendirian Satuan Pendidikan</a></li>
+                        <li><a href="layanan.html%20#layanan" onclick="scrollToLayanan()">Legalisir Ijazah/Dokumen Kelulusan</a></li>
+                        <li><a href="layanan.html%20#layanan" onclick="scrollToLayanan()">Surat Keterangan Pindah Sekolah</a></li>
+                        <li><a href="layanan.html%20#layanan" onclick="scrollToLayanan()">Tunjangan Profesi Guru</a></li>
+                        <li><a href="layanan.html%20#layanan" onclick="scrollToLayanan()">Izin Pendirian Satuan Pendidikan</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
@@ -246,24 +236,49 @@
         </div>
     </footer>
 
-    <script src="js/script.js"></script>
     
     <!-- FAQ Toggle Script -->
     <script>
-        function toggleFAQ(questionElement) {
-            const faqItem = questionElement.parentElement;
-            const isActive = faqItem.classList.contains('active');
-            
-            // Tutup semua FAQ
-            document.querySelectorAll('.faq-item').forEach(item => {
-                item.classList.remove('active');
+    // FAQ Functionality - SIMPLIFIED VERSION
+    document.addEventListener('DOMContentLoaded', function() {
+        const faqQuestions = document.querySelectorAll('.faq-question');
+        
+        console.log('FAQ questions found:', faqQuestions.length);
+        
+        faqQuestions.forEach(question => {
+            question.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const faqItem = this.parentElement;
+                const isActive = faqItem.classList.contains('active');
+                
+                console.log('FAQ clicked, active:', isActive);
+                
+                // Close all other FAQ items
+                document.querySelectorAll('.faq-item').forEach(item => {
+                    if (item !== faqItem) {
+                        item.classList.remove('active');
+                    }
+                });
+                
+                // Toggle current item
+                if (!isActive) {
+                    faqItem.classList.add('active');
+                    console.log('FAQ opened');
+                } else {
+                    faqItem.classList.remove('active');
+                    console.log('FAQ closed');
+                }
             });
-            
-            // Buka yang diklik (jika belum aktif)
-            if (!isActive) {
-                faqItem.classList.add('active');
-            }
-        }
+        });
+        
+        // Debug: Check initial state
+        console.log('FAQ initialization complete');
+    });
     </script>
+    <script src="js/script.js"></script>
+
+
 </body>
 </html>

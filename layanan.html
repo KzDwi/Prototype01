@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="css/styles.css" />
     <link rel="stylesheet" href="css/layanan-styles.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <title>Layanan - Dinas Pendidikan dan Kebudayaan Kabupaten Paser</title>
 </head>
 <body>
@@ -25,25 +27,7 @@
                     <ul>
                         <li><a href="index.html" onclick="closeMobileMenu()">Beranda</a></li>
                         <li><a href="profil.html" onclick="closeMobileMenu()">Profil</a></li>
-                        <li class="dropdown">
-                           <li><a href="#layanan" onclick="closeMobileMenu(); scrollToLayanan();">Layanan</a></li>
-                            <div class="dropdown-menu">
-                                <div class="dropdown-section">
-                                    <h4>Layanan Kesiswaan</h4>
-                                    <a href="layanan.html layanan">Legalisir Ijazah/Dokumen Kelulusan</a>
-                                    <a href="layanan.html layanan">Penerbitan Surat Keterangan Pindah Sekolah (mutasi)</a>
-                                </div>
-                                <div class="dropdown-section">
-                                    <h4>Layanan Pendidikan & Tenaga Kependidikan</h4>
-                                    <a href="layanan.html layanan">Pengusulan Tunjangan Profesi Guru (TPG)</a>
-                                    <a href="layanan.html layanan">Pengurusan Izin Belajar dan Tugas Belajar bagi ASN</a>
-                                </div>
-                                <div class="dropdown-section">
-                                    <h4>Layanan Perizinan</h4>
-                                    <a href="layanan.html layanan">Izin Pendirian Satuan Pendidikan (PAUD/SD/SMP/LKP)</a>
-                                </div>
-                            </div>
-                        </li>
+                        <li><a href="#layanan" onclick="closeMobileMenu(); scrollToLayanan();" class="active">Layanan</a></li>
                         <li><a href="berita.php" onclick="closeMobileMenu()">Berita</a></li>
                         <li><a href="#kontak" onclick="closeMobileMenu()">Kontak</a></li>
                         <li><a href="faq.html" onclick="closeMobileMenu()">FAQ</a></li>
@@ -67,9 +51,9 @@
         <div class="container">
             <div class="layanan-hero-content">
                 <h1>Layanan Administrasi Dinas Pendidikan dan Kebudayaan</h1>
-                <p>Kabupaten Paser</p>
+                <h2>Kabupaten Paser</h2>
                 <p class="hero-subtitle">Memastikan Legalitas dan Kelancaran Administrasi Pendidikan Anda</p>
-                <a href="#profile" class="btn btn-primary">Jelajahi Semua Layanan</a>
+                <a href="#layanan" class="btn btn-primary">Jelajahi Semua Layanan</a>
             </div>
         </div>
         <br> <br>
@@ -84,65 +68,92 @@
             <div class="section-title fade-in">
                 <h2>Layanan Administrasi Kunci untuk Institusi & Individu</h2>
             </div>
-            <div class="layanan-grid">
-                <!-- Kartu 1: Legalisir Ijazah -->
-                <div class="layanan-card fade-in" onclick="openLayananPopup('legalisir-ijazah')">
-                    <div class="layanan-icon">
-                        <i class="fas fa-scroll"></i>
-                    </div>
-                    <h3>Legalisir Dokumen Kelulusan</h3>
-                    <p>Layanan legalisir ijazah dan dokumen kelulusan untuk keperluan administrasi seperti melamar pekerjaan, melanjutkan pendidikan, atau keperluan lainnya.</p>
-                    <div class="card-footer">
-                        <a href="#" class="btn-detail" onclick="openLayananPopup('legalisir-ijazah')">Lihat Persyaratan Detail</a>
-                    </div>
-                </div>
+            
+            <!-- Swiper Container dengan Wrapper untuk Navigasi -->
+            <div class="swiper-layanan-wrapper">
+                <div class="swiper-container layanan-swiper">
+                    <div class="swiper-wrapper">
+                        <!-- Kartu 1: Legalisir Ijazah -->
+                        <div class="swiper-slide">
+                            <div class="layanan-card fade-in" onclick="openLayananPopup('legalisir-ijazah')">
+                                <div class="layanan-icon">
+                                    <i class="fas fa-scroll"></i>
+                                </div>
+                                <h3>Legalisir Dokumen Kelulusan</h3>
+                                <p>Layanan legalisir ijazah dan dokumen kelulusan untuk keperluan administrasi.</p>
+                                <div class="card-footer">
+                                    <a href="#" class="btn-detail" onclick="openLayananPopup('legalisir-ijazah')">Lihat Persyaratan Detail</a>
+                                </div>
+                            </div>
+                        </div>
 
-                <!-- Kartu 2: Surat Keterangan Pindah Sekolah -->
-                <div class="layanan-card fade-in" onclick="openLayananPopup('surat-mutasi')">
-                    <div class="layanan-icon">
-                        <i class="fas fa-exchange-alt"></i>
-                    </div>
-                    <h3>Surat Keterangan Pindah Sekolah</h3>
-                    <p>Layanan penerbitan surat keterangan pindah sekolah untuk siswa yang akan berpindah ke sekolah lain.</p>
-                    <div class="card-footer">
-                        <a href="#" class="btn-detail" onclick="openLayananPopup('surat-mutasi')">Lihat Persyaratan Detail</a>
-                    </div>
-                </div>
+                        <!-- Kartu 2: Surat Keterangan Pindah Sekolah -->
+                        <div class="swiper-slide">
+                            <div class="layanan-card fade-in" onclick="openLayananPopup('surat-mutasi')">
+                                <div class="layanan-icon">
+                                    <i class="fas fa-exchange-alt"></i>
+                                </div>
+                                <h3>Surat Keterangan Pindah Sekolah</h3>
+                                <p>Layanan penerbitan surat keterangan pindah sekolah untuk siswa yang akan berpindah.</p>
+                                <div class="card-footer">
+                                    <a href="#" class="btn-detail" onclick="openLayananPopup('surat-mutasi')">Lihat Persyaratan Detail</a>
+                                </div>
+                            </div>
+                        </div>
 
-                <!-- Kartu 3: Profesi Guru -->
-                <div class="layanan-card fade-in" onclick="openLayananPopup('tunjangan-guru')">
-                    <div class="layanan-icon">
-                        <i class="fas fa-chalkboard-teacher"></i>
-                    </div>
-                    <h3>Sertifikasi Profesi Guru</h3>
-                    <p>Layanan pengusulan tunjangan profesi guru bagi guru yang memenuhi persyaratan.</p>
-                    <div class="card-footer">
-                        <a href="#" class="btn-detail" onclick="openLayananPopup('tunjangan-guru')">Lihat Persyaratan Detail</a>
-                    </div>
-                </div>
+                        <!-- Kartu 3: Profesi Guru -->
+                        <div class="swiper-slide">
+                            <div class="layanan-card fade-in" onclick="openLayananPopup('tunjangan-guru')">
+                                <div class="layanan-icon">
+                                    <i class="fas fa-chalkboard-teacher"></i>
+                                </div>
+                                <h3>Pengusulan Tunjangan Profesi Guru</h3>
+                                <p>Layanan pengusulan tunjangan profesi guru bagi guru yang memenuhi persyaratan.</p>
+                                <div class="card-footer">
+                                    <a href="#" class="btn-detail" onclick="openLayananPopup('tunjangan-guru')">Lihat Persyaratan Detail</a>
+                                </div>
+                            </div>
+                        </div>
 
-                <!-- Kartu 4: Izin Pendirian Satuan Pendidikan -->
-                <div class="layanan-card fade-in" onclick="openLayananPopup('izin-pendirian')">
-                    <div class="layanan-icon">
-                        <i class="fas fa-building"></i>
-                    </div>
-                    <h3>Izin Pendirian Lembaga Baru</h3>
-                    <p>Layanan perizinan pendirian satuan pendidikan baru meliputi PAUD, SD, SMP, dan Lembaga Kursus dan Pelatihan (LKP).</p>
-                    <div class="card-footer">
-                        <a href="#" class="btn-detail" onclick="openLayananPopup('izin-pendirian')">Lihat Persyaratan Detail</a>
-                    </div>
-                </div>
+                        <!-- Kartu 4: Izin Pendirian Satuan Pendidikan -->
+                        <div class="swiper-slide">
+                            <div class="layanan-card fade-in" onclick="openLayananPopup('izin-pendirian')">
+                                <div class="layanan-icon">
+                                    <i class="fas fa-building"></i>
+                                </div>
+                                <h3>Izin Pendirian Satuan Pendidikan</h3>
+                                <p>Layanan perizinan pendirian satuan pendidikan baru meliputi PAUD, SD, SMP, LKP.</p>
+                                <div class="card-footer">
+                                    <a href="#" class="btn-detail" onclick="openLayananPopup('izin-pendirian')">Lihat Persyaratan Detail</a>
+                                </div>
+                            </div>
+                        </div>
 
-                <!-- Kartu 5: Izin Belajar dan Tugas Belajar ASN -->
-                <div class="layanan-card fade-in" onclick="openLayananPopup('izin-belajar')">
-                    <div class="layanan-icon">
-                        <i class="fas fa-graduation-cap"></i>
+                        <!-- Kartu 5: Izin Belajar dan Tugas Belajar ASN -->
+                        <div class="swiper-slide">
+                            <div class="layanan-card fade-in" onclick="openLayananPopup('izin-belajar')">
+                                <div class="layanan-icon">
+                                    <i class="fas fa-graduation-cap"></i>
+                                </div>
+                                <h3>Pengurusan Izin Belajar dan Tugas Belajar</h3>
+                                <p>Penerbitan surat rekomendasi atau izin untuk melanjutkan pendidikan ke jenjang yang lebih tinggi</p>
+                                <div class="card-footer">
+                                    <a href="#" class="btn-detail" onclick="openLayananPopup('izin-belajar')">Lihat Persyaratan Detail</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <h3>Pengurusan Izin Belajar dan Tugas Belajar bagi ASN</h3>
-                    <p>Penerbitan surat rekomendasi atau izin untuk melanjutkan pendidikan ke jenjang yang lebih tinggi bagi guru dan tenaga kependidikan ASN.</p>
-                    <div class="card-footer">
-                        <a href="#" class="btn-detail" onclick="openLayananPopup('izin-belajar')">Lihat Persyaratan Detail</a>
-                    </div>
+                    
+                    <!-- Pagination dots -->
+                    <div class="swiper-pagination"></div>
+                </div>
+                
+                <!-- Navigation buttons OUTSIDE swiper container -->
+                <div class="swiper-custom-prev">
+                    <i class="fas fa-chevron-left"></i>
+                </div>
+                <div class="swiper-custom-next">
+                    <i class="fas fa-chevron-right"></i>
                 </div>
             </div>
         </div>
@@ -203,11 +214,11 @@
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="contact-section fullscreen-section">
+    <!-- <section id="contact" class="contact-section fullscreen-section">
         <div class="container">
             <div class="section-title fade-in">
                 <h2>Butuh Bantuan Administrasi Cepat?</h2>
-                <p>Isi formulir di bawah ini dan Dr. Angga Praja akan menghubungi Anda dalam 1x24 jam.</p>
+                <p>Isi formulir di bawah ini dan Admin akan menghubungi Anda dalam 2x24 jam.</p><br>
             </div>
             <div class="contact-form fade-in">
                 <form>
@@ -222,19 +233,19 @@
                             <option value="">Pilih Jenis Layanan...</option>
                             <option value="legalisir">Legalisir Dokumen Kelulusan</option>
                             <option value="pindah">Keterangan Pindah Sekolah</option>
-                            <option value="profesi">Sertifikasi Profesi Guru</option>
-                            <option value="izin">Izin Pendirian Lembaga Baru</option>
-                            <option value="lain">Lainnya</option>
+                            <option value="profesi">Pengusulan Tunjangan Profesi Guru</option>
+                            <option value="izin">Izin Pendirian Satuan Pendidikan</option>
+                            <option value="tugas">Pengurusan Izin Belajar dan Tugas Belajar</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <textarea placeholder="Jelaskan Kebutuhan Anda Secara Singkat" rows="4"></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary">Kirim Konsultasi</button>
+                    <button type="submit" class="btn btn-primary btn-submit">Kirim Konsultasi</button>
                 </form>
             </div>
         </div>
-    </section>
+    </section> -->
 
     <!-- Footer -->
     <footer>
@@ -266,10 +277,10 @@
                 <div class="footer-section">
                     <h3>Layanan Cepat</h3>
                     <ul>
-                        <li><a href="layanan.html #layanan" onclick="scrollToLayanan()">Legalisir Ijazah/Dokumen Kelulusan</a></li>
-                        <li><a href="layanan.html #layanan" onclick="scrollToLayanan()">Surat Keterangan Pindah Sekolah</a></li>
-                        <li><a href="layanan.html #layanan" onclick="scrollToLayanan()">Tunjangan Profesi Guru</a></li>
-                        <li><a href="layanan.html #layanan" onclick="scrollToLayanan()">Izin Pendirian Satuan Pendidikan</a></li>
+                        <li><a href="layanan.html%20#layanan" onclick="scrollToLayanan()">Legalisir Ijazah/Dokumen Kelulusan</a></li>
+                        <li><a href="layanan.html%20#layanan" onclick="scrollToLayanan()">Surat Keterangan Pindah Sekolah</a></li>
+                        <li><a href="layanan.html%20#layanan" onclick="scrollToLayanan()">Tunjangan Profesi Guru</a></li>
+                        <li><a href="layanan.html%20#layanan" onclick="scrollToLayanan()">Izin Pendirian Satuan Pendidikan</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
@@ -290,7 +301,7 @@
 
     <!-- Tambahkan Font Awesome untuk ikon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="js/script.js"></script>
 
     <script>

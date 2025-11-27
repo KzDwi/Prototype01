@@ -217,25 +217,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <ul>
                         <li><a href="index.html" onclick="closeMobileMenu()">Beranda</a></li>
                         <li><a href="profil.html" onclick="closeMobileMenu()">Profil</a></li>
-                        <li class="dropdown">
-                           <li><a href="layanan.html #layanan" onclick="closeMobileMenu(); scrollToLayanan();">Layanan</a></li>
-                            <div class="dropdown-menu">
-                                <div class="dropdown-section">
-                                    <h4>Layanan Kesiswaan</h4>
-                                    <a href="layanan.html layanan">Legalisir Ijazah/Dokumen Kelulusan</a>
-                                    <a href="layanan.html layanan">Penerbitan Surat Keterangan Pindah Sekolah (mutasi)</a>
-                                </div>
-                                <div class="dropdown-section">
-                                    <h4>Layanan Pendidikan & Tenaga Kependidikan</h4>
-                                    <a href="layanan.html layanan">Pengusulan Tunjangan Profesi Guru (TPG)</a>
-                                    <a href="layanan.html layanan">Pengurusan Izin Belajar dan Tugas Belajar bagi ASN</a>
-                                </div>
-                                <div class="dropdown-section">
-                                    <h4>Layanan Perizinan</h4>
-                                    <a href="layanan.html layanan">Izin Pendirian Satuan Pendidikan (PAUD/SD/SMP/LKP)</a>
-                                </div>
-                            </div>
-                        </li>
+                        <li><a href="layanan.html" onclick="closeMobileMenu(); scrollToLayanan();">Layanan</a></li>
                         <li><a href="berita.php" onclick="closeMobileMenu()">Berita</a></li>
                         <li><a href="#kontak" onclick="closeMobileMenu()">Kontak</a></li>
                         <li><a href="faq.html" onclick="closeMobileMenu()">FAQ</a></li>
@@ -319,10 +301,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="footer-section">
                     <h3>Layanan Cepat</h3>
                     <ul>
-                        <li><a href="layanan.html #layanan" onclick="scrollToLayanan()">Legalisir Ijazah/Dokumen Kelulusan</a></li>
-                        <li><a href="layanan.html #layanan" onclick="scrollToLayanan()">Surat Keterangan Pindah Sekolah</a></li>
-                        <li><a href="layanan.html #layanan" onclick="scrollToLayanan()">Tunjangan Profesi Guru</a></li>
-                        <li><a href="layanan.html #layanan" onclick="scrollToLayanan()">Izin Pendirian Satuan Pendidikan</a></li>
+                        <li><a href="layanan.html%20#layanan" onclick="scrollToLayanan()">Legalisir Ijazah/Dokumen Kelulusan</a></li>
+                        <li><a href="layanan.html%20#layanan" onclick="scrollToLayanan()">Surat Keterangan Pindah Sekolah</a></li>
+                        <li><a href="layanan.html%20#layanan" onclick="scrollToLayanan()">Tunjangan Profesi Guru</a></li>
+                        <li><a href="layanan.html%20#layanan" onclick="scrollToLayanan()">Izin Pendirian Satuan Pendidikan</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">

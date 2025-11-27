@@ -4,8 +4,325 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/faq-styles.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <title>Profil - Dinas Pendidikan dan Kebudayaan Kabupaten Paser</title>
+    <style>
+        /* Fullscreen Section Styles untuk Profil */
+        body {
+            background-color: #f9f9f9;
+        }
+
+        .profil-fullscreen-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 100px 0 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profil-section-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            width: 100%;
+        }
+
+        .profil-section-title {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .profil-section-title h2 {
+            font-size: 2.5rem;
+            color: #003399;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .profil-section-title p {
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Background Colors untuk Setiap Section */
+        .profil-hero-section {
+            background: linear-gradient(135deg, #003399 0%, #002280 100%);
+            color: white;
+            text-align: center;
+            clip-path: polygon(0 0, 100% 0, 100% 90%, 0% 100%);
+        }
+
+        .visi-misi-section {
+            background-color: #f8f9fa;
+        }
+
+        .tupoksi-section {
+            background-color: #ffffff;
+        }
+
+        .struktur-section {
+            background-color: #f0f8ff;
+        }
+
+        .pimpinan-section {
+            background-color: #f9f9f9;
+        }
+
+        .kontak-section {
+            background: linear-gradient(135deg, #2B557E 0%, #003399 100%);
+            color: white;
+        }
+
+        /* Card Styles */
+        .profil-card {
+            background: white;
+            padding: 50px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .visi-card {
+            border-left: 6px solid #003399;
+        }
+
+        .misi-card {
+            border-left: 6px solid #4CAF50;
+            text-align: left;
+        }
+
+        .tupoksi-card {
+            border-left: 6px solid #FF9800;
+            text-align: left;
+        }
+
+        /* List Styles */
+        .profil-list {
+            list-style: none;
+            padding: 0;
+            margin: 30px 0;
+        }
+
+        .profil-list li {
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .profil-list li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #003399;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .profil-list li:last-child {
+            border-bottom: none;
+        }
+
+        /* Navigation Dots */
+        .section-nav {
+            border: solid #DDD;
+            background-color: #f9f9f9;
+            border-radius: 0.7rem;
+            padding: 1rem;
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+        }
+
+        .nav-dot {
+            display: block;
+            width: 12px;
+            height: 12px;
+            margin: 15px 0;
+            border-radius: 50%;
+            background: rgba(0,51,153,0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-dot.active {
+            background: #003399;
+            transform: scale(1.3);
+        }
+
+        .nav-dot:hover {
+            background: #003399;
+            transform: scale(1.2);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .profil-fullscreen-section {
+                padding: 80px 0 60px;
+                min-height: 100vh;
+            }
+
+            .profil-section-title h2 {
+                font-size: 2rem;
+            }
+
+            .profil-card {
+                padding: 30px 20px;
+                margin: 0 15px;
+            }
+
+            .section-nav {
+                right: 15px;
+            }
+
+            .nav-dot {
+                width: 10px;
+                height: 10px;
+                margin: 12px 0;
+            }
+        }
+
+        /* Fade In Animation Styles untuk Profil */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Visi Misi Card Styles */
+        .visi-card, .misi-card {
+            background-color: white;
+            padding: 40px 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .visi-card:hover, .misi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .visi-icon, .misi-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #003399;
+        }
+
+        .visi-card h3, .misi-card h3 {
+            color: #003399;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .visi-card p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #333;
+            font-style: italic;
+        }
+
+        .misi-card ul {
+            text-align: left;
+        }
+
+        .misi-card ul li {
+            margin-bottom: 12px;
+            padding-left: 20px;
+            position: relative;
+            line-height: 1.6;
+        }
+
+        .misi-card ul li:before {
+            content: '✓';
+            color: #003399;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* Visi Misi Grid Layout */
+        .visi-misi-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 30px;
+        }
+
+        /* Section Title Styles */
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .section-title h2 {
+            font-size: 2rem;
+            color: #003399;
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+
+        .section-title h2:after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 3px;
+            background-color: #e36159;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        @media (max-width: 480px) {
+            .profil-section-title h2 {
+                font-size: 1.8rem;
+            }
+
+            .profil-card {
+                padding: 25px 15px;
+            }
+
+            .profil-list li {
+                font-size: 1rem;
+                padding-left: 25px;
+            }
+        }
+
+        .breadcrumb-nav a {
+            color: #e36159;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .breadcrumb-nav a:hover {
+            color: #D25048;
+        }
+
+        .breadcrumb-nav .active {
+            color: #DDD;
+            font-weight: 600;
+        }
+    </style>
 </head>
 <body>
     <!-- Header & Navigation -->
@@ -22,27 +339,9 @@
                 <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
                 <nav id="main-nav">
                     <ul>
-                        <li><a href="#" onclick="closeMobileMenu()">Beranda</a></li>
-                        <li><a href="profil.html" onclick="closeMobileMenu()">Profil</a></li>
-                        <li class="dropdown">
-                           <li><a href="layanan.html #layanan" onclick="closeMobileMenu(); scrollToLayanan();">Layanan</a></li>
-                            <div class="dropdown-menu">
-                                <div class="dropdown-section">
-                                    <h4>Layanan Kesiswaan</h4>
-                                    <a href="layanan.html layanan">Legalisir Ijazah/Dokumen Kelulusan</a>
-                                    <a href="layanan.html layanan">Penerbitan Surat Keterangan Pindah Sekolah (mutasi)</a>
-                                </div>
-                                <div class="dropdown-section">
-                                    <h4>Layanan Pendidikan & Tenaga Kependidikan</h4>
-                                    <a href="layanan.html layanan">Pengusulan Tunjangan Profesi Guru (TPG)</a>
-                                    <a href="layanan.html layanan">Pengurusan Izin Belajar dan Tugas Belajar bagi ASN</a>
-                                </div>
-                                <div class="dropdown-section">
-                                    <h4>Layanan Perizinan</h4>
-                                    <a href="layanan.html layanan">Izin Pendirian Satuan Pendidikan (PAUD/SD/SMP/LKP)</a>
-                                </div>
-                            </div>
-                        </li>
+                        <li><a href="index.html" onclick="closeMobileMenu()">Beranda</a></li>
+                        <li><a href="profil.html" onclick="closeMobileMenu()" class="active">Profil</a></li>
+                        <li><a href="layanan.html" onclick="closeMobileMenu(); scrollToLayanan();">Layanan</a></li>
                         <li><a href="berita.php" onclick="closeMobileMenu()">Berita</a></li>
                         <li><a href="#kontak" onclick="closeMobileMenu()">Kontak</a></li>
                         <li><a href="faq.html" onclick="closeMobileMenu()">FAQ</a></li>
@@ -52,29 +351,73 @@
         </div>
     </header>
 
-    <!-- Breadcrumb -->
-    <section class="breadcrumb-section">
+    <!-- Navigation Dots -->
+    <!-- <div class="section-nav">
+        <a href="#hero" class="nav-dot active" data-section="hero"></a>
+        <a href="#visi-misi" class="nav-dot" data-section="visi-misi"></a>
+        <a href="#tupoksi" class="nav-dot" data-section="tupoksi"></a>
+        <a href="#kontak" class="nav-dot" data-section="kontak"></a>
+    </div> -->
+
+    <!-- Hero Section -->
+    <section id="hero" class="profil-fullscreen-section profil-hero-section fade-in">
         <div class="container">
             <nav class="breadcrumb-nav">
                 <a href="index.html">Halaman Utama</a>
                 <span>/</span>
-                <a href="profil.html" class="active">Profil</a>
+                <a href="layanan.html" class="active">Layanan</a>
             </nav>
+            <br>
+            <br>    
         </div>
-    </section>
-
-    <!-- Hero Section Profil -->
-    <section class="profil-hero fade-in">
-        <div class="container">
-            <div class="profil-hero-content">
+        <div class="profil-section-content">
+            <div class="profil-section-title">
                 <h1>Profil Dinas Pendidikan dan Kebudayaan</h1>
-                <p>Kabupaten Paser</p>
+                <p style="color : #DDD;">Kabupaten Paser</p>
+            </div>
+            <div class="profil-card" style="background-color: rgba(255,255,255,0.3);">
+                <p style="font-size: 1.2rem; line-height: 1.8; color: #f9f9f9;">
+                    “Terwujudnya Paser yang Sejahtera, Berakhlak Mulia dan Berdaya Saing”
+                </p>
             </div>
         </div>
     </section>
 
     <!-- Visi Misi Section -->
-    <section class="visi-misi-profil">
+    <!-- <section id="visi-misi" class="profil-fullscreen-section visi-misi-section">
+        <div class="profil-section-content">
+            <div class="profil-section-title">
+                <h2>Visi dan Misi</h2>
+                <p>Pedoman dalam menjalankan seluruh program dan kegiatan pendidikan di Kabupaten Paser</p>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; max-width: 1200px; margin: 0 auto;">
+                <div class="profil-card visi-card">
+                    <div style="text-align: center;">
+                        <div style="font-size: 3rem; color: #003399; margin-bottom: 20px;">🎯</div>
+                        <h3 style="color: #003399; margin-bottom: 25px;">Visi</h3>
+                        <p style="font-size: 1.4rem; font-weight: 600; line-height: 1.4; color: #003399; font-style: italic;">
+                            "Terwujudnya Paser yang Sejahtera, Berakhlak Mulia dan Berdaya Saing"
+                        </p>
+                    </div>
+                </div>
+                <div class="profil-card misi-card">
+                    <div style="text-align: center; margin-bottom: 30px;">
+                        <div style="font-size: 3rem; color: #4CAF50; margin-bottom: 15px;">📝</div>
+                        <h3 style="color: #4CAF50;">Misi</h3>
+                    </div>
+                    <ul class="profil-list">
+                        <li>Mewujudkan Sumber Daya Manusia yang handal dan berdaya saing melalui Peningkatan Mutu Pendidikan, Derajat Kesehatan serta Kesejahteraan Sosial</li>
+                        <li>Mewujudkan tata kelola pemerintahan yang baik (Good Governance) yang bersih, efektif, efesien, transparan dan akuntabel berbasis Teknologi Informasi dan Komunikasi</li>
+                        <li>Mewujudkan Pembangunan yang merata dan berkesinambungan yang berwawasan lingkungan</li>
+                        <li>Meningkatkan kemandirian ekonomi daerah dan masyarakat berbasis potensi lokal</li>
+                        <li>Menciptakan Kota yang Aman, Nyaman, dan Kondusif</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section> -->
+
+    <section id="visi-misi" class="profil-fullscreen-section visi-misi-section">
         <div class="container">
             <div class="section-title fade-in">
                 <h2>Visi dan Misi</h2>
@@ -85,7 +428,7 @@
                     <p>“Terwujudnya Paser yang Sejahtera, Berakhlak Mulia dan Berdaya Saing”</p>
                 </div>
                 <div class="misi-card fade-in">
-                    <h3>Misi</h3>
+                    <h3><center>Misi</center></h3>
                     <ul>
                         <li>Mewujudkan Sumber Daya Manusia yang handal dan berdaya saing melalui Peningkatan Mutu Pendidikan, Derajat Kesehatan serta Kesejahteraan Sosial</li>
                         <li>Mewujudkan tata kelola pemerintahan yang baik (Good Governance) yang bersih, efektif, efesien, transparan dan akuntabel berbasis Teknologi Informasi dan Komunikasi</li>
@@ -98,116 +441,114 @@
         </div>
     </section>
 
-    <!-- Struktur Organisasi Section -->
-    <!-- <section class="struktur-organisasi">
-        <div class="container">
-            <div class="section-title fade-in">
-                <h2>Struktur Organisasi</h2>
+    <!-- Tugas Pokok dan Fungsi Section -->
+    <section id="tupoksi" class="profil-fullscreen-section tupoksi-section fade-in">
+        <div class="profil-section-content">
+            <div class="container profil-section-title">
+                <h2>Tugas Pokok dan Fungsi</h2>
             </div>
-            <div class="struktur-content">
-                <div class="struktur-image fade-in">
-                    <img src="https://via.placeholder.com/800x400/003399/ffffff?text=Struktur+Organisasi+Dinas+Pendidikan+dan+Kebudayaan+Kabupaten+Paser" alt="Struktur Organisasi Dinas Pendidikan dan Kebudayaan Kabupaten Paser">
+            <div class="profil-card tupoksi-card">
+                <div style="text-align: center; margin-bottom: 40px;">
                 </div>
-                <div class="struktur-info fade-in">
-                    <h3>Struktur Organisasi Dinas Pendidikan dan Kebudayaan</h3>
-                    <p>Struktur organisasi Dinas Pendidikan dan Kebudayaan Kabupaten Paser terdiri dari:</p>
-                    <ul>
-                        <li>Kepala Dinas</li>
-                        <li>Sekretariat (Bagian Umum dan Kepegawaian, Bagian Perencanaan dan Keuangan)</li>
-                        <li>Bidang Pendidikan Dasar</li>
-                        <li>Bidang Pendidikan Menengah</li>
-                        <li>Bidang Kebudayaan</li>
-                        <li>Unit Pelaksana Teknis Daerah (UPTD)</li>
-                    </ul>
-                    <a href="#" class="btn">Download Struktur Lengkap</a>
+                <ul class="profil-list">
+                    <li><strong>Perumusan kebijakan teknis</strong> di bidang pendidikan dan kebudayaan</li>
+                    <li><strong>Pelaksanaan kebijakan</strong> di bidang pengelolaan PAUD, SD, SMP, serta pendidikan kesetaraan dan keaksaraan</li>
+                    <li><strong>Pembinaan, pengawasan, dan pengendalian</strong> pelaksanaan tugas di bidang pendidikan</li>
+                    <li><strong>Pengelolaan dan pembinaan</strong> pendidik dan tenaga kependidikan</li>
+                    <li><strong>Pelaksanaan evaluasi dan pelaporan</strong> bidang pendidikan</li>
+                    <li><strong>Pelaksanaan administrasi dinas</strong> sesuai dengan lingkup tugasnya</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Struktur Organisasi Section -->
+    <!-- <section id="struktur" class="profil-fullscreen-section struktur-section">
+        <div class="profil-section-content">
+            <div class="profil-section-title">
+                <h2>Struktur Organisasi</h2>
+                <p>Struktur kepemimpinan dan organisasi Dinas Pendidikan dan Kebudayaan</p>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; max-width: 1200px; margin: 0 auto;">
+                <div>
+                    <div class="profil-card" style="text-align: center;">
+                        <div style="font-size: 3rem; color: #9C27B0; margin-bottom: 20px;">🏢</div>
+                        <h3 style="color: #9C27B0; margin-bottom: 25px;">Struktur Organisasi</h3>
+                        <p style="line-height: 1.6; margin-bottom: 20px;">
+                            Struktur organisasi Dinas Pendidikan dan Kebudayaan Kabupaten Paser dirancang untuk 
+                            mendukung pelaksanaan tugas dan fungsi secara efektif dan efisien.
+                        </p>
+                        <button class="btn" style="margin-top: 20px;">Download Struktur Lengkap</button>
+                    </div>
+                </div>
+                <div>
+                    <img src="https://via.placeholder.com/600x400/9C27B0/ffffff?text=Struktur+Organisasi" 
+                         alt="Struktur Organisasi" 
+                         style="width: 100%; height: auto; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
                 </div>
             </div>
         </div>
     </section> -->
 
-    <!-- Tugas Pokok dan Fungsi Section -->
-    <section class="tugas-fungsi">
-        <div class="container">
-            <div class="section-title fade-in">
-                <h2>Tugas Pokok dan Fungsi</h2>
+    <!-- Kontak Section -->
+    <section id="kontak" class="profil-fullscreen-section kontak-section">
+        <div class="profil-section-content fade-in">
+            <div class="profil-section-title">
+                <h2 style="color: #DDD;">Kontak Kami</h2>
+                <p style="color: #DDD;">Hubungi kami untuk informasi lebih lanjut</p>
             </div>
-            <div class="tugas-fungsi-content fade-in">
-                <div class="tugas-fungsi-card">
-                    <!-- <h3>Tugas Pokok dan Fungsi (Tupoksi)</h3> -->
-                    <ul>
-                        <li>Perumusan kebijakan teknis di bidang pendidikan dan kebudayaan</li>
-                        <li>Pelaksanaan kebijakan di bidang pengelolaan PAUD, SD, SMP, serta pendidikan kesetaraan dan keaksaraan.</li>
-                        <li>Pembinaan, pengawasan, dan pengendalian pelaksanaan tugas di bidang pendidikan.</li>
-                        <li>Pengelolaan dan pembinaan pendidik dan tenaga kependidikan.</li>
-                        <li>Pelaksanaan evaluasi dan pelaporan bidang pendidikan.</li>
-                        <li>Pelaksanaan administrasi dinas sesuai dengan lingkup tugasnya.</li>
-                    </ul>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 50px; max-width: 1200px; margin: 0 auto; align-items: start;">
+                <div>
+                    <div class="profil-card" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);">
+                        <h3 style="color: white; margin-bottom: 30px; text-align: center;">Informasi Kontak</h3>
+                        
+                        <div style="margin-bottom: 25px;">
+                            <h4 style="color: white; margin-bottom: 10px;">Alamat Kantor</h4>
+                            <p style="color: rgba(255,255,255,0.9); line-height: 1.6;">
+                                Jl. Jenderal Sudirman No. 27<br>
+                                Tanah Grogot, Kabupaten Paser<br>
+                                Kalimantan Timur 76251
+                            </p>
+                        </div>
+
+                        <div style="margin-bottom: 25px;">
+                            <h4 style="color: white; margin-bottom: 10px;">Kontak</h4>
+                            <p style="color: rgba(255,255,255,0.9);">
+                                <strong>Telepon:</strong> (0543) 21023<br>
+                                <strong>Email:</strong> disdik@paserkab.go.id
+                            </p>
+                        </div>
+
+                        <div style="margin-bottom: 25px;">
+                            <h4 style="color: white; margin-bottom: 10px;">Jam Operasional</h4>
+                            <p style="color: rgba(255,255,255,0.9);">
+                                <strong>Senin - Kamis:</strong> 08.00 - 16.00 WITA<br>
+                                <strong>Jumat:</strong> 08.00 - 11.00 WITA<br>
+                                <strong>Sabtu - Minggu:</strong> Libur
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <br><br><br>
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3987.6060327839327!2d116.1914303!3d-1.9081035!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2df047988e6b3c0b%3A0xdaa84941bfe1b7df!2sJl.%20Jenderal%20Sudirman%20No.27%2C%20Tanah%20Grogot%2C%20Kec.%20Tanah%20Grogot%2C%20Kabupaten%20Paser%2C%20Kalimantan%20Timur%2076251!5e0!3m2!1sid!2sid!4v1764218368388!5m2!1sid!2sid" 
+                        width="100%" 
+                        height="400" 
+                        style="border:0; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade" class="fade-in">
+                    </iframe>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Pimpinan Dinas Section -->
-    <!-- <section class="pimpinan-dinas">
-        <div class="container">
-            <div class="section-title fade-in">
-                <h2>Pimpinan Dinas</h2>
-            </div>
-            <div class="pimpinan-grid">
-                <div class="pimpinan-card fade-in">
-                    <div class="pimpinan-img">
-                        <div class="placeholder-avatar">
-                            <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="60" cy="60" r="60" fill="#003399" fill-opacity="0.1"/>
-                                <circle cx="60" cy="45" r="20" fill="#003399" fill-opacity="0.3"/>
-                                <path d="M60 75 C40 75 30 85 30 95 C30 105 40 115 60 115 C80 115 90 105 90 95 C90 85 80 75 60 75 Z" fill="#003399" fill-opacity="0.3"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="pimpinan-info">
-                        <h3>H. M. YUSUF M., S.Pd., M.M.</h3>
-                        <p>Kepala Dinas Pendidikan dan Kebudayaan</p>
-                    </div>
-                </div>
-                <div class="pimpinan-card fade-in">
-                    <div class="pimpinan-img">
-                        <div class="placeholder-avatar">
-                            <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="60" cy="60" r="60" fill="#003399" fill-opacity="0.1"/>
-                                <circle cx="60" cy="45" r="20" fill="#003399" fill-opacity="0.3"/>
-                                <path d="M60 75 C40 75 30 85 30 95 C30 105 40 115 60 115 C80 115 90 105 90 95 C90 85 80 75 60 75 Z" fill="#003399" fill-opacity="0.3"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="pimpinan-info">
-                        <h3>Drs. H. SYAIFUDDIN, M.M.</h3>
-                        <p>Sekretaris Dinas</p>
-                    </div>
-                </div>
-                <div class="pimpinan-card fade-in">
-                    <div class="pimpinan-img">
-                        <div class="placeholder-avatar">
-                            <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="60" cy="60" r="60" fill="#003399" fill-opacity="0.1"/>
-                                <circle cx="60" cy="45" r="20" fill="#003399" fill-opacity="0.3"/>
-                                <path d="M60 75 C40 75 30 85 30 95 C30 105 40 115 60 115 C80 115 90 105 90 95 C90 85 80 75 60 75 Z" fill="#003399" fill-opacity="0.3"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="pimpinan-info">
-                        <h3>SULISTYANINGSIH, S.Pd., M.Pd.</h3>
-                        <p>Kepala Bidang Pendidikan Dasar</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section> -->
-
     <!-- Footer -->
     <footer>
         <div class="container">
-            <div class="footer-content" id="kontak">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3987.6060327839327!2d116.1914303!3d-1.9081035!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2df047988e6b3c0b%3A0xdaa84941bfe1b7df!2sJl.%20Jenderal%20Sudirman%20No.27%2C%20Tanah%20Grogot%2C%20Kec.%20Tanah%20Grogot%2C%20Kabupaten%20Paser%2C%20Kalimantan%20Timur%2076251!5e0!3m2!1sid!2sid!4v1764218368388!5m2!1sid!2sid" width="250" height="200" style="border:0; border-radius: 0.3rem;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <div class="footer-content">
                 <div class="footer-section">
                     <h3>Kontak Kami</h3>
                     <ul>
@@ -233,10 +574,10 @@
                 <div class="footer-section">
                     <h3>Layanan Cepat</h3>
                     <ul>
-                        <li><a href="layanan.html #layanan" onclick="scrollToLayanan()">Legalisir Ijazah/Dokumen Kelulusan</a></li>
-                        <li><a href="layanan.html #layanan" onclick="scrollToLayanan()">Surat Keterangan Pindah Sekolah</a></li>
-                        <li><a href="layanan.html #layanan" onclick="scrollToLayanan()">Tunjangan Profesi Guru</a></li>
-                        <li><a href="layanan.html #layanan" onclick="scrollToLayanan()">Izin Pendirian Satuan Pendidikan</a></li>
+                        <li><a href="layanan.html%20#layanan" onclick="scrollToLayanan()">Legalisir Ijazah/Dokumen Kelulusan</a></li>
+                        <li><a href="layanan.html%20#layanan" onclick="scrollToLayanan()">Surat Keterangan Pindah Sekolah</a></li>
+                        <li><a href="layanan.html%20#layanan" onclick="scrollToLayanan()">Tunjangan Profesi Guru</a></li>
+                        <li><a href="layanan.html%20#layanan" onclick="scrollToLayanan()">Izin Pendirian Satuan Pendidikan</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
@@ -254,6 +595,129 @@
             </div>
         </div>
     </footer>
+
+    <!-- Script untuk Fullscreen Navigation -->
+    <script>
+        // Smooth scroll to section
+        function scrollToSection(sectionId) {
+            document.getElementById(sectionId).scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+
+        // Update active nav dot based on scroll position
+        function updateActiveNav() {
+            const sections = document.querySelectorAll('.profil-fullscreen-section');
+            const navDots = document.querySelectorAll('.nav-dot');
+            
+            let currentSection = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.scrollY >= sectionTop - 100 && window.scrollY < sectionTop + sectionHeight - 100) {
+                    currentSection = section.id;
+                }
+            });
+            
+            navDots.forEach(dot => {
+                dot.classList.remove('active');
+                if (dot.getAttribute('data-section') === currentSection) {
+                    dot.classList.add('active');
+                }
+            });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Update nav on scroll
+            window.addEventListener('scroll', updateActiveNav);
+            
+            // Click event for nav dots
+            document.querySelectorAll('.nav-dot').forEach(dot => {
+                dot.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const sectionId = this.getAttribute('data-section');
+                    scrollToSection(sectionId);
+                });
+            });
+            
+            // Initial update
+            updateActiveNav();
+        });
+    </script>
+
+    <script>
+        // Smooth scroll to section
+        function scrollToSection(sectionId) {
+            document.getElementById(sectionId).scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+
+        // Update active nav dot based on scroll position
+        function updateActiveNav() {
+            const sections = document.querySelectorAll('.profil-fullscreen-section');
+            const navDots = document.querySelectorAll('.nav-dot');
+            
+            let currentSection = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.scrollY >= sectionTop - 100 && window.scrollY < sectionTop + sectionHeight - 100) {
+                    currentSection = section.id;
+                }
+            });
+            
+            navDots.forEach(dot => {
+                dot.classList.remove('active');
+                if (dot.getAttribute('data-section') === currentSection) {
+                    dot.classList.add('active');
+                }
+            });
+        }
+
+        // Fade in on scroll function
+        function fadeInOnScroll() {
+            const fadeElements = document.querySelectorAll('.fade-in');
+            
+            fadeElements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.classList.add('visible');
+                }
+            });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Update nav on scroll
+            window.addEventListener('scroll', updateActiveNav);
+            
+            // Fade in on scroll
+            window.addEventListener('scroll', fadeInOnScroll);
+            
+            // Initial fade in check
+            fadeInOnScroll();
+            
+            // Click event for nav dots
+            document.querySelectorAll('.nav-dot').forEach(dot => {
+                dot.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const sectionId = this.getAttribute('data-section');
+                    scrollToSection(sectionId);
+                });
+            });
+            
+            // Initial update
+            updateActiveNav();
+            
+            console.log('Fade in initialized for', document.querySelectorAll('.fade-in').length, 'elements');
+        });
+    </script>
 
     <script src="js/script.js"></script>
 </body>

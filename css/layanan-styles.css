@@ -1,6 +1,10 @@
 /* ===== STYLING KHUSUS UNTUK HALAMAN LAYANAN ===== */
 
 /* Fullscreen Section Base Styles */
+body {
+    background: #f9f9f9;
+}
+
 .fullscreen-section {
     min-height: 100vh;
     display: flex;
@@ -302,11 +306,11 @@
 }
 
 .btn-primary {
-    background-color: #003399;
+    background-color: #e36159;
     color: white;
     border: none;
     cursor: pointer;
-    width: 100%;
+    width: 40%;
     padding: 15px;
     border-radius: 8px;
     font-weight: 600;
@@ -316,9 +320,16 @@
 }
 
 .btn-primary:hover {
-    background-color: #002280;
+    background-color: #D25048;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0, 51, 153, 0.3);
+}
+
+.btn-submit {
+    background-color: #003399 !important;
+}
+.btn-submit:hover {
+    background-color: #002280 !important;
 }
 
 /* Navigation Scroll */
@@ -431,4 +442,187 @@
     .breadcrumb-nav {
         font-size: 0.9rem;
     }
+}
+
+/* ===== SWIPER STYLING ===== */
+.swiper-layanan-wrapper {
+    position: relative;
+    width: 100%;
+    padding: 0 60px; /* Memberi ruang untuk navigasi */
+}
+
+.layanan-swiper {
+    width: 100%;
+    height: 100%;
+    padding: 20px 0 50px;
+    margin-top: 30px;
+}
+
+.swiper-slide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    height: auto;
+}
+
+/* Custom Navigation Buttons - POSISI DIPERBAIKI */
+.swiper-custom-prev,
+.swiper-custom-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 60px;
+    height: 60px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 20;
+    border: 2px solid #003399;
+}
+
+/* POSISI DIPERBAIKI - 40px dari tepi container */
+.swiper-custom-prev {
+    left: -40px;
+}
+
+.swiper-custom-next {
+    right: -40px;
+}
+
+.swiper-custom-prev:hover,
+.swiper-custom-next:hover {
+    background: #003399;
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 6px 25px rgba(0, 51, 153, 0.3);
+}
+
+.swiper-custom-prev:hover i,
+.swiper-custom-next:hover i {
+    color: white;
+}
+
+.swiper-custom-prev i,
+.swiper-custom-next i {
+    color: #003399;
+    font-size: 1.5rem;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+/* Pagination */
+.swiper-pagination {
+    position: relative;
+    bottom: 0;
+    margin-top: 30px;
+}
+
+.swiper-pagination-bullet {
+    width: 12px;
+    height: 12px;
+    background: rgba(0, 51, 153, 0.3);
+    opacity: 1;
+    transition: all 0.3s ease;
+}
+
+.swiper-pagination-bullet-active {
+    background: #003399;
+    transform: scale(1.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .swiper-layanan-wrapper {
+        padding: 0 50px;
+    }
+    
+    .swiper-custom-prev {
+        left: -30px;
+    }
+    
+    .swiper-custom-next {
+        right: -30px;
+    }
+    
+    .swiper-custom-prev,
+    .swiper-custom-next {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .swiper-custom-prev i,
+    .swiper-custom-next i {
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 992px) {
+    .swiper-layanan-wrapper {
+        padding: 0 40px;
+    }
+    
+    .swiper-custom-prev {
+        left: -25px;
+    }
+    
+    .swiper-custom-next {
+        right: -25px;
+    }
+}
+
+@media (max-width: 768px) {
+    .layanan-swiper {
+        padding: 10px 0 40px;
+    }
+    
+    .swiper-layanan-wrapper {
+        padding: 0 30px;
+    }
+    
+    .swiper-custom-prev,
+    .swiper-custom-next {
+        width: 45px;
+        height: 45px;
+        display: none; /* Sembunyikan di mobile */
+    }
+    
+    .swiper-custom-prev i,
+    .swiper-custom-next i {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .swiper-layanan-wrapper {
+        padding: 0 20px;
+    }
+    
+    .swiper-custom-prev,
+    .swiper-custom-next {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .swiper-custom-prev i,
+    .swiper-custom-next i {
+        font-size: 1rem;
+    }
+    
+    .swiper-pagination {
+        margin-top: 20px;
+    }
+}
+
+/* Pastikan swiper container tidak overflow */
+.swiper-container {
+    overflow: visible !important;
+}
+
+.swiper-wrapper {
+    align-items: stretch;
 }
