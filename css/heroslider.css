@@ -1,0 +1,283 @@
+/* ==========================================================================
+   HERO SLIDER BUTTONS - IMPROVED STYLING
+   ========================================================================== */
+
+/* Tombol navigasi hero slider - IMPROVED */
+.hero-slider-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.25);
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    font-size: 1.8rem;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.2),
+        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    opacity: 0.9;
+    outline: none;
+}
+
+.hero-slider-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-50%) scale(1.15);
+    box-shadow: 
+        0 12px 40px rgba(0, 0, 0, 0.3),
+        0 0 0 2px rgba(255, 255, 255, 0.2) inset;
+    opacity: 1;
+}
+
+.hero-slider-btn:focus {
+    outline: 2px solid rgba(255, 255, 255, 0.3);
+    outline-offset: 2px;
+}
+
+/* Tombol kiri - lebih ke kiri */
+.hero-prev-btn {
+    left: 50px;
+    margin-left: 0;
+}
+
+/* Tombol kanan - lebih ke kanan */
+.hero-next-btn {
+    right: 50px;
+    margin-right: 0;
+}
+
+/* Style icon dalam tombol - IMPROVED */
+.hero-slider-btn .material-symbols-outlined {
+    font-size: 36px;
+    font-weight: 400;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+}
+
+.hero-slider-btn:hover .material-symbols-outlined {
+    transform: scale(1.1);
+}
+
+/* Animasi masuk tombol */
+@keyframes slideInButton {
+    from {
+        opacity: 0;
+        transform: translateY(-50%) translateX(20px);
+    }
+    to {
+        opacity: 0.9;
+        transform: translateY(-50%) translateX(0);
+    }
+}
+
+.hero-prev-btn {
+    animation: slideInButton 0.6s ease-out 0.3s both;
+}
+
+.hero-next-btn {
+    animation: slideInButton 0.6s ease-out 0.4s both;
+}
+
+/* Hero content - kurangi padding agar konten lebih center */
+.hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    padding: 0 40px;
+    margin: 0 auto;
+}
+
+/* Badge indicator untuk slide aktif */
+.hero-slider-indicator {
+    position: absolute;
+    bottom: 40px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    z-index: 90;
+}
+
+/* ==========================================================================
+   RESPONSIVE STYLES UNTUK HERO SLIDER BUTTONS - IMPROVED
+   ========================================================================== */
+
+/* Large Desktop */
+@media (min-width: 1440px) {
+    .hero-prev-btn {
+        left: 80px;
+    }
+    
+    .hero-next-btn {
+        right: 80px;
+    }
+    
+    .hero-slider-btn {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .hero-slider-btn .material-symbols-outlined {
+        font-size: 42px;
+    }
+}
+
+/* Tablet */
+@media (max-width: 1200px) {
+    .hero-prev-btn {
+        left: 40px;
+    }
+    
+    .hero-next-btn {
+        right: 40px;
+    }
+    
+    .hero-slider-btn {
+        width: 65px;
+        height: 65px;
+    }
+    
+    .hero-slider-btn .material-symbols-outlined {
+        font-size: 32px;
+    }
+    
+    .hero-content {
+        padding: 0 60px;
+    }
+}
+
+/* Tablet kecil */
+@media (max-width: 992px) {
+    .hero-prev-btn {
+        left: 30px;
+    }
+    
+    .hero-next-btn {
+        right: 30px;
+    }
+    
+    .hero-slider-btn {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .hero-slider-btn .material-symbols-outlined {
+        font-size: 28px;
+    }
+    
+    .hero-content {
+        padding: 0 50px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .hero-prev-btn {
+        left: 20px;
+    }
+    
+    .hero-next-btn {
+        right: 20px;
+    }
+    
+    .hero-slider-btn {
+        width: 55px;
+        height: 55px;
+        opacity: 0.8;
+    }
+    
+    .hero-slider-btn .material-symbols-outlined {
+        font-size: 24px;
+    }
+    
+    .hero-content {
+        padding: 0 40px;
+    }
+    
+    .hero-content h2 {
+        font-size: 2rem;
+        margin-bottom: 15px;
+    }
+    
+    .hero-content p {
+        font-size: 1.1rem;
+        margin-bottom: 25px;
+    }
+    
+    .hero-slider-indicator {
+        bottom: 30px;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 576px) {
+    .hero-prev-btn {
+        left: 15px;
+    }
+    
+    .hero-next-btn {
+        right: 15px;
+    }
+    
+    .hero-slider-btn {
+        width: 50px;
+        height: 50px;
+        opacity: 0.7;
+    }
+    
+    .hero-slider-btn .material-symbols-outlined {
+        font-size: 22px;
+    }
+    
+    .hero-content {
+        padding: 0 30px;
+    }
+    
+    .hero-content h2 {
+        font-size: 1.8rem;
+    }
+    
+    .hero-content p {
+        font-size: 1rem;
+    }
+    
+    .hero-slider-indicator {
+        bottom: 25px;
+        gap: 8px;
+    }
+}
+
+/* Very small mobile */
+@media (max-width: 400px) {
+    .hero-prev-btn {
+        left: 10px;
+    }
+    
+    .hero-next-btn {
+        right: 10px;
+    }
+    
+    .hero-slider-btn {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .hero-slider-btn .material-symbols-outlined {
+        font-size: 20px;
+    }
+    
+    .hero-content {
+        padding: 0 20px;
+    }
+}

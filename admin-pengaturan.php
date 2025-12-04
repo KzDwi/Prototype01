@@ -29,8 +29,8 @@ $editable_files = [
         ]
     ],
     'profil' => [
-        'name' => 'Halaman Profil (profil.html)',
-        'path' => 'profil.html',
+        'name' => 'Halaman Profil (profil.php)',
+        'path' => 'profil.php',
         'sections' => [
             'hero' => 'Hero Profil',
             'visi-misi' => 'Visi & Misi',
@@ -400,7 +400,31 @@ if (file_exists($editable_files[$current_file]['path'])) {
     // Ekstrak konten berdasarkan file dan section
     if ($current_file === 'index') {
         if ($current_section === 'hero') {
-            // Ambil teks hero
+            // Ambil teks hero - HANYA dari Hero Section
+            // Pattern spesifik: cari <h2> yang ada di dalam .hero-content
+            $pattern = '/<div class="hero-content">\s*<h2>([^<]+)<\/h2>/s';
+            preg_match($pattern, $file_content, $matches);
+            $current_content['hero_text'] = $matches[1] ?? '';
+            
+            // Ambil subtext hero - HANYA dari Hero Section
+            // Pattern spesifik: cari <p> yang langsung setelah <h2> di .hero-content
+            $pattern = '/<div class="hero-content">\s*<h2>[^<]*<\/h2>\s*<p>([^<]+)<\/p>/s';
+            preg_match($pattern, $file_content, $matches);
+            $current_content['hero_subtext'] = $matches[1] ?? '';
+            
+            // Fallback jika pattern pertama tidak ketemu
+            if (empty($current_content['hero_subtext'])) {
+                $pattern = '/<p>([^<]+)<\/p>\s*<a href="#layanan-section"/s';
+                preg_match($pattern, $file_content, $matches);
+                $current_content['hero_subtext'] = $matches[1] ?? '';
+            }
+            
+            // Ambil semua gambar slider (4 gambar)
+            preg_match_all('/<div class="slide.*?style="background-image: url\(\'([^\']+)\'\)">/', $file_content, $matches);
+            for ($i = 0; $i < 4; $i++) {
+                $current_content["hero_image_" . ($i+1)] = $matches[1][$i] ?? '';
+            }
+        }
         elseif ($current_section === 'pimpinan') {
             // Ambil data pimpinan (3 pimpinan)
             $pattern = '/<div class="pimpinan-card">\s*<div class="pimpinan-img portrait">.*?<img[^>]+src="([^"]+)"[^>]*>.*?<\/div>\s*<div class="pimpinan-info">\s*<h3>([^<]+)<\/h3>\s*<p>([^<]+)<\/p>/s';
@@ -1035,7 +1059,7 @@ if (isset($_GET['success'])) {
                             <?php elseif ($current_section === 'visi-misi'): ?>
                                 <!-- Visi Misi Editor -->
                                 <div class="form-section">
-                                    <h4>Visi</h4>   
+                                    <h4>Visi</h4>
                                     <div class="form-group">
                                         <label for="visi">Teks Visi:</label>
                                         <textarea id="visi" name="visi" class="form-control" rows="4"><?php echo htmlspecialchars($current_content['visi'] ?? ''); ?></textarea>
@@ -1113,38 +1137,38 @@ if (isset($_GET['success'])) {
                             <?php endif; ?>
                             
                         <?php elseif ($current_file === 'profil' && $current_section === 'visi-misi'): ?>
-                            <!-- Visi Misi Profil Editor -->
-                            <div class="form-section">
-                                <h4>Visi Profil</h4>
-                                <div class="form-group">
-                                    <label for="visi">Teks Visi:</label>
-                                    <textarea id="visi" name="visi" class="form-control" rows="4"><?php echo htmlspecialchars($current_content['visi'] ?? ''); ?></textarea>
-                                </div>
+                        <!-- Visi Misi Profil Editor -->
+                        <div class="form-section">
+                            <h4>Visi Profil</h4>
+                            <div class="form-group">
+                                <label for="visi">Teks Visi:</label>
+                                <textarea id="visi" name="visi" class="form-control" rows="4"><?php echo htmlspecialchars($current_content['visi'] ?? ''); ?></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="form-section">
+                            <h4>Misi Profil</h4>
+                            <div class="format-hint">
+                                <h5>Format Penulisan Misi:</h5>
+                                <ul>
+                                    <li>Gunakan tanda dash (<code>-</code>) di awal setiap poin misi</li>
+                                    <li>Setiap baris akan menjadi poin misi terpisah</li>
+                                    <li>Contoh format:
+                                        <pre style="background:#f5f5f5;padding:10px;border-radius:4px;margin-top:5px;">
+                    - Misi pertama disini
+                    - Misi kedua disini  
+                    - Misi ketiga disini
+                    - Tambahkan poin baru dengan dash di baris baru</pre>
+                                    </li>
+                                </ul>
                             </div>
                             
-                            <div class="form-section">
-                                <h4>Misi Profil</h4>
-                                <div class="format-hint">
-                                    <h5>Format Penulisan Misi:</h5>
-                                    <ul>
-                                        <li>Gunakan tanda dash (<code>-</code>) di awal setiap poin misi</li>
-                                        <li>Setiap baris akan menjadi poin misi terpisah</li>
-                                        <li>Contoh format:
-                                            <pre style="background:#f5f5f5;padding:10px;border-radius:4px;margin-top:5px;">
-- Misi pertama disini
-- Misi kedua disini  
-- Misi ketiga disini
-- Tambahkan poin baru dengan dash di baris baru</pre>
-                                        </li>
-                                    </ul>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="misi">Teks Misi (format dengan dash):</label>
-                                    <textarea id="misi" name="misi" class="form-control" rows="10" 
-                                              placeholder="- Misi pertama&#10;- Misi kedua&#10;- Misi ketiga&#10;- Misi keempat&#10;- Misi kelima"><?php echo htmlspecialchars($current_content['misi'] ?? ''); ?></textarea>
-                                </div>
+                            <div class="form-group">
+                                <label for="misi">Teks Misi (format dengan dash):</label>
+                                <textarea id="misi" name="misi" class="form-control" rows="10" 
+                                        placeholder="- Misi pertama&#10;- Misi kedua&#10;- Misi ketiga&#10;- Misi keempat&#10;- Misi kelima"><?php echo htmlspecialchars($current_content['misi'] ?? ''); ?></textarea>
                             </div>
+                        </div>
                             
                         <?php else: ?>
                             <!-- Editor default untuk section lain -->

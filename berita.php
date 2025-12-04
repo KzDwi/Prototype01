@@ -46,6 +46,24 @@ if ($halaman_aktif > $total_halaman && $total_halaman > 0) $halaman_aktif = $tot
             margin-top: 80px;
         }
 
+        .orange-line {
+            display: inline-block;
+            padding-bottom: 10px;
+            position: relative;
+        }
+
+        .orange-line:after {
+            margin-bottom: -20px;
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 3px;
+            background-color: #e36159;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
         .berita-hero h1 {
             font-size: 2.5rem;
             margin-bottom: 15px;
@@ -355,7 +373,8 @@ if ($halaman_aktif > $total_halaman && $total_halaman > 0) $halaman_aktif = $tot
     </header>
 
     <!-- Berita Hero Section -->
-    <section class="berita-hero fullscreen-section" style="margin-top: -80px; height: 120vh; clip-path: polygon(0 0, 100% 0, 100% 85%, 0% 100%);">
+    <section class="berita-hero" style="margin-top: -80px;">
+        <br><br><br>
         <div class="container">
             <nav class="breadcrumb-nav">
                 <a href="index.html">Halaman Utama</a>
@@ -370,15 +389,16 @@ if ($halaman_aktif > $total_halaman && $total_halaman > 0) $halaman_aktif = $tot
                     <span class="active">Pencarian: "<?php echo htmlspecialchars($cari_keyword); ?>"</span>
                 <?php endif; ?>
             </nav>
-        </div>
+        </div> <br><br>
         <div class="container">
             <h1>Berita Terkini</h1>
-            <p>Informasi terbaru seputar pendidikan dan kebudayaan di Kabupaten Paser</p>
-        </div>
+            <p>Informasi terbaru seputar pendidikan</p> <p class="orange-line">dan kebudayaan di Kabupaten Paser</p>
+        </div> 
     </section>
-
+    
     <!-- Berita Filter -->
     <section class="berita-filter">
+        <br><br>
         <div class="container">
             <div class="filter-container">
                 <a href="berita.php?kategori=semua" class="filter-btn <?php echo $kategori_aktif === 'semua' ? 'active' : ''; ?>">Semua Berita</a>

@@ -1,0 +1,301 @@
+<?php
+// Mulai session dan include functions
+session_start();
+require_once 'functions.php';
+
+// Ambil data FAQ dari database jika ada, atau gunakan default
+$faq_data = getFAQData(); // Fungsi ini perlu dibuat di functions.php
+
+// Jika fungsi belum ada, kita buat data default
+if (!function_exists('getFAQData')) {
+    function getFAQData() {
+        return [
+            'informasi_umum' => [
+                [
+                    'question' => 'Dimana alamat kantor Dinas Pendidikan Kabupaten Paser?',
+                    'answer' => 'Kantor kami beralamat di Jl. Jenderal Sudirman No. 27, Tana Paser, Kabupaten Paser, Kalimantan Timur. Jam operasional pelayanan adalah Senin – Jumat, pukul 08.00 – 15.00.'
+                ],
+                [
+                    'question' => 'Bagaimana cara menghubungi Dinas Pendidikan?',
+                    'answer' => 'Anda dapat menghubungi kami melalui telepon di (0543) 21023 atau mengirim email ke <a href="mailto:disdik@paserkab.go.id" style="color: #003399; text-decoration: underline;">disdik@paserkab.go.id</a>. Untuk pengaduan, kami sarankan menggunakan kanal pada halaman ‘Layanan Publik’ kami.'
+                ]
+            ],
+            'layanan_kesiswaan' => [
+                [
+                    'question' => 'Bagaimana prosedur legalisir ijazah yang hilang atau rusak?',
+                    'answer' => '<p>Jika ijazah asli hilang atau rusak, Anda tidak bisa melakukan legalisir. Sebagai gantinya, Anda dapat mengurus <strong>Surat Keterangan Pengganti Ijazah (SKPI)</strong>. Prosedurnya adalah:</p>
+                    <ol style="margin-left: 20px; line-height: 1.6;">
+                        <li>Membuat Surat Keterangan Kehilangan dari Kepolisian.</li>
+                        <li>Datang ke sekolah asal yang mengeluarkan ijazah.</li>
+                        <li>Jika sekolah sudah tidak beroperasi, datang ke Dinas Pendidikan dengan membawa surat dari kepolisian dan dokumen pendukung lainnya (fotokopi ijazah jika ada, KTP, dll).</li>
+                    </ol>'
+                ],
+                [
+                    'question' => 'Apakah pindah sekolah (mutasi) antar kabupaten/kota dikenakan biaya?',
+                    'answer' => 'Tidak. Seluruh layanan pengurusan surat rekomendasi pindah sekolah (mutasi) di Dinas Pendidikan Kabupaten Paser adalah <strong>gratis</strong> dan tidak dipungut biaya.'
+                ]
+            ],
+            'guru_tenaga_kependidikan' => [
+                [
+                    'question' => 'Bagaimana cara memeriksa status validasi data untuk Tunjangan Profesi Guru (TPG)?',
+                    'answer' => 'Status validasi data guru dapat dipantau secara mandiri melalui laman <a href="https://info.gtk.kemdikbud.go.id" target="_blank" style="color: #003399; text-decoration: underline;">Info GTK</a> menggunakan akun PTK masing-masing. Pastikan data Anda di Dapodik sudah sinkron dan valid melalui operator sekolah.'
+                ],
+                [
+                    'question' => 'Saya adalah guru honorer, apakah bisa mendapatkan bantuan/insentif dari dinas?',
+                    'answer' => 'Pemerintah Daerah Kabupaten Paser memiliki kebijakan terkait insentif atau bantuan untuk guru non-ASN. Informasi mengenai kriteria, besaran, dan jadwal pencairan akan diumumkan secara resmi melalui surat edaran ke sekolah-sekolah. Silakan berkoordinasi dengan kepala sekolah Anda.'
+                ]
+            ],
+            'ppdb' => [
+                [
+                    'question' => 'Kapan jadwal pelaksanaan PPDB tahun ini?',
+                    'answer' => 'Jadwal lengkap, petunjuk teknis, dan informasi mengenai jalur pendaftaran (Zonasi, Afirmasi, Prestasi, Perpindahan Tugas Orang Tua) akan dipublikasikan melalui website resmi PPDB Kabupaten Paser. Mohon pantau website dan media sosial resmi kami secara berkala.'
+                ],
+                [
+                    'question' => 'Apa yang harus dilakukan jika ada kendala saat pendaftaran PPDB online?',
+                    'answer' => 'Jika terjadi kendala teknis, Anda dapat menghubungi <strong>Help Desk PPDB</strong> yang nomor kontaknya akan kami sediakan di situs resmi PPDB selama periode pendaftaran berlangsung. Anda juga bisa datang ke posko PPDB di sekolah terdekat atau di kantor Dinas Pendidikan.'
+                ]
+            ]
+        ];
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/layanan-styles.css" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/faq-styles.css" /> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>FAQ - Dinas Pendidikan Kabupaten Paser</title>
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header id="main-header">
+        <div class="container">
+            <div class="header-top">
+                <div class="logo">
+                    <img src="assets/logo-kabupaten.png" alt="Logo Pemerintahan">
+                    <div class="logo-text">
+                        <h1>Dinas Pendidikan dan Kebudayaan</h1>
+                        <p>Kabupaten Paser</p>
+                    </div>
+                </div>
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+                <nav id="main-nav">
+                    <ul>
+                        <li><a href="index.html" onclick="closeMobileMenu()">Beranda</a></li>
+                        <li><a href="profil.html" onclick="closeMobileMenu()">Profil</a></li>
+                        <li><a href="layanan.html" onclick="closeMobileMenu(); scrollToLayanan();">Layanan</a></li>
+                        <li><a href="berita.php" onclick="closeMobileMenu()">Berita</a></li>
+                        <li><a href="#kontak" onclick="closeMobileMenu()">Kontak</a></li>
+                        <li><a href="#faq-content" onclick="closeMobileMenu()" class="active">FAQ</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <section class="layanan-hero fullscreen-section">
+        <div class="container">
+            <nav class="breadcrumb-nav">
+                <a href="index.html">Halaman Utama</a>
+                <span>/</span>
+                <a href="faq.php" class="active">FAQ</a>
+            </nav>
+            <br>
+            <br>    
+        </div>
+        <div class="container">
+            <div class="layanan-hero-content">
+                <h1>FAQ (Tanya Jawab)</h1>
+                <h2 style="color: #DDD;">Dinas Pendidikan dan Kebudayaan Paser</h2>
+            </div>
+        </div>
+        <br> <br>
+        <br> <br>
+        <br> <br>
+        <br> <br>
+    </section>
+
+    <section id="faq-content" class="visi-misi" style="padding: 80px 0; background-color: #fff;">
+        <div class="container">
+            <div class="section-title">
+                <h2>Temukan jawaban atas pertanyaan-pertanyaan yang paling sering diajukan seputar layanan, kebijakan, dan program di Dinas Pendidikan Kabupaten Paser.</h2> <br><br>
+            </div>
+
+            <!-- Informasi Umum -->
+            <div class="faq-section-header">
+                <span class="icon">i</span>
+                Informasi Umum
+            </div>
+
+            <?php foreach ($faq_data['informasi_umum'] as $index => $faq): ?>
+            <div class="faq-item">
+                <input type="checkbox" id="faq-umum-<?php echo $index; ?>" class="faq-toggle">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <h3><?php echo htmlspecialchars($faq['question']); ?></h3>
+                    <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-answer">
+                    <?php echo $faq['answer']; ?>
+                </div>
+            </div>
+            <?php endforeach; ?>
+
+            <!-- Layanan Kesiswaan -->
+            <div class="faq-section-header green">
+                <span class="icon">🎓</span>
+                Layanan Kesiswaan
+            </div>
+
+            <?php foreach ($faq_data['layanan_kesiswaan'] as $index => $faq): ?>
+            <div class="faq-item">
+                <input type="checkbox" id="faq-kesiswaan-<?php echo $index; ?>" class="faq-toggle">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <h3><?php echo htmlspecialchars($faq['question']); ?></h3>
+                    <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-answer">
+                    <?php echo $faq['answer']; ?>
+                </div>
+            </div>
+            <?php endforeach; ?>
+
+            <!-- Guru & Tenaga Kependidikan -->
+            <div class="faq-section-header orange">
+                <span class="icon">👨‍🏫</span>
+                Seputar Guru & Tenaga Kependidikan (GTK)
+            </div>
+
+            <?php foreach ($faq_data['guru_tenaga_kependidikan'] as $index => $faq): ?>
+            <div class="faq-item">
+                <input type="checkbox" id="faq-gtk-<?php echo $index; ?>" class="faq-toggle">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <h3><?php echo htmlspecialchars($faq['question']); ?></h3>
+                    <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-answer">
+                    <?php echo $faq['answer']; ?>
+                </div>
+            </div>
+            <?php endforeach; ?>
+
+            <!-- PPDB -->
+            <div class="faq-section-header purple">
+                <span class="icon">🏢</span>
+                Seputar PPDB
+            </div>
+
+            <?php foreach ($faq_data['ppdb'] as $index => $faq): ?>
+            <div class="faq-item">
+                <input type="checkbox" id="faq-ppdb-<?php echo $index; ?>" class="faq-toggle">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <h3><?php echo htmlspecialchars($faq['question']); ?></h3>
+                    <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-answer">
+                    <?php echo $faq['answer']; ?>
+                </div>
+            </div>
+            <?php endforeach; ?>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content" id="kontak">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3987.6060327839327!2d116.1914303!3d-1.9081035!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2df047988e6b3c0b%3A0xdaa84941bfe1b7df!2sJl.%20Jenderal%20Sudirman%20No.27%2C%20Tanah%20Grogot%2C%20Kec.%20Tanah%20Grogot%2C%20Kabupaten%20Paser%2C%20Kalimantan%20Timur%2076251!5e0!3m2!1sid!2sid!4v1764218368388!5m2!1sid!2sid" width="250" height="200" style="border:0; border-radius: 0.3rem;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                <div class="footer-section">
+                    <h3>Kontak Kami</h3>
+                    <ul>
+                        <li>Jl. Jenderal Sudirman No. 27, Tanah Grogot, Kabupaten Paser, Kalimantan Timur 76251</li>
+                        <li>Telp: (0543) 21023</li>
+                        <li>Email: disdik@paserkab.go.id</li>
+                        <li class="social-icons">
+                            <a href="#" aria-label="Facebook">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" aria-label="Twitter">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" aria-label="Instagram">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" aria-label="YouTube">
+                                <i class="fab fa-youtube"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Layanan Cepat</h3>
+                    <ul>
+                        <li><a href="layanan.html%20#layanan" onclick="scrollToLayanan()">Legalisir Ijazah/Dokumen Kelulusan</a></li>
+                        <li><a href="layanan.html%20#layanan" onclick="scrollToLayanan()">Surat Keterangan Pindah Sekolah</a></li>
+                        <li><a href="layanan.html%20#layanan" onclick="scrollToLayanan()">Tunjangan Profesi Guru</a></li>
+                        <li><a href="layanan.html%20#layanan" onclick="scrollToLayanan()">Izin Pendirian Satuan Pendidikan</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Tautan Terkait</h3>
+                    <ul>
+                        <li><a href="#">Kementerian Dalam Negeri</a></li>
+                        <li><a href="#">Badan Pusat Statistik</a></li>
+                        <li><a href="#">Kementerian Keuangan</a></li>
+                        <li><a href="#">Portal Nasional</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Dinas Pendidikan dan Kebudayaan Kabupaten Paser. Hak Cipta Dilindungi.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- FAQ Toggle Script -->
+    <script>
+    // FAQ Functionality - SIMPLIFIED VERSION
+    document.addEventListener('DOMContentLoaded', function() {
+        const faqQuestions = document.querySelectorAll('.faq-question');
+        
+        console.log('FAQ questions found:', faqQuestions.length);
+        
+        faqQuestions.forEach(question => {
+            question.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const faqItem = this.parentElement;
+                const isActive = faqItem.classList.contains('active');
+                
+                console.log('FAQ clicked, active:', isActive);
+                
+                // Close all other FAQ items
+                document.querySelectorAll('.faq-item').forEach(item => {
+                    if (item !== faqItem) {
+                        item.classList.remove('active');
+                    }
+                });
+                
+                // Toggle current item
+                if (!isActive) {
+                    faqItem.classList.add('active');
+                    console.log('FAQ opened');
+                } else {
+                    faqItem.classList.remove('active');
+                    console.log('FAQ closed');
+                }
+            });
+        });
+        
+        // Debug: Check initial state
+        console.log('FAQ initialization complete');
+    });
+    </script>
+    <script src="js/script.js"></script>
+</body>
+</html>
