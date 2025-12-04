@@ -1,0 +1,22 @@
+{
+    "legalisir-ijazah": {
+        "popup_desc": "Layanan legalisir ijazah dan dokumen kelulusan untuk keperluan administrasi seperti melamar pekerjaan, melanjutkan pendidikan, atau keperluan lainnya. TEST",
+        "cara_kerja": "Pemohon datang ke kantor Dinas Pendidikan dengan membawa dokumen asli\r\nMengisi formulir permohonan legalisir\r\nPetugas memverifikasi dokumen asli\r\nDokumen dicap dan ditandatangani oleh pejabat berwenang\r\nPemohon menerima dokumen yang telah dilegalisir TEST",
+        "persyaratan": "Ijazah asli yang akan dilegalisir\r\nKTP asli dan fotokopi\r\nFormulir permohonan yang telah diisi\r\nBukti pembayaran (jika ada)"
+    },
+    "surat-mutasi": {
+        "popup_desc": "",
+        "cara_kerja": "",
+        "persyaratan": ""
+    },
+    "tunjangan-guru": {
+        "popup_desc": "",
+        "cara_kerja": "",
+        "persyaratan": ""
+    },
+    "izin-pendirian": {
+        "popup_desc": "",
+        "cara_kerja": "",
+        "persyaratan": ""
+    }
+}

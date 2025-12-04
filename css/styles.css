@@ -541,13 +541,6 @@ header.scrolled .mobile-menu-btn {
     }
 }
 
-.hero-slider-btn {
-    display: block !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    background: red !important; /* Warna merah untuk testing */
-}
-
 /* ==========================================================================
    SECTION COMMON STYLES
    ========================================================================== */
