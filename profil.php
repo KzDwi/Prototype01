@@ -340,11 +340,11 @@
                 <nav id="main-nav">
                     <ul>
                         <li><a href="index.php" onclick="closeMobileMenu()">Beranda</a></li>
-                        <li><a href="profil.php" onclick="closeMobileMenu()" class="active">Profil</a></li>
-                        <li><a href="layanan.html" onclick="closeMobileMenu(); scrollToLayanan();">Layanan</a></li>
+                        <li><a href="#" onclick="closeMobileMenu()" class="active">Profil</a></li>
+                        <li><a href="layanan.php" onclick="closeMobileMenu(); scrollToLayanan();">Layanan</a></li>
                         <li><a href="berita.php" onclick="closeMobileMenu()">Berita</a></li>
-                        <li><a href="#kontak" onclick="closeMobileMenu()">Kontak</a></li>
-                        <li><a href="faq.html" onclick="closeMobileMenu()">FAQ</a></li>
+                        <li><a href="kontak.php" onclick="closeMobileMenu()">Kontak</a></li>
+                        <li><a href="faq.php" onclick="closeMobileMenu()">FAQ</a></li>
                     </ul>
                 </nav>
             </div>
@@ -496,7 +496,8 @@
     <!-- Footer -->
     <footer>
         <div class="container">
-            <div class="footer-content">
+            <div class="footer-content" id="kontak">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3987.6060327839327!2d116.1914303!3d-1.9081035!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2df047988e6b3c0b%3A0xdaa84941bfe1b7df!2sJl.%20Jenderal%20Sudirman%20No.27%2C%20Tanah%20Grogot%2C%20Kec.%20Tanah%20Grogot%2C%20Kabupaten%20Paser%2C%20Kalimantan%20Timur%2076251!5e0!3m2!1sid!2sid!4v1764218368388!5m2!1sid!2sid" width="250" height="200" style="border:0; border-radius: 0.3rem;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                 <div class="footer-section">
                     <h3>Kontak Kami</h3>
                     <ul>

@@ -276,12 +276,12 @@
                 <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
                 <nav id="main-nav">
                     <ul>
-                        <li><a href="index.html" onclick="closeMobileMenu()">Beranda</a></li>
+                        <li><a href="index.php" onclick="closeMobileMenu()">Beranda</a></li>
                         <li><a href="profil.php" onclick="closeMobileMenu()">Profil</a></li>
-                        <li><a href="layanan.php" onclick="closeMobileMenu(); scrollToLayanan();" class="active">Layanan</a></li>
+                        <li><a href="#" onclick="closeMobileMenu(); scrollToLayanan();" class="active">Layanan</a></li>
                         <li><a href="berita.php" onclick="closeMobileMenu()">Berita</a></li>
                         <li><a href="kontak.php" onclick="closeMobileMenu()">Kontak</a></li>
-                        <li><a href="faq.html" onclick="closeMobileMenu()">FAQ</a></li>
+                        <li><a href="faq.php" onclick="closeMobileMenu()">FAQ</a></li>
                     </ul>
                 </nav>
             </div>
@@ -289,7 +289,7 @@
     </header>
 
     <!-- Hero Section Layanan -->
-    <section class="layanan-hero">
+    <section class="layanan-hero fade-in">
         <div class="container">
             <nav class="breadcrumb-nav">
                 <a href="index.html">Halaman Utama</a>
@@ -319,7 +319,7 @@
     </section>
 
     <!-- Layanan Section -->
-    <section id="layanan" class="layanan-section fullscreen-section">
+    <section id="layanan" class="layanan-section fullscreen-section fade-in">
         <div class="container">
             <div class="section-title fade-in">
                 <h2><?php echo htmlspecialchars($layanan_title); ?></h2>
@@ -383,7 +383,7 @@
     </section>
 
     <!-- FAQ Section -->
-    <section id="faq" class="faq-section fullscreen-section">
+    <section id="faq" class="faq-section fullscreen-section fade-in">
         <div class="container">
             <div class="section-title fade-in">
                 <h2><?php echo htmlspecialchars($faq_title); ?></h2>
@@ -428,7 +428,7 @@
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="contact-section fullscreen-section">
+    <section id="contact" class="contact-section fullscreen-section fade-in">
         <div class="container">
             <div class="section-title fade-in">
                 <h2><?php echo htmlspecialchars($contact_title); ?></h2>

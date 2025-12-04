@@ -1,18 +1,70 @@
 <?php
 // index.php
 session_start();
-require_once 'functions_json.php';
+require_once 'functions.php';
 
-// Ambil data dari JSON menggunakan fungsi baru
-$pimpinan_data = ambilDataPimpinan();
-$visi_misi = ambilVisiMisi();
-$layanan_data = ambilDataLayanan();
-$hero_data = ambilDataHero();
+// Ambil data pimpinan dari database (jika ada) atau gunakan default
+$pimpinan_data = [
+    [
+        'nama' => 'Dr. Fahmi Fadli',
+        'jabatan' => 'Bupati Paser',
+        'foto' => 'assets/Bupati_Paser_Fahmi_Fadli.jpg'
+    ],
+    [
+        'nama' => 'H. Ikhwan Antasari, S.Sos.',
+        'jabatan' => 'Wakil Bupati Paser',
+        'foto' => 'assets/Wakil_Bupati_Paser_Ikhwan_Antasari.jpg'
+    ],
+    [
+        'nama' => 'Drs. Katsul Wijaya, M.Si',
+        'jabatan' => 'Sekretaris Daerah',
+        'foto' => 'assets/sekda-paser-2024.jpg'
+    ]
+];
 
 // Ambil berita terbaru untuk slider
-$berita_terbaru = [];
-?>
+$berita_terbaru = ambilSemuaBerita('semua', 3);
 
+// Ambil data layanan dari database jika ada
+$layanan_data = [
+    [
+        'id' => 'legalisir-ijazah',
+        'title' => 'Legalisir Ijazah/Dokumen Kelulusan',
+        'desc' => 'Layanan legalisir ijazah dan dokumen kelulusan untuk berbagai keperluan administrasi.',
+        'icon' => 'assets/legalisir.png'
+    ],
+    [
+        'id' => 'surat-mutasi',
+        'title' => 'Surat Keterangan Pindah Sekolah',
+        'desc' => 'Layanan penerbitan surat mutasi untuk siswa yang akan berpindah sekolah.',
+        'icon' => 'assets/document.png'
+    ],
+    [
+        'id' => 'tunjangan-guru',
+        'title' => 'Pengusulan Tunjangan Profesi Guru',
+        'desc' => 'Layanan pengusulan tunjangan profesi guru bagi guru yang memenuhi syarat.',
+        'icon' => 'assets/tunjangan.png'
+    ],
+    [
+        'id' => 'izin-pendirian',
+        'title' => 'Izin Pendirian Satuan Pendidikan',
+        'desc' => 'Layanan perizinan pendirian PAUD, SD, SMP, dan Lembaga Kursus.',
+        'icon' => 'assets/institusi.png'
+    ]
+];
+
+// Data visi misi
+$visi_misi = [
+    'visi' => 'Terwujudnya Paser yang Sejahtera, Berakhlak Mulia dan Berdaya Saing',
+    'misi' => [
+        'Mewujudkan Sumber Daya Manusia yang handal dan berdaya saing melalui Peningkatan Mutu Pendidikan, Derajat Kesehatan serta Kesejahteraan Sosial',
+        'Mewujudkan tata kelola pemerintahan yang baik (Good Governance) yang bersih, efektif, efesien, transparan dan akuntabel berbasis Teknologi Informasi dan Komunikasi',
+        'Mewujudkan Pembangunan yang merata dan berkesinambungan yang berwawasan lingkungan',
+        'Meningkatkan kemandirian ekonomi daerah dan masyarakat berbasis potensi lokal',
+        'Menciptakan Kota yang Aman, Nyaman, dan Kondusif'
+    ]
+];
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -31,7 +83,6 @@ $berita_terbaru = [];
         <div class="container">
             <div class="header-top">
                 <div class="logo">
-                    <!-- PERBAIKI PATH LOGO -->
                     <img src="assets/logo-kabupaten.png" alt="Logo Pemerintahan">
                     <div class="logo-text">
                         <h1>Dinas Pendidikan dan Kebudayaan</h1>
@@ -45,11 +96,8 @@ $berita_terbaru = [];
                         <li><a href="profil.php" onclick="closeMobileMenu()">Profil</a></li>
                         <li><a href="layanan.php" onclick="closeMobileMenu(); scrollToLayanan();">Layanan</a></li>
                         <li><a href="berita.php" onclick="closeMobileMenu()">Berita</a></li>
-                        <li><a href="#kontak" onclick="closeMobileMenu()">Kontak</a></li>
+                        <li><a href="kontak.php" onclick="closeMobileMenu()">Kontak</a></li>
                         <li><a href="faq.php" onclick="closeMobileMenu()">FAQ</a></li>
-                        <?php if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true): ?>
-                        <li><a href="admin-dashboard.php" onclick="closeMobileMenu()">Admin</a></li>
-                        <?php endif; ?>
                     </ul>
                 </nav>
             </div>
@@ -57,47 +105,39 @@ $berita_terbaru = [];
     </header>
 
     <!-- Hero Section dengan Slider -->
-    <section class="hero">
-        <div class="hero-slider">
-            <?php if (isset($hero_data['hero_images']) && is_array($hero_data['hero_images'])): ?>
-                <?php foreach ($hero_data['hero_images'] as $index => $image_url): ?>
-                    <?php if (!empty($image_url)): ?>
-                    <div class="slide <?php echo $index === 0 ? 'active' : ''; ?>" 
-                         style="background-image: url('<?php echo htmlspecialchars($image_url); ?>')">
-                        <div class="slide-overlay"></div>
-                    </div>
-                    <?php else: ?>
-                    <!-- Default image if empty -->
-                    <div class="slide <?php echo $index === 0 ? 'active' : ''; ?>" 
-                         style="background-image: url('assets/uploads/sekda-paser-2024.jpg')">
-                        <div class="slide-overlay"></div>
-                    </div>
-                    <?php endif; ?>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <!-- Fallback jika tidak ada data -->
-                <div class="slide active" style="background-image: url('assets/uploads/sekda-paser-2024.jpg')">
-                    <div class="slide-overlay"></div>
-                </div>
-            <?php endif; ?>
+<section class="hero">
+    <div class="hero-slider">
+        <div class="slide active" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/c/c1/Pemandangan_Tanah_Grogot.jpg?20100504072853')">
+            <div class="slide-overlay"></div>
         </div>
-        
-        <!-- Tombol navigasi hero slider -->
-        <button class="hero-slider-btn hero-prev-btn" aria-label="Slide sebelumnya">
-            <span class="material-symbols-outlined">chevron_left</span>
-        </button>
-        
-        <div class="hero-content">
-            <h2><?php echo isset($hero_data['hero_text']) ? htmlspecialchars($hero_data['hero_text']) : 'Dinas Pendidikan dan Kebudayaan'; ?></h2>
-            <h3 style="font-size: 2rem;">Pendidikan dan Kebudayaan Kabupaten Paser</h3><br>
-            <p><?php echo isset($hero_data['hero_subtext']) ? htmlspecialchars($hero_data['hero_subtext']) : 'Mewujudkan pendidikan berkualitas untuk masyarakat Paser'; ?></p> <br> <br>
-            <a href="#layanan-section" class="btn" onclick="scrollToLayanan()">Jelajahi Layanan</a>
+        <div class="slide" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Tari_Ronggeng_Paser.JPG/1200px-Tari_Ronggeng_Paser.JPG')">
+            <div class="slide-overlay"></div>
         </div>
-        
-        <button class="hero-slider-btn hero-next-btn" aria-label="Slide berikutnya">
-            <span class="material-symbols-outlined">chevron_right</span>
-        </button>
-    </section>
+        <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-4.0.1&auto=format&fit=crop&w=1350&q=80')">
+            <div class="slide-overlay"></div>
+        </div>
+        <div class="slide" style="background-image: url('https://media.suara.com/images/2024/12/30/68716-ilustrasi-wisata-di-kabupaten-paser-kaltim.jpg')">
+            <div class="slide-overlay"></div>
+        </div>
+    </div>
+    
+    <!-- Tombol navigasi hero slider -->
+    <button class="hero-slider-btn hero-prev-btn" aria-label="Slide sebelumnya">
+        <span class="material-symbols-outlined">chevron_left</span>
+    </button>
+    
+    <div class="hero-content">
+        <h2>Pusat Layanan dan Informasi</h2>
+        <h3 style="font-size: 2rem;">Pendidikan dan Kebudayaan Kabupaten Paser</h3><br>
+        <p>Bersama Paser TUNTAS (Tangguh, Unggul, Transformatif, Adil, dan Sejahtera)</p> <br> <br>
+        <a href="#layanan-section" class="btn" onclick="scrollToLayanan()">Jelajahi Layanan</a>
+    </div>
+    
+    <button class="hero-slider-btn hero-next-btn" aria-label="Slide berikutnya">
+        <span class="material-symbols-outlined">chevron_right</span>
+    </button>
+    
+</section>
 
     <!-- Pimpinan Daerah Section -->
     <section id="pimpinan" class="pimpinan fullscreen-section">
@@ -106,59 +146,19 @@ $berita_terbaru = [];
                 <h2>Pimpinan Daerah</h2>
             </div>
             <div class="pimpinan-grid">
-                <?php if (isset($pimpinan_data) && is_array($pimpinan_data)): ?>
-                    <?php foreach ($pimpinan_data as $pimpinan): ?>
-                    <div class="pimpinan-card">
-                        <div class="pimpinan-img portrait">
-                            <?php if (!empty($pimpinan['foto'])): ?>
-                            <img src="<?php echo htmlspecialchars($pimpinan['foto']); ?>" 
-                                 alt="<?php echo htmlspecialchars($pimpinan['nama'] . ' - ' . $pimpinan['jabatan']); ?>"
-                                 onerror="this.onerror=null; this.src='assets/uploads/Bupati_Paser_Fahmi_Fadli.jpg';">
-                            <?php else: ?>
-                            <!-- Default image -->
-                            <img src="assets/uploads/Bupati_Paser_Fahmi_Fadli.jpg" 
-                                 alt="Foto Pimpinan">
-                            <?php endif; ?>
-                        </div>
-                        <div class="pimpinan-info">
-                            <h3><?php echo htmlspecialchars($pimpinan['nama'] ?? 'Nama Pimpinan'); ?></h3>
-                            <p><?php echo htmlspecialchars($pimpinan['jabatan'] ?? 'Jabatan'); ?></p>
-                        </div>
+                <?php foreach ($pimpinan_data as $pimpinan): ?>
+                <div class="pimpinan-card">
+                    <div class="pimpinan-img portrait">
+                        <img src="<?php echo htmlspecialchars($pimpinan['foto']); ?>" 
+                             alt="<?php echo htmlspecialchars($pimpinan['nama'] . ' - ' . $pimpinan['jabatan']); ?>" 
+                             onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiBmaWxsPSIjMDAzMzk5IiBmaWxsLW9wYWNpdHk9IjAuMSIvPgo8Y2lyY2xlIGN4PSI2MCIgY3k9IjQ1IiByPSIyMCIgZmlsbD0iIzAwMzM5OSIgZmlsbC1vcGFjaXR5PSIwLjMiLz4KPHBhdGggZD0iTTYwIDc1IEM0MCA3NSAzMCA4NSAzMCA5NSBDMzAgMTA1IDQwIDExNSA2MCAxMTUgQzgwIDExNSA5MCAxMDUgOTAgOTUgQzkwIDg1IDgwIDc1IDYwIDc1IFoiIGZpbGw9IiMwMDMzOTkiIGZpbGwtb3BhY2l0eT0iMC4zIi8+Cjwvc3ZnPg=='">
                     </div>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <!-- Fallback jika tidak ada data -->
-                    <div class="pimpinan-card">
-                        <div class="pimpinan-img portrait">
-                            <img src="assets/uploads/Bupati_Paser_Fahmi_Fadli.jpg" 
-                                 alt="Bupati Paser">
-                        </div>
-                        <div class="pimpinan-info">
-                            <h3>Dr. Fahmi Fadli</h3>
-                            <p>Bupati Paser</p>
-                        </div>
+                    <div class="pimpinan-info">
+                        <h3><?php echo htmlspecialchars($pimpinan['nama']); ?></h3>
+                        <p><?php echo htmlspecialchars($pimpinan['jabatan']); ?></p>
                     </div>
-                    <div class="pimpinan-card">
-                        <div class="pimpinan-img portrait">
-                            <img src="assets/uploads/Wakil_Bupati_Paser_Ikhwan_Antasari.jpg" 
-                                 alt="Wakil Bupati Paser">
-                        </div>
-                        <div class="pimpinan-info">
-                            <h3>Ikhwan Antasari</h3>
-                            <p>Wakil Bupati Paser</p>
-                        </div>
-                    </div>
-                    <div class="pimpinan-card">
-                        <div class="pimpinan-img portrait">
-                            <img src="assets/uploads/sekda-paser-2024.jpg" 
-                                 alt="Sekda Paser">
-                        </div>
-                        <div class="pimpinan-info">
-                            <h3>Sekretaris Daerah</h3>
-                            <p>Sekda Kabupaten Paser</p>
-                        </div>
-                    </div>
-                <?php endif; ?>
+                </div>
+                <?php endforeach; ?>
             </div>
         </div>
     </section>
@@ -172,24 +172,115 @@ $berita_terbaru = [];
             <div class="visi-misi-content">
                 <div class="visi">
                     <h3>Visi</h3>
-                    <p><?php echo isset($visi_misi['visi']) ? htmlspecialchars($visi_misi['visi']) : 'Terwujudnya masyarakat Paser yang berpendidikan, berbudaya, dan berdaya saing.'; ?></p>
+                    <p><?php echo htmlspecialchars($visi_misi['visi']); ?></p>
                 </div>
                 <div class="misi">
                     <h3>Misi</h3>
                     <ul>
-                        <?php if (isset($visi_misi['misi']) && is_array($visi_misi['misi'])): ?>
-                            <?php foreach ($visi_misi['misi'] as $misi_item): ?>
-                            <li><?php echo htmlspecialchars($misi_item); ?></li>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <li>Meningkatkan akses dan kualitas pendidikan</li>
-                            <li>Melestarikan dan mengembangkan kebudayaan daerah</li>
-                            <li>Meningkatkan kompetensi tenaga pendidik</li>
-                            <li>Mengembangkan sarana dan prasarana pendidikan</li>
-                            <li>Mendorong partisipasi masyarakat dalam pendidikan</li>
-                        <?php endif; ?>
+                        <?php foreach ($visi_misi['misi'] as $misi_item): ?>
+                        <li><?php echo htmlspecialchars($misi_item); ?></li>
+                        <?php endforeach; ?>
                     </ul>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Berita Cepat Section -->
+    <section class="berita-cepat fullscreen-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Berita Cepat</h2>
+            </div>
+            
+            <div class="berita-slider-container">
+                <div class="berita-slider">
+                    <?php if (!empty($berita_terbaru)): ?>
+                        <?php foreach ($berita_terbaru as $index => $berita): ?>
+                        <div class="slide-content <?php echo $index === 0 ? 'active' : ''; ?>">
+                            <article class="post--overlay post--overlay-bottom post--overlay-floorfade">
+                                <div class="background-img" style="background-image:url('<?php echo htmlspecialchars($berita['gambar'] ?? 'https://via.placeholder.com/800x400/003399/ffffff?text=Berita+Disdikbud'); ?>')"></div>
+                                <div class="post__text inverse-text">
+                                    <div class="post__text-wrap">
+                                        <div class="post__text-inner text-center max-width-sm">
+                                            <a href="berita-detail.php?id=<?php echo $berita['id']; ?>" class="post__cat post__cat--bg cat-theme-bg">
+                                                <?php echo htmlspecialchars($berita['kategori']); ?>
+                                            </a>
+                                            <h3 class="post__title typescale-5">
+                                                <?php echo htmlspecialchars($berita['judul']); ?>
+                                            </h3>
+                                            <div class="post__meta">
+                                                <span class="entry-author">
+                                                    <i class="mdicon mdicon-person"></i> 
+                                                    <a href="#" class="entry-author__name">
+                                                        <?php echo htmlspecialchars($berita['penulis']); ?>
+                                                    </a>
+                                                </span> 
+                                                <time class="time published">
+                                                    <i class="mdicon mdicon-schedule"></i> 
+                                                    <?php echo formatTanggalIndonesia($berita['tanggal_publish']); ?>
+                                                </time>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="berita-detail.php?id=<?php echo $berita['id']; ?>" class="link-overlay"></a>
+                            </article>
+                        </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                    <div class="slide-content active">
+                        <article class="post--overlay post--overlay-bottom post--overlay-floorfade">
+                            <div class="background-img" style="background-image:url('https://via.placeholder.com/800x400/003399/ffffff?text=Tidak+Ada+Berita')"></div>
+                            <div class="post__text inverse-text">
+                                <div class="post__text-wrap">
+                                    <div class="post__text-inner text-center max-width-sm">
+                                        <h3 class="post__title typescale-5">
+                                            Belum ada berita tersedia
+                                        </h3>
+                                        <div class="post__meta">
+                                            <span class="entry-author">
+                                                <i class="mdicon mdicon-person"></i> 
+                                                <a href="#" class="entry-author__name">
+                                                    Admin Disdikbud
+                                                </a>
+                                            </span> 
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                    <?php endif; ?>
+                </div>
+                
+                <!-- Slider Controls -->
+                <?php if (!empty($berita_terbaru) && count($berita_terbaru) > 1): ?>
+                <button class="slider-nav-btn prev-btn" type="button" aria-label="previous">
+                    <svg viewBox="0 0 100 100" width="20" height="20">
+                        <path d="M 10,50 L 60,100 L 70,90 L 30,50 L 70,10 L 60,0 Z" fill="#003399"></path>
+                    </svg>
+                </button>
+                <button class="slider-nav-btn next-btn" type="button" aria-label="next">
+                    <svg viewBox="0 0 100 100" width="20" height="20">
+                        <path d="M 10,50 L 60,100 L 70,90 L 30,50 L 70,10 L 60,0 Z" fill="#003399" transform="translate(100, 100) rotate(180)"></path>
+                    </svg>
+                </button>
+                
+                <!-- Pagination Dots -->
+                <div class="slider-pagination">
+                    <?php for ($i = 0; $i < min(3, count($berita_terbaru)); $i++): ?>
+                    <span class="dot <?php echo $i === 0 ? 'active' : ''; ?>" data-index="<?php echo $i; ?>"></span>
+                    <?php endfor; ?>
+                </div>
+                <?php endif; ?>
+            </div>
+            
+            <div class="text-center" style="margin-top: 30px;">
+                <a href="berita.php" class="btn btn-default">
+                    Lihat Semua Berita
+                    <span class="material-symbols-outlined">arrow_forward</span>
+                </a>
             </div>
         </div>
     </section>
@@ -203,62 +294,16 @@ $berita_terbaru = [];
                 <br>
             </div>
             <div class="layanan-grid">
-                <?php if (isset($layanan_data) && is_array($layanan_data)): ?>
-                    <?php foreach ($layanan_data as $layanan): ?>
-                    <div class="layanan-card fade-in" onclick="openLayananPopup('<?php echo htmlspecialchars($layanan['id']); ?>')">
-                        <?php if (!empty($layanan['icon'])): ?>
-                        <img src="<?php echo htmlspecialchars($layanan['icon']); ?>" 
-                             alt="<?php echo htmlspecialchars($layanan['title']); ?>" 
-                             class="icon-layanan" style="width: 100px; height: 100px;"
-                             onerror="this.onerror=null; this.src='assets/uploads/legalisir.png';">
-                        <?php else: ?>
-                        <!-- Default icons based on service type -->
-                        <img src="assets/uploads/legalisir.png" 
-                             alt="<?php echo htmlspecialchars($layanan['title']); ?>" 
-                             class="icon-layanan" style="width: 100px; height: 100px;">
-                        <?php endif; ?>
-                        <div class="layanan-card-content">
-                            <h3><?php echo htmlspecialchars($layanan['title'] ?? 'Judul Layanan'); ?></h3>
-                            <p><?php echo htmlspecialchars($layanan['desc'] ?? 'Deskripsi layanan'); ?></p>
-                            <button class="layanan-btn">Lihat Detail</button>
-                        </div>
+                <?php foreach ($layanan_data as $layanan): ?>
+                <div class="layanan-card fade-in" onclick="openLayananPopup('<?php echo $layanan['id']; ?>')">
+                    <img src="<?php echo htmlspecialchars($layanan['icon']); ?>" alt="<?php echo htmlspecialchars($layanan['title']); ?>" class="icon-layanan" style="width: 100px; height: 100px;">
+                    <div class="layanan-card-content">
+                        <h3><?php echo htmlspecialchars($layanan['title']); ?></h3>
+                        <p><?php echo htmlspecialchars($layanan['desc']); ?></p>
+                        <button class="layanan-btn">Lihat Detail</button>
                     </div>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <!-- Fallback layanan -->
-                    <div class="layanan-card fade-in" onclick="openLayananPopup('legalisir-ijazah')">
-                        <img src="assets/uploads/legalisir.png" alt="Legalisir Ijazah" class="icon-layanan" style="width: 100px; height: 100px;">
-                        <div class="layanan-card-content">
-                            <h3>Legalisir Ijazah</h3>
-                            <p>Pengesahan dokumen ijazah untuk keperluan administrasi</p>
-                            <button class="layanan-btn">Lihat Detail</button>
-                        </div>
-                    </div>
-                    <div class="layanan-card fade-in" onclick="openLayananPopup('surat-mutasi')">
-                        <img src="assets/uploads/document.png" alt="Surat Mutasi" class="icon-layanan" style="width: 100px; height: 100px;">
-                        <div class="layanan-card-content">
-                            <h3>Surat Mutasi</h3>
-                            <p>Proses mutasi guru dan tenaga kependidikan</p>
-                            <button class="layanan-btn">Lihat Detail</button>
-                        </div>
-                    </div>
-                    <div class="layanan-card fade-in" onclick="openLayananPopup('tunjangan-guru')">
-                        <img src="assets/uploads/tunjangan.png" alt="Tunjangan Guru" class="icon-layanan" style="width: 100px; height: 100px;">
-                        <div class="layanan-card-content">
-                            <h3>Tunjangan Guru</h3>
-                            <p>Pengajuan dan pengelolaan tunjangan profesi guru</p>
-                            <button class="layanan-btn">Lihat Detail</button>
-                        </div>
-                    </div>
-                    <div class="layanan-card fade-in" onclick="openLayananPopup('izin-pendirian')">
-                        <img src="assets/uploads/institusi.png" alt="Izin Pendirian" class="icon-layanan" style="width: 100px; height: 100px;">
-                        <div class="layanan-card-content">
-                            <h3>Izin Pendirian</h3>
-                            <p>Perizinan pendirian lembaga pendidikan baru</p>
-                            <button class="layanan-btn">Lihat Detail</button>
-                        </div>
-                    </div>
-                <?php endif; ?>
+                </div>
+                <?php endforeach; ?>
             </div>
         </div>
     </section>
@@ -267,9 +312,7 @@ $berita_terbaru = [];
     <footer>
         <div class="container">
             <div class="footer-content" id="kontak">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3987.6060327839327!2d116.1914303!3d-1.9081035!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2df047988e6b3c0b%3A0xdaa84941bfe1b7df!2sJl.%20Jenderal%20Sudirman%20No.27%2C%20Tanah%20Grogot%2C%20Kec.%20Tanah%20Grogot%2C%20Kabupaten%20Paser%2C%20Kalimantan%20Timur%2076251!5e0!3m2!1sid!2sid!4v1764218368388!5m2!1sid!2sid" 
-                        width="250" height="200" style="border:0; border-radius: 0.3rem;" 
-                        allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3987.6060327839327!2d116.1914303!3d-1.9081035!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2df047988e6b3c0b%3A0xdaa84941bfe1b7df!2sJl.%20Jenderal%20Sudirman%20No.27%2C%20Tanah%20Grogot%2C%20Kec.%20Tanah%20Grogot%2C%20Kabupaten%20Paser%2C%20Kalimantan%20Timur%2076251!5e0!3m2!1sid!2sid!4v1764218368388!5m2!1sid!2sid" width="250" height="200" style="border:0; border-radius: 0.3rem;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                 <div class="footer-section">
                     <h3>Kontak Kami</h3>
                     <ul>
@@ -295,18 +338,9 @@ $berita_terbaru = [];
                 <div class="footer-section">
                     <h3>Layanan Cepat</h3>
                     <ul>
-                        <?php if (isset($layanan_data) && is_array($layanan_data)): ?>
-                            <?php foreach ($layanan_data as $layanan): ?>
-                            <li><a href="layanan.php#layanan" onclick="openLayananPopup('<?php echo htmlspecialchars($layanan['id']); ?>'); return false;">
-                                <?php echo htmlspecialchars($layanan['title'] ?? 'Layanan'); ?>
-                            </a></li>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <li><a href="layanan.php#layanan" onclick="openLayananPopup('legalisir-ijazah'); return false;">Legalisir Ijazah</a></li>
-                            <li><a href="layanan.php#layanan" onclick="openLayananPopup('surat-mutasi'); return false;">Surat Mutasi</a></li>
-                            <li><a href="layanan.php#layanan" onclick="openLayananPopup('tunjangan-guru'); return false;">Tunjangan Guru</a></li>
-                            <li><a href="layanan.php#layanan" onclick="openLayananPopup('izin-pendirian'); return false;">Izin Pendirian</a></li>
-                        <?php endif; ?>
+                        <?php foreach ($layanan_data as $layanan): ?>
+                        <li><a href="layanan.php#layanan" onclick="openLayananPopup('<?php echo $layanan['id']; ?>'); return false;"><?php echo htmlspecialchars($layanan['title']); ?></a></li>
+                        <?php endforeach; ?>
                     </ul>
                 </div>
                 <div class="footer-section">

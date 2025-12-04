@@ -35,6 +35,7 @@ if ($halaman_aktif > $total_halaman && $total_halaman > 0) $halaman_aktif = $tot
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <title>Berita - Dinas Pendidikan dan Kebudayaan Kabupaten Paser</title>
     <style>
         /* Additional Styles for Berita Page */
@@ -360,12 +361,12 @@ if ($halaman_aktif > $total_halaman && $total_halaman > 0) $halaman_aktif = $tot
                 <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
                 <nav id="main-nav">
                     <ul>
-                        <li><a href="index.html" onclick="closeMobileMenu()">Beranda</a></li>
-                        <li><a href="profil.html" onclick="closeMobileMenu()">Profil</a></li>
-                        <li><a href="layanan.html" onclick="closeMobileMenu(); scrollToLayanan();">Layanan</a></li>
+                        <li><a href="index.php" onclick="closeMobileMenu()">Beranda</a></li>
+                        <li><a href="profil.php" onclick="closeMobileMenu()">Profil</a></li>
+                        <li><a href="layanan.php" onclick="closeMobileMenu(); scrollToLayanan();">Layanan</a></li>
                         <li><a href="berita.php" onclick="closeMobileMenu()" class="active">Berita</a></li>
-                        <li><a href="#kontak" onclick="closeMobileMenu()">Kontak</a></li>
-                        <li><a href="faq.html" onclick="closeMobileMenu()">FAQ</a></li>
+                        <li><a href="kontak.php" onclick="closeMobileMenu()">Kontak</a></li>
+                        <li><a href="faq.php" onclick="closeMobileMenu()">FAQ</a></li>
                     </ul>
                 </nav>
             </div>
@@ -373,7 +374,7 @@ if ($halaman_aktif > $total_halaman && $total_halaman > 0) $halaman_aktif = $tot
     </header>
 
     <!-- Berita Hero Section -->
-    <section class="berita-hero" style="margin-top: -80px;">
+    <section class="berita-hero fade-in" style="margin-top: -80px;">
         <br><br><br>
         <div class="container">
             <nav class="breadcrumb-nav">
@@ -397,7 +398,7 @@ if ($halaman_aktif > $total_halaman && $total_halaman > 0) $halaman_aktif = $tot
     </section>
     
     <!-- Berita Filter -->
-    <section class="berita-filter">
+    <section class="berita-filter fade-in">
         <br><br>
         <div class="container">
             <div class="filter-container">
@@ -420,7 +421,7 @@ if ($halaman_aktif > $total_halaman && $total_halaman > 0) $halaman_aktif = $tot
     </section>
 
     <!-- Berita Grid -->
-    <section class="berita-section">
+    <section class="berita-section  fade-in">
         <div class="container">
             <?php if (empty($berita_tampil)): ?>
                 <div class="no-berita">

@@ -2,6 +2,30 @@
 // functions.php
 require_once 'config.php';
 
+function getDatabaseConnection() {
+    global $pdo;
+    
+    // Jika koneksi belum ada, buat koneksi baru
+    if (!isset($pdo)) {
+        try {
+            $pdo = new PDO(
+                "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4",
+                DB_USER,
+                DB_PASS,
+                [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    PDO::ATTR_EMULATE_PREPARES => false
+                ]
+            );
+        } catch (PDOException $e) {
+            die("Koneksi database gagal: " . $e->getMessage());
+        }
+    }
+    
+    return $pdo;
+}
+
 function formatTanggalIndonesia($tanggal) {
     $bulan = [
         '01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => 'April',
@@ -191,7 +215,6 @@ function updateCounterDibaca($id) {
 
 // Fungsi untuk mendapatkan data FAQ dari database
 function getFAQData() {
-    // Coba ambil dari database jika ada
     try {
         $db = getDatabaseConnection();
         $faq_data = [];
@@ -200,28 +223,126 @@ function getFAQData() {
         $categories = ['informasi_umum', 'layanan_kesiswaan', 'guru_tenaga_kependidikan', 'ppdb'];
         
         foreach ($categories as $category) {
-            $stmt = $db->prepare("SELECT question, answer FROM faq WHERE category = ? ORDER BY display_order ASC");
-            $stmt->execute([$category]);
-            $faq_data[$category] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            // Cek apakah tabel faq ada
+            $checkTable = $db->query("SHOW TABLES LIKE 'faq'")->fetch();
+            
+            if ($checkTable) {
+                $stmt = $db->prepare("SELECT question, answer FROM faq WHERE category = ? ORDER BY display_order ASC");
+                $stmt->execute([$category]);
+                $faq_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                
+                if (!empty($faq_items)) {
+                    $faq_data[$category] = $faq_items;
+                } else {
+                    // Jika tidak ada data di database, gunakan data default
+                    $faq_data[$category] = getFAQDefaultData($category);
+                }
+            } else {
+                // Jika tabel tidak ada, gunakan data default
+                $faq_data[$category] = getFAQDefaultData($category);
+            }
+        }
+        
+        // Jika semua array kosong, kembalikan data default lengkap
+        if (empty(array_filter($faq_data))) {
+            return getAllFAQDefaultData();
         }
         
         return $faq_data;
+        
     } catch (Exception $e) {
         // Fallback ke data default jika database error
-        return [
-            'informasi_umum' => [
-                // ... data default
-            ],
-            // ... kategori lainnya
-        ];
+        error_log("FAQ Database Error: " . $e->getMessage());
+        return getAllFAQDefaultData();
     }
+}
+
+// Fungsi untuk mendapatkan data default berdasarkan kategori
+function getFAQDefaultData($category) {
+    $all_default = getAllFAQDefaultData();
+    return $all_default[$category] ?? [];
+}
+
+// Fungsi untuk mendapatkan semua data FAQ default
+function getAllFAQDefaultData() {
+    return [
+        'informasi_umum' => [
+            [
+                'question' => 'Dimana alamat kantor Dinas Pendidikan Kabupaten Paser?',
+                'answer' => 'Kantor kami beralamat di Jl. Jenderal Sudirman No. 27, Tana Paser, Kabupaten Paser, Kalimantan Timur. Jam operasional pelayanan adalah Senin – Jumat, pukul 08.00 – 15.00.'
+            ],
+            [
+                'question' => 'Bagaimana cara menghubungi Dinas Pendidikan?',
+                'answer' => 'Anda dapat menghubungi kami melalui telepon di (0543) 21023 atau mengirim email ke <a href="mailto:disdik@paserkab.go.id" style="color: #003399; text-decoration: underline;">disdik@paserkab.go.id</a>. Untuk pengaduan, kami sarankan menggunakan kanal pada halaman \'Layanan Publik\' kami.'
+            ]
+        ],
+        'layanan_kesiswaan' => [
+            [
+                'question' => 'Bagaimana prosedur legalisir ijazah yang hilang atau rusak?',
+                'answer' => '<p>Jika ijazah asli hilang atau rusak, Anda tidak bisa melakukan legalisir. Sebagai gantinya, Anda dapat mengurus <strong>Surat Keterangan Pengganti Ijazah (SKPI)</strong>. Prosedurnya adalah:</p>
+                <ol style="margin-left: 20px; line-height: 1.6;">
+                    <li>Membuat Surat Keterangan Kehilangan dari Kepolisian.</li>
+                    <li>Datang ke sekolah asal yang mengeluarkan ijazah.</li>
+                    <li>Jika sekolah sudah tidak beroperasi, datang ke Dinas Pendidikan dengan membawa surat dari kepolisian dan dokumen pendukung lainnya (fotokopi ijazah jika ada, KTP, dll).</li>
+                </ol>'
+            ],
+            [
+                'question' => 'Apakah pindah sekolah (mutasi) antar kabupaten/kota dikenakan biaya?',
+                'answer' => 'Tidak. Seluruh layanan pengurusan surat rekomendasi pindah sekolah (mutasi) di Dinas Pendidikan Kabupaten Paser adalah <strong>gratis</strong> dan tidak dipungut biaya.'
+            ]
+        ],
+        'guru_tenaga_kependidikan' => [
+            [
+                'question' => 'Bagaimana cara memeriksa status validasi data untuk Tunjangan Profesi Guru (TPG)?',
+                'answer' => 'Status validasi data guru dapat dipantau secara mandiri melalui laman <a href="https://info.gtk.kemdikbud.go.id" target="_blank" style="color: #003399; text-decoration: underline;">Info GTK</a> menggunakan akun PTK masing-masing. Pastikan data Anda di Dapodik sudah sinkron dan valid melalui operator sekolah.'
+            ],
+            [
+                'question' => 'Saya adalah guru honorer, apakah bisa mendapatkan bantuan/insentif dari dinas?',
+                'answer' => 'Pemerintah Daerah Kabupaten Paser memiliki kebijakan terkait insentif atau bantuan untuk guru non-ASN. Informasi mengenai kriteria, besaran, dan jadwal pencairan akan diumumkan secara resmi melalui surat edaran ke sekolah-sekolah. Silakan berkoordinasi dengan kepala sekolah Anda.'
+            ]
+        ],
+        'ppdb' => [
+            [
+                'question' => 'Kapan jadwal pelaksanaan PPDB tahun ini?',
+                'answer' => 'Jadwal lengkap, petunjuk teknis, dan informasi mengenai jalur pendaftaran (Zonasi, Afirmasi, Prestasi, Perpindahan Tugas Orang Tua) akan dipublikasikan melalui website resmi PPDB Kabupaten Paser. Mohon pantau website dan media sosial resmi kami secara berkala.'
+            ],
+            [
+                'question' => 'Apa yang harus dilakukan jika ada kendala saat pendaftaran PPDB online?',
+                'answer' => 'Jika terjadi kendala teknis, Anda dapat menghubungi <strong>Help Desk PPDB</strong> yang nomor kontaknya akan kami sediakan di situs resmi PPDB selama periode pendaftaran berlangsung. Anda juga bisa datang ke posko PPDB di sekolah terdekat atau di kantor Dinas Pendidikan.'
+            ]
+        ]
+    ];
 }
 
 // Fungsi untuk menyimpan FAQ ke database (untuk admin)
 function saveFAQ($category, $question, $answer) {
-    $db = getDatabaseConnection();
-    $stmt = $db->prepare("INSERT INTO faq (category, question, answer) VALUES (?, ?, ?)");
-    return $stmt->execute([$category, $question, $answer]);
+    try {
+        $db = getDatabaseConnection();
+        
+        // Cek apakah tabel faq ada
+        $checkTable = $db->query("SHOW TABLES LIKE 'faq'")->fetch();
+        
+        if (!$checkTable) {
+            // Buat tabel jika tidak ada
+            $createTableSQL = "CREATE TABLE IF NOT EXISTS faq (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                category VARCHAR(50) NOT NULL,
+                question TEXT NOT NULL,
+                answer TEXT NOT NULL,
+                display_order INT DEFAULT 0,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            )";
+            $db->exec($createTableSQL);
+        }
+        
+        $stmt = $db->prepare("INSERT INTO faq (category, question, answer) VALUES (?, ?, ?)");
+        return $stmt->execute([$category, $question, $answer]);
+        
+    } catch (Exception $e) {
+        error_log("Save FAQ Error: " . $e->getMessage());
+        return false;
+    }
 }
 
 ?>
