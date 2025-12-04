@@ -57,6 +57,33 @@ $editable_files = [
     ]
 ];
 
+// Tambahkan sebelum bagian Handle form submission
+$layanan_keys = [
+    1 => 'legalisir-ijazah',
+    2 => 'surat-mutasi',
+    3 => 'tunjangan-guru',
+    4 => 'izin-pendirian'
+];
+
+// Fungsi untuk membaca/simpan data popup
+function loadLayananPopupData() {
+    $file_path = 'data/layanan_popup.json';
+    if (file_exists($file_path)) {
+        $data = json_decode(file_get_contents($file_path), true);
+        return $data ?: [];
+    }
+    return [];
+}
+
+function saveLayananPopupData($data) {
+    $dir = 'data';
+    if (!file_exists($dir)) {
+        mkdir($dir, 0777, true);
+    }
+    $file_path = $dir . '/layanan_popup.json';
+    return file_put_contents($file_path, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+}
+
 // Handle form submission untuk edit konten
 $pesan_sukses = '';
 $pesan_error = '';
@@ -169,13 +196,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 
                                 // Update gambar jika ada
                                 if (!empty($image)) {
-                                    // Update gambar di dalam card TANPA menghilangkan onerror
+                                    // Encode semua nilai
+                                    $safe_image = htmlspecialchars($image, ENT_QUOTES);
+                                    $safe_alt = htmlspecialchars("$nama - $jabatan", ENT_QUOTES);
+                                    
+                                    // SVG fallback yang sudah di-encode
+                                    $svg_fallback = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiBmaWxsPSIjMDAzMzk5IiBmaWxsLW9wYWNpdHk9IjAuMSIvPgo8Y2lyY2xlIGN4PSI2MCIgY3k9IjQ1IiByPSIyMCIgZmlsbD0iIzAwMzM5OSIgZmlsbC1vcGFjaXR5PSIwLjMiLz4KPHBhdGggZD0iTTYwIDc1IEM0MCA3NSAzMCA4NSAzMDk1IEMzMDEwNSA0MDExNSA2MDExNSBDODAxMTUgOTAxMDUgOTAgOTUgQzkwIDg1IDgwIDc1IDYwIDc1IFoiIGZpbGw9IiMwMDMzOTkiIGZpbGwtb3BhY2l0eT0iMC4zIi8+Cjwvc3ZnPg==';
+                                    
+                                    // Buat tag img dengan cara yang aman
+                                    $new_img = '<img src="' . $safe_image . '" alt="' . $safe_alt . '" onerror="this.onerror=null;this.src=\'' . $svg_fallback . '\';">';
+                                    
+                                    // Ganti gambar lama
                                     $img_pattern = '/<img[^>]+src="[^"]*"[^>]*>/';
                                     if (preg_match($img_pattern, $card_html, $matches)) {
-                                        $old_img = $matches[0];
-                                        // Buat gambar baru dengan onerror tetap ada
-                                        $new_img = "<img src=\"$image\" alt=\"$nama - $jabatan\" onerror=\"this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiBmaWxsPSIjMDAzMzk5IiBmaWxsLW9wYWNpdHk9IjAuMSIvPgo8Y2lyY2xlIGN4PSI2MCIgY3k9IjQ1IiByPSIyMCIgZmlsbD0iIzAwMzM5OSIgZmlsbC1vcGFjaXR5PSIwLjMiLz4KPHBhdGggZD0iTTYwIDc1IEM0MCA3NSAzMCA4NSAzMCA5NSBDMzAgMTA1IDQwIDExNSA2MCAxMTUgQzgwIDExNSA5MCAxMDUgOTAgOTUgQzkwIDg1IDgwIDc1IDYwIDc1IFoiIGZpbGw9IiMwMDMzOTkiIGZpbGwtb3BhY2l0eT0iMC4zIi8+Cjwvc3ZnPg=='\">";
-                                        $card_html = str_replace($old_img, $new_img, $card_html);
+                                        $card_html = str_replace($matches[0], $new_img, $card_html);
                                     }
                                 }
                                 
@@ -186,17 +220,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                     $success = true;
                 }
+                // Di bagian VISI (sekitar line 157):
                 elseif ($section_id === 'visi-misi') {
-                    // Update visi
-                    $visi = $_POST['visi'] ?? '';
-                    if (!empty($visi)) {
-                        $pattern = '/<div class="visi">\s*<h3>Visi<\/h3>\s*<p>([^<]*)<\/p>\s*<\/div>/s';
-                        if (preg_match($pattern, $new_content)) {
-                            $new_content = preg_replace($pattern, "<div class=\"visi\">\n                    <h3>Visi</h3>\n                    <p>$visi</p>\n                </div>", $new_content);
+                    // Update VISI - format sama dengan MISI (list)
+                    $visi_text = $_POST['visi'] ?? '';
+                    if (!empty($visi_text)) {
+                        // Pisahkan berdasarkan baris - SAMA PERSIS seperti misi
+                        $lines = explode("\n", $visi_text);
+                        $visi_items = [];
+                        
+                        foreach ($lines as $line) {
+                            $line = trim($line);
+                            if (!empty($line)) {
+                                // Jika baris dimulai dengan dash, hilangkan dash-nya
+                                if (substr($line, 0, 1) === '-') {
+                                    $line = trim(substr($line, 1));
+                                }
+                                $visi_items[] = $line;
+                            }
+                        }
+                        
+                        // Generate HTML untuk visi - SAMA dengan misi
+                        if (!empty($visi_items)) {
+                            $visi_html = "<div class=\"visi\">\n                    <h3>Visi</h3>\n                    <ul>\n";
+                            foreach ($visi_items as $item) {
+                                // Hapus escaping yang sudah ada, lalu escape dengan benar
+                                $clean_item = htmlspecialchars_decode($item, ENT_QUOTES);
+                                $visi_html .= "                        <li>" . htmlspecialchars($clean_item, ENT_QUOTES) . "</li>\n";
+                            }
+                            $visi_html .= "                    </ul>\n                </div>";
+                            
+                            // Ganti section visi
+                            $visi_pattern = '/<div class="visi">\s*<h3>Visi<\/h3>\s*<ul>.*?<\/ul>\s*<\/div>/si';
+                            if (preg_match($visi_pattern, $new_content)) {
+                                $new_content = preg_replace($visi_pattern, $visi_html, $new_content);
+                            }
                         }
                     }
                     
-                    // Update misi dari format baris dengan dash
+                    // Update MISI - format SAMA PERSIS
                     $misi_text = $_POST['misi'] ?? '';
                     if (!empty($misi_text)) {
                         // Pisahkan berdasarkan baris
@@ -214,76 +276,82 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             }
                         }
                         
-                        // Generate HTML untuk misi
+                        // Generate HTML untuk misi - SAMA PERSIS dengan visi
                         if (!empty($misi_items)) {
                             $misi_html = "<div class=\"misi\">\n                    <h3>Misi</h3>\n                    <ul>\n";
                             foreach ($misi_items as $item) {
-                                $misi_html .= "                        <li>$item</li>\n";
+                                $clean_item = htmlspecialchars_decode($item, ENT_QUOTES);
+                                $misi_html .= "                        <li>" . htmlspecialchars($clean_item, ENT_QUOTES) . "</li>\n";
                             }
                             $misi_html .= "                    </ul>\n                </div>";
                             
                             // Ganti section misi
-                            $pattern = '/<div class="misi">\s*<h3>Misi<\/h3>\s*<ul>(.*?)<\/ul>\s*<\/div>/s';
-                            if (preg_match($pattern, $new_content)) {
-                                $new_content = preg_replace($pattern, $misi_html, $new_content);
+                            $misi_pattern = '/<div class="misi">\s*<h3>Misi<\/h3>\s*<ul>.*?<\/ul>\s*<\/div>/si';
+                            if (preg_match($misi_pattern, $new_content)) {
+                                $new_content = preg_replace($misi_pattern, $misi_html, $new_content);
                             }
                         }
                     }
                     $success = true;
                 }
                 elseif ($section_id === 'layanan-section') {
-                    // Update layanan cards
-                    for ($i = 1; $i <= 4; $i++) {
-                        $title_field = "layanan_title_$i";
-                        $desc_field = "layanan_desc_$i";
-                        $image_field = "layanan_image_$i";
-                        
-                        $title = $_POST[$title_field] ?? '';
-                        $desc = $_POST[$desc_field] ?? '';
-                        $image = $_POST[$image_field] ?? '';
-                        
-                        if (!empty($title) || !empty($desc) || !empty($image)) {
-                            // Cari semua layanan cards
-                            $pattern = '/<div class="layanan-card fade-in" onclick="openLayananPopup\(\'[^\']+\'\)">(.*?)<button class="layanan-btn">/s';
-                            preg_match_all($pattern, $new_content, $cards, PREG_OFFSET_CAPTURE);
-                            
-                            if (isset($cards[0][$i-1])) {
-                                $card_html = $cards[0][$i-1][0];
-                                $card_pos = $cards[0][$i-1][1];
-                                
-                                // Update title
-                                if (!empty($title)) {
-                                    $title_pattern = '/<h3>([^<]*)<\/h3>/';
-                                    if (preg_match($title_pattern, $card_html)) {
-                                        $card_html = preg_replace($title_pattern, "<h3>$title</h3>", $card_html);
-                                    }
-                                }
-                                
-                                // Update description
-                                if (!empty($desc)) {
-                                    $desc_pattern = '/<p>([^<]*)<\/p>/';
-                                    if (preg_match($desc_pattern, $card_html)) {
-                                        $card_html = preg_replace($desc_pattern, "<p>$desc</p>", $card_html);
-                                    }
-                                }
-                                
-                                // Update image
-                                if (!empty($image)) {
-                                    $img_pattern = '/<img[^>]+>/';
-                                    if (preg_match($img_pattern, $card_html)) {
-                                        $new_img = "<img src=\"$image\" alt=\"$title\" class=\"icon-layanan\" style=\"width: 100px; height: 100px;\">";
-                                        $card_html = preg_replace($img_pattern, $new_img, $card_html);
-                                    }
-                                }
-                                
-                                // Ganti card
-                                $new_content = substr_replace($new_content, $card_html, $card_pos, strlen($cards[0][$i-1][0]));
-                            }
-                        }
-                    }
+                // Build HTML untuk semua 4 card layanan
+                $layanan_html = '';
+                
+                $onclick_functions = [
+                    1 => 'legalisir-ijazah',
+                    2 => 'surat-mutasi',
+                    3 => 'tunjangan-guru',
+                    4 => 'izin-pendirian'
+                ];
+                
+                for ($i = 1; $i <= 4; $i++) {
+                    $title_field = "layanan_title_$i";
+                    $desc_field = "layanan_desc_$i";
+                    $image_field = "layanan_image_$i";
+                    
+                    $title = $_POST[$title_field] ?? '';
+                    $desc = $_POST[$desc_field] ?? '';
+                    $image = $_POST[$image_field] ?? '';
+                    
+                    // Decode HTML entities jika ada
+                    $title = htmlspecialchars_decode($title, ENT_QUOTES);
+                    $desc = htmlspecialchars_decode($desc, ENT_QUOTES);
+                    
+                    $onclick_func = $onclick_functions[$i] ?? "layanan-$i";
+                    
+                    // Generate HTML untuk card ini - perhatikan spasi dan indentasi
+                    $layanan_html .= '                <div class="layanan-card fade-in" onclick="openLayananPopup(\'' . $onclick_func . '\')">
+                                <img src="' . htmlspecialchars($image) . '" alt="' . htmlspecialchars($title) . '" class="icon-layanan" style="width: 100px; height: 100px;">
+                                <div class="layanan-card-content">
+                                    <h3>' . htmlspecialchars($title) . '</h3>
+                                    <p>' . htmlspecialchars($desc) . '</p>
+                                    <button class="layanan-btn">Lihat Detail</button>
+                                </div>
+                            </div>
+            ';
+                }
+                
+                // Pattern yang spesifik: cari layanan-grid di dalam section layanan
+                // Gunakan pola yang lebih spesifik untuk menghindari duplikasi
+                $layanan_grid_pattern = '/<div class="layanan-grid">\s*((?:<div class="layanan-card fade-in".*?<\/div>\s*){4})\s*<\/div>/s';
+                
+                // Buat HTML baru untuk grid dengan indentasi yang benar
+                $new_layanan_grid = '            <div class="layanan-grid">
+            ' . $layanan_html . '            </div>';
+                
+                // Cari dan ganti hanya satu kali
+                if (preg_match($layanan_grid_pattern, $new_content, $matches, PREG_OFFSET_CAPTURE)) {
+                    $new_content = substr_replace($new_content, $new_layanan_grid, $matches[0][1], strlen($matches[0][0]));
                     $success = true;
+                    
+                    // Debug: log perubahan
+                    error_log("REPLACED LAYANAN CONTENT");
+                    error_log("Old: " . substr($matches[0][0], 0, 200));
+                    error_log("New: " . substr($new_layanan_grid, 0, 200));
                 }
             }
+            
             elseif ($file_type === 'profil') {
                 if ($section_id === 'visi-misi') {
                     // Update visi profil
@@ -330,21 +398,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                     $success = true;
                 }
+            } // <-- Ini untuk menutup elseif ($file_type === 'profil')
+            
+        } // <-- TAMBAHKAN INI untuk menutup if (isset($editable_files[$file_type]))
+        if ($file_type === 'index' && $section_id === 'layanan-section') {
+            error_log("OLD CONTENT: " . substr($file_content, strpos($file_content, '<div class="layanan-grid">'), 1000));
+            error_log("NEW CONTENT: " . substr($new_content, strpos($new_content, '<div class="layanan-grid">'), 1000));
+            error_log("LAYANAN HTML: " . $layanan_html);
+
+            $popup_data = loadLayananPopupData();
+            
+            for ($i = 1; $i <= 4; $i++) {
+                $layanan_key = $layanan_keys[$i] ?? "layanan_$i";
+                
+                // Inisialisasi jika belum ada
+                if (!isset($popup_data[$layanan_key])) {
+                    $popup_data[$layanan_key] = [
+                        'popup_desc' => '',
+                        'cara_kerja' => '',
+                        'persyaratan' => ''
+                    ];
+                }
+                
+                // Update data dari form
+                $popup_data[$layanan_key]['popup_desc'] = $_POST["layanan_popup_desc_$i"] ?? '';
+                $popup_data[$layanan_key]['cara_kerja'] = $_POST["layanan_cara_kerja_$i"] ?? '';
+                $popup_data[$layanan_key]['persyaratan'] = $_POST["layanan_persyaratan_$i"] ?? '';
             }
             
-            // Simpan perubahan ke file
-            if ($success && file_put_contents($file_path, $new_content)) {
-                $pesan_sukses = 'Konten berhasil diperbarui!';
-                // Refresh untuk melihat perubahan
-                header("Location: admin-pengaturan.php?file=$file_type&section=$section_id&success=1");
-                exit;
-            } else if (!$success) {
-                $pesan_error = 'Tidak ada perubahan yang dilakukan.';
-            } else {
-                $pesan_error = 'Gagal menyimpan perubahan. Periksa permission file.';
+            // Simpan ke file
+            if (saveLayananPopupData($popup_data)) {
+                $success = true;
             }
         }
+        // Simpan perubahan ke file
+        if ($success && file_put_contents($file_path, $new_content)) {
+            $pesan_sukses = 'Konten berhasil diperbarui!';
+            // Refresh untuk melihat perubahan
+            header("Location: admin-pengaturan.php?file=$file_type&section=$section_id&success=1");
+            exit;
+        } else if (!$success) {
+            $pesan_error = 'Tidak ada perubahan yang dilakukan.';
+        } else {
+            $pesan_error = 'Gagal menyimpan perubahan. Periksa permission file.';
+        }
     }
+}
 }
 
 // Handle upload gambar
@@ -392,6 +491,7 @@ if (!isset($editable_files[$current_file]['sections'][$current_section])) {
 }
 
 // Ambil konten saat ini dari file
+// Ambil konten saat ini dari file
 $current_content = [];
 
 if (file_exists($editable_files[$current_file]['path'])) {
@@ -401,6 +501,18 @@ if (file_exists($editable_files[$current_file]['path'])) {
     if ($current_file === 'index') {
         if ($current_section === 'hero') {
             // Ambil teks hero
+            preg_match('/<div class="hero-content">\s*<h2>([^<]+)<\/h2>/s', $file_content, $hero_title_matches);
+            $current_content['hero_text'] = $hero_title_matches[1] ?? '';
+            
+            preg_match('/<div class="hero-content">\s*<h2>[^<]*<\/h2>\s*<p>([^<]+)<\/p>/s', $file_content, $hero_subtext_matches);
+            $current_content['hero_subtext'] = $hero_subtext_matches[1] ?? '';
+            
+            // Ambil gambar slider (4 gambar)
+            preg_match_all('/<div class="slide[^"]*"[^>]*style="[^"]*background-image: url\(\'([^\']+)\'\)[^"]*"/s', $file_content, $hero_images_matches);
+            for ($i = 0; $i < 4; $i++) {
+                $current_content["hero_image_" . ($i+1)] = $hero_images_matches[1][$i] ?? '';
+            }
+        }
         elseif ($current_section === 'pimpinan') {
             // Ambil data pimpinan (3 pimpinan)
             $pattern = '/<div class="pimpinan-card">\s*<div class="pimpinan-img portrait">.*?<img[^>]+src="([^"]+)"[^>]*>.*?<\/div>\s*<div class="pimpinan-info">\s*<h3>([^<]+)<\/h3>\s*<p>([^<]+)<\/p>/s';
@@ -415,54 +527,116 @@ if (file_exists($editable_files[$current_file]['path'])) {
             }
         }
         elseif ($current_section === 'visi-misi') {
-            // Ambil visi
-            preg_match('/<div class="visi">\s*<h3>Visi<\/h3>\s*<p>([^<]+)<\/p>\s*<\/div>/s', $file_content, $matches);
-            $current_content['visi'] = $matches[1] ?? '';
+            // Ambil VISI items (dari ul/li)
+            preg_match('/<div class="visi">.*?<ul>(.*?)<\/ul>.*?<\/div>/si', $file_content, $visi_section);
             
-            // Ambil semua misi items dan format ke dalam satu textarea dengan dash
-            preg_match_all('/<li>([^<]+)<\/li>/', $file_content, $matches);
+            $visi_items = [];
+            if (isset($visi_section[1])) {
+                preg_match_all('/<li>([^<]+)<\/li>/si', $visi_section[1], $matches);
+                foreach ($matches[1] as $item) {
+                    if (!empty(trim($item))) {
+                        $visi_items[] = '- ' . trim($item);
+                    }
+                }
+            }
+            $current_content['visi'] = implode("\n", $visi_items);
+            
+            // Ambil MISI items (tetap sama)
+            preg_match('/<div class="misi">.*?<ul>(.*?)<\/ul>.*?<\/div>/si', $file_content, $misi_section);
+            
             $misi_items = [];
-            foreach ($matches[1] as $item) {
-                if (!empty(trim($item))) {
-                    $misi_items[] = '- ' . trim($item);
+            if (isset($misi_section[1])) {
+                preg_match_all('/<li>([^<]+)<\/li>/si', $misi_section[1], $matches);
+                foreach ($matches[1] as $item) {
+                    if (!empty(trim($item))) {
+                        $misi_items[] = '- ' . trim($item);
+                    }
                 }
             }
             $current_content['misi'] = implode("\n", $misi_items);
         }
         elseif ($current_section === 'layanan-section') {
-            // Ambil data layanan cards
-            preg_match_all('/<div class="layanan-card fade-in"[^>]*>\s*<img[^>]*>\s*<div class="layanan-card-content">\s*<h3>([^<]+)<\/h3>\s*<p>([^<]+)<\/p>/s', $file_content, $matches);
+        // Cari section layanan
+        $start_pos = strpos($file_content, '<div class="layanan-grid">');
+        if ($start_pos !== false) {
+            $temp_content = substr($file_content, $start_pos);
             
-            for ($i = 0; $i < 4; $i++) {
-                if (isset($matches[1][$i])) {
-                    $current_content["layanan_title_" . ($i+1)] = $matches[1][$i];
-                    $current_content["layanan_desc_" . ($i+1)] = $matches[2][$i];
+            // Temukan penutup grid
+            $open_count = 0;
+            $close_count = 0;
+            $end_pos = 0;
+            
+            for ($i = 0; $i < strlen($temp_content); $i++) {
+                if (substr($temp_content, $i, 5) === '<div ') {
+                    $open_count++;
+                } elseif (substr($temp_content, $i, 6) === '</div>') {
+                    $close_count++;
+                    if ($open_count === $close_count) {
+                        $end_pos = $i;
+                        break;
+                    }
                 }
             }
             
-            // Ambil gambar layanan
-            preg_match_all('/<img src="([^"]+)" alt="[^"]+" class="icon-layanan" style="width: 100px; height: 100px;">/', $file_content, $img_matches);
-            for ($i = 0; $i < 4; $i++) {
-                $current_content["layanan_image_" . ($i+1)] = $img_matches[1][$i] ?? '';
+            if ($end_pos > 0) {
+                $grid_content = substr($temp_content, 0, $end_pos + 6);
+                
+                // Pattern untuk setiap card
+                $card_pattern = '/<div class="layanan-card fade-in"[^>]*onclick="openLayananPopup\(\'([^\']+)\'\)">\s*<img[^>]*src="([^"]*)"[^>]*alt="([^"]*)"[^>]*class="icon-layanan"[^>]*>\s*<div class="layanan-card-content">\s*<h3>([^<]+)<\/h3>\s*<p>([^<]*)<\/p>/s';
+                
+                if (preg_match_all($card_pattern, $grid_content, $matches, PREG_SET_ORDER)) {
+                    for ($i = 0; $i < 4; $i++) {
+                        if (isset($matches[$i])) {
+                            $current_content["layanan_title_" . ($i+1)] = htmlspecialchars_decode(trim($matches[$i][4]), ENT_QUOTES);
+                            $current_content["layanan_desc_" . ($i+1)] = htmlspecialchars_decode(trim($matches[$i][5]), ENT_QUOTES);
+                            $current_content["layanan_image_" . ($i+1)] = htmlspecialchars_decode(trim($matches[$i][2]), ENT_QUOTES);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // BACA DATA POPUP DARI FILE JSON
+                $popup_data = loadLayananPopupData();
+                
+                for ($i = 1; $i <= 4; $i++) {
+                    $layanan_key = $layanan_keys[$i] ?? "layanan_$i";
+                    
+                    if (isset($popup_data[$layanan_key])) {
+                        $current_content["layanan_popup_desc_$i"] = $popup_data[$layanan_key]['popup_desc'] ?? '';
+                        $current_content["layanan_cara_kerja_$i"] = $popup_data[$layanan_key]['cara_kerja'] ?? '';
+                        $current_content["layanan_persyaratan_$i"] = $popup_data[$layanan_key]['persyaratan'] ?? '';
+                    } else {
+                        // Nilai default jika belum ada
+                        $current_content["layanan_popup_desc_$i"] = '';
+                        $current_content["layanan_cara_kerja_$i"] = '';
+                        $current_content["layanan_persyaratan_$i"] = '';
+                    }
+                }
             }
         }
-    }
     elseif ($current_file === 'profil' && $current_section === 'visi-misi') {
         // Ambil visi profil
         preg_match('/<div class="visi-card fade-in">\s*<h3>Visi<\/h3>\s*<p>([^<]+)<\/p>\s*<\/div>/s', $file_content, $matches);
         $current_content['visi'] = $matches[1] ?? '';
         
-        // Ambil semua misi items profil dan format ke dalam satu textarea dengan dash
-        preg_match_all('/<li>([^<]+)<\/li>/', $file_content, $matches);
+        // Ambil semua misi items profil HANYA dari section misi
+        preg_match('/<div class="misi-card fade-in">.*?<ul>(.*?)<\/ul>.*?<\/div>/s', $file_content, $misi_section);
+        
         $misi_items = [];
-        foreach ($matches[1] as $item) {
-            if (!empty(trim($item))) {
-                $misi_items[] = '- ' . trim($item);
+        if (isset($misi_section[1])) {
+            // Ambil hanya <li> yang ada di dalam section misi profil
+            preg_match_all('/<li>([^<]+)<\/li>/', $misi_section[1], $matches);
+            foreach ($matches[1] as $item) {
+                if (!empty(trim($item))) {
+                    $misi_items[] = '- ' . trim($item);
+                }
             }
         }
         $current_content['misi'] = implode("\n", $misi_items);
+        }
     }
-}
+ // <-- Closing brace untuk if (file_exists(...))
 
 // Check for success message
 if (isset($_GET['success'])) {
@@ -856,7 +1030,7 @@ if (isset($_GET['success'])) {
                 <li class="sidebar-menu-item">
                     <a href="admin-pengaturan.php" class="sidebar-menu-link active">
                         <span class="icon icon-settings"></span>
-                        <span class="sidebar-menu-text">Pengaturan Konten</span>
+                        <span class="sidebar-menu-text">Pengaturan</span>
                     </a>
                 </li>
                 <li class="sidebar-menu-item">
@@ -965,8 +1139,7 @@ if (isset($_GET['success'])) {
                                             <?php if (!empty($current_content['hero_image_' . $i])): ?>
                                                 <div class="image-preview">
                                                     <img src="<?php echo htmlspecialchars($current_content['hero_image_' . $i]); ?>" 
-                                                         alt="Slider <?php echo $i; ?>" 
-                                                         onerror="this.style.display='none'; this.parentElement.innerHTML='<p style=\"color:#dc3545;\">Gambar tidak ditemukan</p>';">
+                                                        alt="Slider <?php echo $i; ?>">
                                                 </div>
                                             <?php endif; ?>
                                         </div>
@@ -1019,12 +1192,11 @@ if (isset($_GET['success'])) {
                                                         Pilih Gambar
                                                     </button>
                                                 </div>
-                                                <?php if (!empty($current_content['pimpinan_image_' . $i])): ?>
+                                               <?php if (!empty($current_content['pimpinan_image_' . $i])): ?>
                                                     <div class="image-preview pimpinan-preview">
                                                         <p><strong>Preview Foto:</strong></p>
                                                         <img src="<?php echo htmlspecialchars($current_content['pimpinan_image_' . $i]); ?>" 
-                                                             alt="Pimpinan <?php echo $i; ?>" 
-                                                             onerror="this.style.display='none'; this.parentElement.innerHTML='<p style=\'color:#dc3545;\'>Gambar tidak ditemukan</p>';">
+                                                            alt="Pimpinan <?php echo $i; ?>">
                                                     </div>
                                                 <?php endif; ?>
                                             </div>
@@ -1035,13 +1207,30 @@ if (isset($_GET['success'])) {
                             <?php elseif ($current_section === 'visi-misi'): ?>
                                 <!-- Visi Misi Editor -->
                                 <div class="form-section">
-                                    <h4>Visi</h4>   
+                                    <h4>Visi</h4>
+                                    <div class="format-hint">
+                                        <h5>Format Penulisan Visi (SAMA dengan Misi):</h5>
+                                        <ul>
+                                            <li>Gunakan tanda dash (<code>-</code>) di awal setiap poin visi</li>
+                                            <li>Setiap baris akan menjadi poin visi terpisah</li>
+                                            <li>Bisa ada banyak baris, semua akan ditampilkan</li>
+                                            <li>Contoh format:
+                                                <pre style="background:#f5f5f5;padding:10px;border-radius:4px;margin-top:5px;">
+- Visi pertama disini
+- Visi kedua disini  
+- Visi ketiga disini
+- Tambahkan poin baru dengan dash di baris baru</pre>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    
                                     <div class="form-group">
-                                        <label for="visi">Teks Visi:</label>
-                                        <textarea id="visi" name="visi" class="form-control" rows="4"><?php echo htmlspecialchars($current_content['visi'] ?? ''); ?></textarea>
+                                        <label for="visi">Teks Visi (format dengan dash):</label>
+                                        <textarea id="visi" name="visi" class="form-control" rows="6" 
+                                                placeholder="- Terwujudnya Paser yang Sejahtera, Berakhlak Mulia dan Berdaya Saing&#10;- Visi tambahan lainnya"><?php echo htmlspecialchars($current_content['visi'] ?? ''); ?></textarea>
                                     </div>
                                 </div>
-                                
+
                                 <div class="form-section">
                                     <h4>Misi</h4>
                                     <div class="format-hint">
@@ -1062,54 +1251,97 @@ if (isset($_GET['success'])) {
                                     <div class="form-group">
                                         <label for="misi">Teks Misi (format dengan dash):</label>
                                         <textarea id="misi" name="misi" class="form-control" rows="10" 
-                                                  placeholder="- Misi pertama&#10;- Misi kedua&#10;- Misi ketiga&#10;- Misi keempat&#10;- Misi kelima"><?php echo htmlspecialchars($current_content['misi'] ?? ''); ?></textarea>
+                                                placeholder="- Misi pertama&#10;- Misi kedua&#10;- Misi ketiga&#10;- Misi keempat&#10;- Misi kelima"><?php echo htmlspecialchars($current_content['misi'] ?? ''); ?></textarea>
                                     </div>
-                                </div>
-                                
+                                </div>                         
                             <?php elseif ($current_section === 'layanan-section'): ?>
-                                <!-- Layanan Section Editor -->
                                 <div class="form-section">
                                     <h4>Kartu Layanan (4 Kartu)</h4>
                                     <?php for ($i = 1; $i <= 4; $i++): ?>
-                                        <div class="form-section" style="border: 1px solid #eee; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
-                                            <h5>Layanan <?php echo $i; ?></h5>
+                                        <div class="form-section" style="border: 1px solid #eee; padding: 20px; margin-bottom: 25px; border-radius: 6px; background: #f9f9f9;">
+                                            <h5 style="color: #003399; margin-bottom: 15px; border-bottom: 2px solid #e36159; padding-bottom: 10px;">
+                                                Layanan <?php echo $i; ?>
+                                            </h5>
+                                            
+                                            <!-- Data Kartu (Sudah Ada) -->
                                             <div class="form-group">
-                                                <label for="layanan_title_<?php echo $i; ?>">Judul:</label>
+                                                <label for="layanan_title_<?php echo $i; ?>">Judul Kartu:</label>
                                                 <input type="text" id="layanan_title_<?php echo $i; ?>" 
-                                                       name="layanan_title_<?php echo $i; ?>" class="form-control" 
-                                                       value="<?php echo htmlspecialchars($current_content['layanan_title_' . $i] ?? ''); ?>">
+                                                    name="layanan_title_<?php echo $i; ?>" class="form-control" 
+                                                    value="<?php echo htmlspecialchars($current_content['layanan_title_' . $i] ?? ''); ?>">
                                             </div>
                                             
                                             <div class="form-group">
-                                                <label for="layanan_desc_<?php echo $i; ?>">Deskripsi:</label>
+                                                <label for="layanan_desc_<?php echo $i; ?>">Deskripsi Singkat (di kartu):</label>
                                                 <textarea id="layanan_desc_<?php echo $i; ?>" 
-                                                          name="layanan_desc_<?php echo $i; ?>" class="form-control" rows="3"><?php echo htmlspecialchars($current_content['layanan_desc_' . $i] ?? ''); ?></textarea>
+                                                        name="layanan_desc_<?php echo $i; ?>" class="form-control" rows="3"
+                                                        placeholder="Deskripsi singkat yang muncul di kartu..."><?php echo htmlspecialchars($current_content['layanan_desc_' . $i] ?? ''); ?></textarea>
                                             </div>
                                             
                                             <div class="form-group">
-                                                <label for="layanan_image_<?php echo $i; ?>">Gambar:</label>
+                                                <label for="layanan_image_<?php echo $i; ?>">Gambar Kartu:</label>
                                                 <div class="image-input-group">
                                                     <input type="text" id="layanan_image_<?php echo $i; ?>" 
-                                                           name="layanan_image_<?php echo $i; ?>" class="form-control" 
-                                                           value="<?php echo htmlspecialchars($current_content['layanan_image_' . $i] ?? ''); ?>"
-                                                           placeholder="URL gambar...">
+                                                        name="layanan_image_<?php echo $i; ?>" class="form-control" 
+                                                        value="<?php echo htmlspecialchars($current_content['layanan_image_' . $i] ?? ''); ?>"
+                                                        placeholder="URL gambar...">
                                                     <button type="button" class="select-image-btn" 
                                                             onclick="openImageSelector('layanan_image_<?php echo $i; ?>')">
                                                         Pilih Gambar
                                                     </button>
                                                 </div>
-                                                <?php if (!empty($current_content['layanan_image_' . $i])): ?>
-                                                    <div class="image-preview">
-                                                        <img src="<?php echo htmlspecialchars($current_content['layanan_image_' . $i]); ?>" 
-                                                             alt="Layanan <?php echo $i; ?>" 
-                                                             onerror="this.style.display='none'; this.parentElement.innerHTML='<p style=\"color:#dc3545;\">Gambar tidak ditemukan</p>';">
-                                                    </div>
-                                                <?php endif; ?>
                                             </div>
+                                            
+                                            <!-- ===== DATA POPUP (BARU) ===== -->
+                                            <div style="margin: 20px 0; padding: 15px; background: #e3f2fd; border-radius: 4px; border-left: 4px solid #003399;">
+                                                <h6 style="color: #003399; margin-top: 0;">Data untuk Popup Detail</h6>
+                                                
+                                                <div class="form-group">
+                                                    <label for="layanan_popup_desc_<?php echo $i; ?>">Deskripsi Lengkap (di popup):</label>
+                                                    <textarea id="layanan_popup_desc_<?php echo $i; ?>" 
+                                                            name="layanan_popup_desc_<?php echo $i; ?>" class="form-control" rows="4"
+                                                            placeholder="Deskripsi lengkap yang akan muncul di popup..."><?php echo htmlspecialchars($current_content['layanan_popup_desc_' . $i] ?? ''); ?></textarea>
+                                                </div>
+                                                
+                                                <!-- Di bagian textarea Cara Kerja: -->
+                                            <div class="form-group">
+                                                <label for="layanan_cara_kerja_<?php echo $i; ?>">Cara Kerja Layanan:</label>
+                                                <div class="format-hint">
+                                                    <small>Contoh format:</small>
+                                                    <pre style="background:#f5f5f5;padding:10px;border-radius:4px;margin-top:5px;font-size:12px;">
+Pemohon datang ke kantor Dinas Pendidikan dengan membawa dokumen asli
+Mengisi formulir permohonan legalisir
+Petugas memverifikasi dokumen asli
+Dokumen dicap dan ditandatangani oleh pejabat berwenang
+Pemohon menerima dokumen yang telah dilegalisir</pre>
+                                                    <small>Setiap baris akan menjadi poin terpisah dengan nomor urut</small>
+                                                </div>
+                                                <textarea id="layanan_cara_kerja_<?php echo $i; ?>" 
+                                                        name="layanan_cara_kerja_<?php echo $i; ?>" class="form-control" rows="6"
+                                                        placeholder="Masukkan langkah-langkah cara kerja layanan..."><?php echo htmlspecialchars($current_content['layanan_cara_kerja_' . $i] ?? ''); ?></textarea>
+                                            </div>
+
+                                            <!-- Di bagian textarea Persyaratan: -->
+                                            <div class="form-group">
+                                                <label for="layanan_persyaratan_<?php echo $i; ?>">Persyaratan:</label>
+                                                <div class="format-hint">
+                                                    <small>Contoh format:</small>
+                                                    <pre style="background:#f5f5f5;padding:10px;border-radius:4px;margin-top:5px;font-size:12px;">
+Ijazah asli yang akan dilegalisir
+KTP asli dan fotokopi
+Formulir permohonan yang telah diisi
+Bukti pembayaran (jika ada)</pre>
+                                                    <small>Setiap baris akan menjadi poin terpisah dengan bullet point</small>
+                                                </div>
+                                                <textarea id="layanan_persyaratan_<?php echo $i; ?>" 
+                                                        name="layanan_persyaratan_<?php echo $i; ?>" class="form-control" rows="6"
+                                                        placeholder="Masukkan daftar persyaratan..."><?php echo htmlspecialchars($current_content['layanan_persyaratan_' . $i] ?? ''); ?></textarea>
+                                            </div>
+                                            <!-- ===== AKHIR DATA POPUP ===== -->
+                                            
                                         </div>
                                     <?php endfor; ?>
                                 </div>
-                                
                             <?php endif; ?>
                             
                         <?php elseif ($current_file === 'profil' && $current_section === 'visi-misi'): ?>
@@ -1315,6 +1547,43 @@ if (isset($_GET['success'])) {
                 closeImageSelector();
             }
         });
+        // Validasi format visi saat submit
+        const visiTextarea = document.getElementById('visi');
+        if (visiTextarea) {
+            // Auto-format visi saat mengetik
+            visiTextarea.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    // Auto-add dash pada baris baru
+                    setTimeout(() => {
+                        const currentPos = this.selectionStart;
+                        this.value = this.value.substr(0, currentPos) + '- ' + this.value.substr(currentPos);
+                        this.selectionStart = currentPos + 2;
+                        this.selectionEnd = currentPos + 2;
+                    }, 0);
+                }
+            });
+            
+            document.querySelector('.editor-form').addEventListener('submit', function(e) {
+                const lines = visiTextarea.value.split('\n');
+                let hasValidFormat = false;
+                
+                // Cek apakah ada minimal satu baris dengan dash
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (line && line !== '' && line.startsWith('-')) {
+                        hasValidFormat = true;
+                        break;
+                    }
+                }
+                
+                if (!hasValidFormat) {
+                    e.preventDefault();
+                    alert('Format visi tidak valid. Minimal satu baris harus dimulai dengan dash (-).');
+                    visiTextarea.focus();
+                    visiTextarea.value = '- ' + visiTextarea.value;
+                }
+            });
+        }
         
         // Validasi format misi saat submit
         const misiTextarea = document.getElementById('misi');
@@ -1363,4 +1632,40 @@ if (isset($_GET['success'])) {
         }
     </script>
 </body>
+
+<script>
+    // Handle image errors untuk semua preview gambar
+    document.addEventListener('DOMContentLoaded', function() {
+        const previewImages = document.querySelectorAll('.image-preview img');
+        
+        previewImages.forEach(img => {
+            // Hapus atribut onerror yang bermasalah
+            img.removeAttribute('onerror');
+            
+            // Tambahkan event listener untuk error
+            img.addEventListener('error', function() {
+                this.style.display = 'none';
+                
+                // Cari atau buat elemen error message
+                let errorElement = this.nextElementSibling;
+                if (!errorElement || !errorElement.classList.contains('image-error')) {
+                    errorElement = document.createElement('div');
+                    errorElement.className = 'image-error';
+                    errorElement.innerHTML = '<p style="color:#dc3545; padding:10px; text-align:center;">Gambar tidak ditemukan</p>';
+                    this.parentNode.insertBefore(errorElement, this.nextSibling);
+                }
+                errorElement.style.display = 'block';
+            });
+            
+            // Reset jika gambar berhasil dimuat
+            img.addEventListener('load', function() {
+                const errorElement = this.nextElementSibling;
+                if (errorElement && errorElement.classList.contains('image-error')) {
+                    errorElement.style.display = 'none';
+                }
+                this.style.display = 'block';
+            });
+        });
+    });
+</script>
 </html>

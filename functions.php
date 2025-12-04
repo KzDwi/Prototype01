@@ -188,4 +188,40 @@ function updateCounterDibaca($id) {
     $stmt = $pdo->prepare($sql);
     return $stmt->execute([$id]);
 }
+
+// Fungsi untuk mendapatkan data FAQ dari database
+function getFAQData() {
+    // Coba ambil dari database jika ada
+    try {
+        $db = getDatabaseConnection();
+        $faq_data = [];
+        
+        // Query untuk mendapatkan FAQ berdasarkan kategori
+        $categories = ['informasi_umum', 'layanan_kesiswaan', 'guru_tenaga_kependidikan', 'ppdb'];
+        
+        foreach ($categories as $category) {
+            $stmt = $db->prepare("SELECT question, answer FROM faq WHERE category = ? ORDER BY display_order ASC");
+            $stmt->execute([$category]);
+            $faq_data[$category] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+        
+        return $faq_data;
+    } catch (Exception $e) {
+        // Fallback ke data default jika database error
+        return [
+            'informasi_umum' => [
+                // ... data default
+            ],
+            // ... kategori lainnya
+        ];
+    }
+}
+
+// Fungsi untuk menyimpan FAQ ke database (untuk admin)
+function saveFAQ($category, $question, $answer) {
+    $db = getDatabaseConnection();
+    $stmt = $db->prepare("INSERT INTO faq (category, question, answer) VALUES (?, ?, ?)");
+    return $stmt->execute([$category, $question, $answer]);
+}
+
 ?>

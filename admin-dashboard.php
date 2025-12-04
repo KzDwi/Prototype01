@@ -285,9 +285,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tambah_berita'])) {
                     </a>
                 </li>
                 <li class="sidebar-menu-item">
-                    <a href="#" class="sidebar-menu-link">
+                    <a href="admin-pengaturan.php" class="sidebar-menu-link">
                         <span class="icon icon-settings"></span>
-                        <span class="sidebar-menu-text">Pengaturan</span>
+                        <span class="sidebar-menu-text">Pengaturan Konten</span>
                     </a>
                 </li>
             </ul>

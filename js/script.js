@@ -693,15 +693,80 @@ const layananData = {
 };
 
 // Fungsi untuk membuka popup deskripsi layanan
-function openLayananPopup(layananId) {
-    const layanan = layananData[layananId];
-    if (!layanan) return;
+// Fungsi untuk membaca data popup dari file JSON
+async function loadLayananPopupData() {
+    try {
+        const response = await fetch('data/layanan_popup.json');
+        if (!response.ok) {
+            throw new Error('Gagal memuat data layanan');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Error loading popup data:', error);
+        return null;
+    }
+}
+
+// Fungsi untuk membuka popup deskripsi layanan (UPDATED)
+async function openLayananPopup(layananId) {
+    // Load data dari JSON
+    const popupData = await loadLayananPopupData();
     
-    const stepsHTML = layanan.caraKerja.map((step, index) => 
+    if (!popupData || !popupData[layananId]) {
+        // Fallback ke data statis jika JSON tidak ada
+        const staticData = layananData[layananId];
+        if (!staticData) {
+            alert('Data layanan tidak ditemukan');
+            return;
+        }
+        showLayananPopup(staticData);
+        return;
+    }
+    
+    const data = popupData[layananId];
+    
+    // Format cara kerja dan persyaratan dari string ke array
+    // Fungsi untuk memformat list
+    function formatList(text) {
+        if (!text) return [];
+        return text.split('\n')
+            .map(line => line.trim())
+            .filter(line => line !== '');
+    }
+
+    // Di dalam fungsi openLayananPopup:
+    const caraKerjaArray = formatList(data.cara_kerja);
+    const persyaratanArray = formatList(data.persyaratan);
+    
+    // Ambil judul dari kartu layanan yang sesuai
+    let title = '';
+    const layananCards = document.querySelectorAll('.layanan-card');
+    layananCards.forEach(card => {
+        if (card.onclick && card.onclick.toString().includes(layananId)) {
+            const cardTitle = card.querySelector('h3');
+            if (cardTitle) {
+                title = cardTitle.textContent;
+            }
+        }
+    });
+    
+    const popupDataFormatted = {
+        title: title || layananId.replace(/-/g, ' ').toUpperCase(),
+        description: data.popup_desc || 'Deskripsi tidak tersedia',
+        caraKerja: caraKerjaArray,
+        persyaratan: persyaratanArray
+    };
+    
+    showLayananPopup(popupDataFormatted);
+}
+
+// Fungsi untuk menampilkan popup
+function showLayananPopup(data) {
+    const stepsHTML = data.caraKerja.map((step, index) => 
         `<li>${step}</li>`
     ).join('');
     
-    const requirementsHTML = layanan.persyaratan.map(req => 
+    const requirementsHTML = data.persyaratan.map(req => 
         `<li>${req}</li>`
     ).join('');
     
@@ -709,17 +774,21 @@ function openLayananPopup(layananId) {
         <div class="popup-overlay" id="layananPopup">
             <div class="popup-content">
                 <button class="popup-close" onclick="closeLayananPopup()">×</button>
-                <h2 class="popup-title">${layanan.title}</h2>
-                <p class="popup-description">${layanan.description}</p>
+                <h2 class="popup-title">${data.title}</h2>
+                <p class="popup-description">${data.description}</p>
                 
-                <div class="popup-steps">
+                <div class="popup-section">
                     <h4>Cara Kerja Layanan:</h4>
                     <ol>${stepsHTML}</ol>
                 </div>
                 
-                <div class="popup-requirements">
+                <div class="popup-section">
                     <h4>Persyaratan:</h4>
                     <ul>${requirementsHTML}</ul>
+                </div>
+                
+                <div class="popup-actions">
+                    <button class="btn-primary" onclick="closeLayananPopup()">Tutup</button>
                 </div>
             </div>
         </div>
