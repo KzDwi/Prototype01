@@ -54,7 +54,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             align-items: center;
             justify-content: center;
             padding: 60px 0;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background-image: url("https://upload.wikimedia.org/wikipedia/commons/c/c1/Pemandangan_Tanah_Grogot.jpg?20100504072853");
+            background-color: rgba(255, 255, 255, 0.5);
+            background-blend-mode: overlay;
+            background-size: cover;
+            background-position: center;
         }
 
         .login-card {
@@ -62,6 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             padding: 40px;
             border-radius: 12px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            background-color: rgba(255, 255, 255, 0.8);
             width: 100%;
             max-width: 400px;
             text-align: center;

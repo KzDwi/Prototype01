@@ -649,3 +649,163 @@ body {
     font-size: 1.1rem;
     font-weight: 600;
 }
+
+/* ====================================================================================================== */
+/* ====================================================================================================== */
+/* ====================================================================================================== */
+/* ====================================================================================================== */
+/* ====================================================================================================== */
+/* ====================================================================================================== */
+
+/* ========== UPDATE CSS DASHBOARD ========== */
+
+/* Icon tambahan untuk menu baru */
+.icon-service::before { content: "🛠️"; }
+.icon-faq::before { content: "❓"; }
+.icon-complaint::before { content: "📋"; }
+.icon-profile::before { content: "🏛️"; }
+.icon-logout::before { content: "🚪"; }
+
+/* Tombol aksi dengan spacing lebih baik */
+.table-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.table-actions .btn {
+    padding: 6px 12px;
+    font-size: 13px;
+    min-width: 70px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+/* Form spacing lebih baik */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.form-control {
+    padding: 10px 12px;
+    font-size: 14px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    width: 100%;
+    transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #003399;
+    box-shadow: 0 0 0 3px rgba(0, 51, 153, 0.1);
+    outline: none;
+}
+
+/* Card header lebih besar */
+.card-header h1, 
+.card-header h2, 
+.card-header h3, 
+.card-header h4, 
+.card-header h5, 
+.card-header h6 {
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+}
+
+/* Status badge lebih jelas */
+.status-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.status-publish { background: #d4edda; color: #155724; }
+.status-draft { background: #fff3cd; color: #856404; }
+.status-aktif { background: #d1ecf1; color: #0c5460; }
+.status-nonaktif { background: #f8d7da; color: #721c24; }
+
+/* Table row hover */
+.table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* Responsive table */
+@media (max-width: 768px) {
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .table-actions {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .table-actions .btn {
+        width: 100%;
+    }
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    gap: 5px;
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+.page-item .page-link {
+    padding: 6px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    color: #003399;
+    text-decoration: none;
+}
+
+.page-item.active .page-link {
+    background: #003399;
+    color: white;
+    border-color: #003399;
+}
+
+/* Alert messages */
+.alert {
+    padding: 15px 20px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    border-color: #ffeaa7;
+    color: #856404;
+}

@@ -130,7 +130,8 @@ updateCounterDibaca($id_berita);
     <!-- Breadcrumb -->
     <section class="breadcrumb-section">
         <div class="container">
-            <nav class="breadcrumb-nav">
+            <br>
+            <nav class="breadcrumb-nav" style="width: 100%; background-color: #FFF !important;">
                 <a href="index.html">Halaman Utama</a>
                 <span>/</span>
                 <a href="berita.php">Berita</a>

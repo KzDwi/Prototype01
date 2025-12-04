@@ -333,7 +333,7 @@ function initBeritaSlider() {
     
     function startSlider() {
         console.log('Starting slider interval');
-        slideInterval = setInterval(nextSlide, 5000); // Change slide every 5 seconds
+        slideInterval = setInterval(nextSlide, 10000); // Change slide every 5 seconds
     }
     
     function resetSliderInterval() {
