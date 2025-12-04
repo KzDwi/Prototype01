@@ -29,13 +29,46 @@ try {
     $tableExists = $stmt->fetch(PDO::FETCH_ASSOC);
     
     if (!$tableExists) {
-        // Jika tidak, import struktur tabel
+        // Jika tidak, import struktur tabel berita
         $sql = file_get_contents('database.sql');
         $pdo->exec($sql);
         echo "Tabel berita berhasil dibuat. ";
     }
     
+    // Cek apakah tabel konten_website exists
+    $stmt = $pdo->query("SHOW TABLES LIKE 'konten_website'");
+    $kontenTableExists = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    if (!$kontenTableExists) {
+        // Jika tidak, buat tabel konten
+        $pdo->exec("CREATE TABLE IF NOT EXISTS konten_website (
+            id INT PRIMARY KEY AUTO_INCREMENT,
+            section_key VARCHAR(100) NOT NULL,
+            content_type VARCHAR(50) NOT NULL COMMENT 'hero_text, hero_subtext, pimpinan, visi, misi, layanan',
+            content_data TEXT,
+            display_order INT DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            UNIQUE KEY unique_section_content (section_key, content_type)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+        
+        $pdo->exec("CREATE TABLE IF NOT EXISTS gambar_konten (
+            id INT PRIMARY KEY AUTO_INCREMENT,
+            konten_id INT,
+            gambar_type VARCHAR(50) NOT NULL COMMENT 'hero_slider, pimpinan_foto, layanan_icon',
+            gambar_url VARCHAR(500),
+            display_order INT DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (konten_id) REFERENCES konten_website(id) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+        
+        echo "Tabel konten berhasil dibuat. ";
+    }
+    
 } catch(PDOException $e) {
     die("Koneksi database gagal: " . $e->getMessage());
 }
+
+// Kembalikan koneksi PDO untuk digunakan di file lain
+return $pdo;
 ?>
