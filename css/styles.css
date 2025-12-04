@@ -384,168 +384,82 @@ header.scrolled .mobile-menu-btn {
 }
 
 /* ==========================================================================
-   HERO SLIDER BUTTONS - STYLES PERBAIKAN
+   HERO SLIDER CONTROLS - PANAH SAMPING, DOTS BAWAH TEKS
    ========================================================================== */
 
-/* Tombol navigasi hero slider - FIXED */
-.hero-slider-btn {
+/* Container controls untuk panah */
+.slider-controls {
     position: absolute;
     top: 50%;
+    left: 0;
+    width: 100%;
     transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0;
+    z-index: 3;
+    pointer-events: none; /* Agar tidak mengganggu klik konten */
+}
+
+/* Aktifkan pointer events hanya untuk tombol */
+.slider-controls .slider-btn {
+    pointer-events: auto;
+}
+
+/* Tombol kiri - sejajar dengan logo */
+.slider-controls .prev-btn {
+    margin-left: calc((100% - 1200px) / 2 + 20px);
+    position: relative;
+    left: -10px;
+}
+
+/* Tombol kanan - sejajar dengan FAQ navbar */
+.slider-controls .next-btn {
+    margin-right: calc((100% - 1200px) / 2 + 20px);
+    position: relative;
+    right: -10px;
+}
+
+/* Style tombol */
+.slider-btn {
     background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
     color: white;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    width: 60px;
-    height: 60px;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 100;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
-.hero-slider-btn:hover {
+.slider-btn:hover {
     background: rgba(255, 255, 255, 0.3);
     border-color: rgba(255, 255, 255, 0.8);
-    transform: translateY(-50%) scale(1.1);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
 }
 
-.hero-slider-btn:active {
-    transform: translateY(-50%) scale(0.95);
+/* Profil Hero */
+.profil-hero {
+    background: linear-gradient(135deg, #003399 0%, #002280 100%);
+    color: white;
+    padding: 60px 0;
+    text-align: center;
 }
 
-/* Tombol kiri */
-.hero-prev-btn {
-    left: 30px;
+.profil-hero-content h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
 }
 
-/* Tombol kanan */
-.hero-next-btn {
-    right: 30px;
-}
-
-/* Style icon dalam tombol */
-.hero-slider-btn .material-symbols-outlined {
-    font-size: 32px;
-    font-weight: 300;
-}
-
-/* Hero content - beri sedikit padding agar tidak tertutup tombol */
-.hero-content {
-    position: relative;
-    z-index: 2;
-    max-width: 800px;
-    padding: 0 100px; /* Tambah padding agar tidak dekat dengan tombol */
-}
-
-/* ==========================================================================
-   RESPONSIVE STYLES UNTUK HERO SLIDER BUTTONS
-   ========================================================================== */
-
-/* Tablet */
-@media (max-width: 992px) {
-    .hero-slider-btn {
-        width: 50px;
-        height: 50px;
-    }
-    
-    .hero-slider-btn .material-symbols-outlined {
-        font-size: 28px;
-    }
-    
-    .hero-prev-btn {
-        left: 20px;
-    }
-    
-    .hero-next-btn {
-        right: 20px;
-    }
-    
-    .hero-content {
-        padding: 0 80px;
-    }
-}
-
-/* Mobile */
-@media (max-width: 768px) {
-    .hero-slider-btn {
-        width: 45px;
-        height: 45px;
-    }
-    
-    .hero-slider-btn .material-symbols-outlined {
-        font-size: 24px;
-    }
-    
-    .hero-prev-btn {
-        left: 15px;
-    }
-    
-    .hero-next-btn {
-        right: 15px;
-    }
-    
-    .hero-content {
-        padding: 0 60px;
-    }
-    
-    .hero-content h2 {
-        font-size: 2rem;
-    }
-    .hero-content h3 {
-        font-size: 1.6rem;
-    }
-    
-    .hero-content p {
-        font-size: 1.1rem;
-    }
-}
-
-/* Small Mobile */
-@media (max-width: 576px) {
-    .hero-slider-btn {
-        width: 40px;
-        height: 40px;
-        opacity: 0.8; /* Sedikit transparan di mobile */
-    }
-    
-    .hero-slider-btn .material-symbols-outlined {
-        font-size: 20px;
-    }
-    
-    .hero-prev-btn {
-        left: 10px;
-    }
-    
-    .hero-next-btn {
-        right: 10px;
-    }
-    
-    .hero-content {
-        padding: 0 50px;
-    }
-    
-    .hero-content h2 {
-        font-size: 1.8rem;
-    }
-    
-    .hero-content p {
-        font-size: 1rem;
-    }
-}
-
-.hero-slider-btn {
-    display: block !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    background: red !important; /* Warna merah untuk testing */
+.profil-hero-content p {
+    font-size: 1.2rem;
+    opacity: 0.9;
 }
 
 /* ==========================================================================
@@ -1377,6 +1291,7 @@ footer {
    POPUP MODAL
    ========================================================================== */
 
+/* ===== STYLE POPUP LAYANAN YANG SESUAI GAMBAR ===== */
 .popup-overlay {
     display: none;
     position: fixed;
@@ -1384,88 +1299,203 @@ footer {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 10000;
     justify-content: center;
     align-items: center;
+    padding: 20px;
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .popup-content {
     background-color: white;
-    padding: 30px;
-    border-radius: 8px;
-    width: 90%;
+    border-radius: 12px;
+    width: auto; /* Ganti dari width: 90% */
     max-width: 600px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    max-height: none; /* Hapus max-height yang ada */
+    overflow: visible; /* Ganti dari overflow-y: auto */
     position: relative;
-    animation: popupFadeIn 0.3s ease-out;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.4s ease-out;
+    margin: 20px; /* Tambahkan margin untuk mobile */
+}
+
+.popup-body {
+    padding: 0;
+    margin: 0;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .popup-close {
     position: absolute;
-    top: 15px;
-    right: 15px;
+    top: 20px;
+    right: 20px;
     background: none;
     border: none;
-    font-size: 24px;
+    font-size: 28px;
+    color: #666;
     cursor: pointer;
-    color: #333;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    z-index: 2;
+    display: none;
 }
 
 .popup-close:hover {
+    background-color: #f5f5f5;
     color: #003399;
 }
 
 .popup-title {
     color: #003399;
-    margin-bottom: 15px;
-    font-size: 1.5em;
-    border-bottom: 2px solid #003399;
-    padding-bottom: 10px;
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin: 0;
+    padding: 35px 40px 20px 40px;
+    border-bottom: 1px solid #eee;
 }
 
 .popup-description {
-    margin-bottom: 20px;
-    line-height: 1.6;
     color: #333;
+    line-height: 1.6;
+    padding: 25px 40px;
+    font-size: 1.1rem;
+    margin: 0;
+    background-color: #f9f9f9;
 }
 
+.popup-section {
+    padding: 25px 40px;
+    border-bottom: 1px solid #eee;
+}
+
+.popup-section,
+.popup-description {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.popup-section:last-child {
+    border-bottom: none;
+    padding-bottom: 40px;
+}
+
+.popup-section h4 {
+    color: #003399;
+    margin: 0 0 20px 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.popup-section ol,
+.popup-section ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.popup-section ol {
+    counter-reset: item;
+}
+
+.popup-section ol li {
+    margin-bottom: 12px;
+    padding-left: 10px;
+    line-height: 1.5;
+    position: relative;
+    list-style-type: none;
+}
+
+.popup-section ol li:before {
+    content: counter(item) ". ";
+    counter-increment: item;
+    color: #003399;
+    font-weight: bold;
+    position: absolute;
+    left: -20px;
+}
+
+.popup-section ul li {
+    margin-bottom: 10px;
+    padding-left: 10px;
+    line-height: 1.5;
+    position: relative;
+}
+
+.popup-section ul li:before {
+    content: "•";
+    color: #003399;
+    font-weight: bold;
+    position: absolute;
+    left: -15px;
+}
+
+.popup-actions {
+    padding: 20px 40px 35px 40px;
+    text-align: right;
+    background-color: #f9f9f9;
+    border-top: 1px solid #eee;
+    border-radius: 0 0 12px 12px;
+}
+
+.popup-actions .btn-primary {
+    background-color: #003399;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 120px;
+}
+
+.popup-actions .btn-primary:hover {
+    background-color: #002280;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 51, 153, 0.3);
+}
+
+/* Style untuk bagian Cara Kerja Layanan */
 .popup-steps {
     background: #f8f9fa;
-    padding: 15px;
+    border-left: 4px solid #003399;
     border-radius: 6px;
+    padding: 20px;
     margin: 15px 0;
 }
 
-.popup-steps h4 {
-    color: #003399;
-    margin-bottom: 10px;
-}
-
-.popup-steps ol {
-    margin-left: 20px;
-}
-
-.popup-steps li {
-    margin-bottom: 8px;
-    line-height: 1.5;
-}
-
+/* Style untuk bagian Persyaratan */
 .popup-requirements {
-    background: #fff3cd;
-    padding: 15px;
+    background: #fff3e6;
+    border-left: 4px solid #e36159;
     border-radius: 6px;
+    padding: 20px;
     margin: 15px 0;
-    border-left: 4px solid #ffc107;
 }
 
 .popup-requirements h4 {
-    color: #856404;
-    margin-bottom: 10px;
-}
-
-.popup-requirements ul {
-    margin-left: 20px;
+    color: #e36159;
 }
 
 /* ==========================================================================
@@ -1760,12 +1790,34 @@ footer {
     }
     
     .popup-content {
-        padding: 20px;
-        margin: 20px;
+        width: calc(100% - 40px);
+        max-width: 90vw;
+        margin: 10px auto;
     }
     
     .popup-title {
-        font-size: 1.3em;
+        font-size: 1.4rem;
+        padding: 20px 25px 15px 25px;
+    }
+    
+    .popup-description {
+        font-size: 0.95rem;
+        padding: 15px 25px;
+    }
+    
+    .popup-section {
+        padding: 15px 25px;
+    }
+    
+    .popup-section h4 {
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+    }
+    
+    .popup-section ol li,
+    .popup-section ul li {
+        font-size: 0.9rem;
+        margin-bottom: 8px;
     }
     
     .layanan-grid {
@@ -1902,5 +1954,69 @@ footer {
     .dot {
         width: 10px;
         height: 10px;
+    }
+
+    .popup-content {
+        width: calc(100% - 20px);
+        max-width: 95vw;
+        margin: 5px auto;
+        border-radius: 8px;
+    }
+    
+    .popup-title {
+        font-size: 1.2rem;
+        padding: 15px 20px 10px 20px;
+    }
+    
+    .popup-description {
+        font-size: 0.9rem;
+        padding: 10px 20px;
+    }
+    
+    .popup-section {
+        padding: 10px 20px;
+    }
+    
+    .popup-section h4 {
+        font-size: 1rem;
+    }
+    
+    .popup-section ol,
+    .popup-section ul {
+        padding-left: 15px;
+    }
+    
+    .popup-steps,
+    .popup-requirements {
+        padding: 10px;
+        margin: 10px 0;
+    }
+    
+    .popup-actions {
+        padding: 10px 20px 15px 20px;
+        text-align: center;
+    }
+    
+    .popup-actions .btn-primary {
+        width: 100%;
+        max-width: 200px;
+        padding: 10px 15px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Untuk zoom - penting! */
+@media (max-width: 320px) {
+    .popup-content {
+        width: 100vw; /* Pastikan mengikuti viewport width */
+        margin: 5px;
+        border-radius: 6px;
+    }
+    
+    .popup-title,
+    .popup-description,
+    .popup-section {
+        padding-left: 15px;
+        padding-right: 15px;
     }
 }
