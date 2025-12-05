@@ -1,6 +1,13 @@
 <?php
-// WAJIB: session_start() harus di baris paling pertama, sebelum spasi atau HTML apapun.
+// WAJIB: session_start() harus di baris paling pertama
 session_start();
+
+// --- TAMBAHAN: GENERATE CAPTCHA ---
+// Jika kode belum ada, buat baru. 
+// Kode ini disimpan di session untuk dicocokkan nanti di process_contact.php
+if (!isset($_SESSION['contact_captcha_code'])) {
+    $_SESSION['contact_captcha_code'] = rand(1000, 9999);
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -166,7 +173,7 @@ session_start();
         <div class="container">
             <div class="header-top">
                 <div class="logo">
-                    <img src="assets/logo-kabupaten.png" alt="Logo Pemerintahan">
+                    <img src="assets/logo-kabupaten.png" alt="Logo">
                     <div class="logo-text">
                         <h1>Dinas Pendidikan dan Kebudayaan</h1>
                         <p>Kabupaten Paser</p>
@@ -177,7 +184,8 @@ session_start();
                     <ul>
                         <li><a href="index.php" onclick="closeMobileMenu()">Beranda</a></li>
                         <li><a href="profil.php" onclick="closeMobileMenu()">Profil</a></li>
-                        <li><a href="#" onclick="closeMobileMenu(); scrollToLayanan();" class="active">Layanan</a></li>
+                        <li><a href="Statistik.php" onclick="closeMobileMenu()">Data & Statistik</a></li>
+                        <li><a href="layanan.php" onclick="closeMobileMenu()" class="active">Layanan</a></li>
                         <li><a href="berita.php" onclick="closeMobileMenu()">Berita</a></li>
                         <li><a href="kontak.php" onclick="closeMobileMenu()">Kontak</a></li>
                         <li><a href="faq.php" onclick="closeMobileMenu()">FAQ</a></li>
@@ -198,7 +206,7 @@ session_start();
             <div class="layanan-hero-content">
                 <h1><?php echo htmlspecialchars($page_title); ?></h1>
                 <h2 style="font-size: 2rem;">Dinas Pendidikan dan Kebudayaan Kabupaten Paser</h2> <br>
-                <p class="hero-subtitle"><?php echo htmlspecialchars($hero_subtitle); ?></p>
+                <p class="hero-subtitle">Memastikan Legalitas dan Kelancaran Administrasi Pendidikan Anda</p>
                 <a href="#layanan" class="btn btn-primary">Jelajahi Semua Layanan</a>
                 
                 <?php if ($is_admin): ?>
@@ -301,7 +309,7 @@ session_start();
         <div class="container">
             <div class="section-title fade-in">
                 <h2><?php echo htmlspecialchars($contact_title); ?></h2>
-                <p><?php echo htmlspecialchars($contact_subtitle); ?></p>
+                <p style="padding-bottom: 15px;"><?php echo htmlspecialchars($contact_subtitle); ?></p>
             </div>
 
             <?php if (isset($_SESSION['status']) && isset($_SESSION['message'])): ?>
@@ -354,6 +362,16 @@ session_start();
                     <div class="form-group">
                         <textarea name="pesan" placeholder="Jelaskan Kebutuhan Anda Secara Singkat" rows="4"></textarea>
                     </div>
+
+                    <div class="form-group">
+                        <label style="margin-bottom: 5px; font-weight:600; color:#333;">Kode Keamanan</label>
+                        <div style="display: flex; gap: 15px; align-items: center;">
+                            <div style="background: #e9ecef; padding: 10px 20px; font-family: monospace; font-size: 1.2rem; font-weight: bold; letter-spacing: 5px; border-radius: 6px; color: #003399; border: 1px solid #ced4da; user-select: none;">
+                                <?php echo $_SESSION['contact_captcha_code'] ?? '....'; ?>
+                            </div>
+                            <input type="text" name="captcha" placeholder="Ketik kode di samping" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;">
+                        </div>
+                    </div>
                     <button type="submit" id="btnKirim" class="btn btn-primary btn-submit">Kirim Konsultasi</button>
                 </form>
             </div>
@@ -397,8 +415,10 @@ session_start();
             // Validasi sederhana
             var nama = form.nama.value;
             var layanan = form.jenis_layanan.value;
-            if(nama == "" || layanan == "") {
-                alert("Mohon lengkapi data terlebih dahulu.");
+            var captcha = form.captcha.value; // Validasi field captcha juga
+
+            if(nama == "" || layanan == "" || captcha == "") {
+                alert("Mohon lengkapi semua data termasuk kode keamanan.");
                 return false;
             }
 

@@ -1,0 +1,35 @@
+{
+    "indikator": {
+        "total_sekolah": 1250,
+        "total_siswa": 210430,
+        "total_guru": 15800,
+        "total_kelas": 8200
+    },
+    "tabel_rincian": {
+        "sekolah_negeri": {
+            "paud": "5",
+            "sd": "250",
+            "smp": "45"
+        },
+        "sekolah_swasta": {
+            "paud": "400",
+            "sd": "350",
+            "smp": "200"
+        },
+        "siswa": {
+            "paud": "15200",
+            "sd": "110530",
+            "smp": "84700"
+        },
+        "guru_asn": {
+            "paud": "50",
+            "sd": "3500",
+            "smp": "2250"
+        },
+        "guru_non_asn": {
+            "paud": "1200",
+            "sd": "4800",
+            "smp": "4000"
+        }
+    }
+}

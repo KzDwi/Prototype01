@@ -310,7 +310,7 @@ if (file_exists($file_path)) {
         <div class="container">
             <div class="header-top">
                 <div class="logo">
-                    <img src="assets/logo-kabupaten.png" alt="Logo Pemerintahan">
+                    <img src="assets/logo-kabupaten.png" alt="Logo">
                     <div class="logo-text">
                         <h1>Dinas Pendidikan dan Kebudayaan</h1>
                         <p>Kabupaten Paser</p>
@@ -320,8 +320,9 @@ if (file_exists($file_path)) {
                 <nav id="main-nav">
                     <ul>
                         <li><a href="index.php" onclick="closeMobileMenu()">Beranda</a></li>
-                        <li><a href="#" onclick="closeMobileMenu()" class="active">Profil</a></li>
-                        <li><a href="layanan.php" onclick="closeMobileMenu(); scrollToLayanan();">Layanan</a></li>
+                        <li><a href="profil.php" onclick="closeMobileMenu()" class="active">Profil</a></li>
+                        <li><a href="Statistik.php" onclick="closeMobileMenu()">Data & Statistik</a></li>
+                        <li><a href="layanan.php" onclick="closeMobileMenu()">Layanan</a></li>
                         <li><a href="berita.php" onclick="closeMobileMenu()">Berita</a></li>
                         <li><a href="kontak.php" onclick="closeMobileMenu()">Kontak</a></li>
                         <li><a href="faq.php" onclick="closeMobileMenu()">FAQ</a></li>

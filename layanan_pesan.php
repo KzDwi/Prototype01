@@ -225,11 +225,6 @@ sort($daftar_layanan);
                 <img src="assets/logo-kabupaten.png" alt="Logo">
                 <span class="brand-text">Dinas Pendidikan dan Kebudayaan Kabupaten Paser</span>
             </div>
-            <ul class="navbar-nav navbar-nav-right">
-                <li class="nav-item">
-                    <a class="nav-link" href="?logout=true"><span class="icon icon-logout"></span> Logout</a>
-                </li>
-            </ul>
         </div>
     </nav>
 
@@ -238,25 +233,34 @@ sort($daftar_layanan);
             <ul class="sidebar-menu">
                 <li class="sidebar-menu-item">
                     <a href="admin-dashboard.php" class="sidebar-menu-link">
-                        <span class="icon icon-dashboard"></span> <span class="sidebar-menu-text">Dasbor</span>
+                        <span class="icon icon-dashboard"></span>
+                        <span class="sidebar-menu-text">Dashboard</span>
                     </a>
                 </li>
                 <li class="sidebar-menu-item">
                     <a href="admin-berita.php" class="sidebar-menu-link">
-                        <span class="icon icon-news"></span> <span class="sidebar-menu-text">Berita</span>
+                        <span class="icon icon-news"></span>
+                        <span class="sidebar-menu-text">Kelola Berita</span>
                     </a>
                 </li>
                 <li class="sidebar-menu-item">
-                    <a href="layanan_pesan.php" class="sidebar-menu-link active">
-                        <span class="icon icon-envelope"></span> <span class="sidebar-menu-text">Pesan Layanan</span>
+                    <a href="layanan_pesan.php" class="sidebar-menu-link active"> <span class="icon icon-envelope"></span>
+                        <span class="sidebar-menu-text">Pesan Pengaduan</span>
                     </a>
                 </li>
                 <li class="sidebar-menu-item">
                     <a href="admin-pengaturan.php" class="sidebar-menu-link">
-                        <span class="icon icon-settings"></span> <span class="sidebar-menu-text">Pengaturan</span>
+                        <span class="icon icon-settings"></span>
+                        <span class="sidebar-menu-text">Pengaturan Konten</span>
                     </a>
                 </li>
             </ul>
+            
+            <div class="sidebar-footer">
+                <a href="?logout=true" class="btn-sidebar-logout" onclick="return confirm('Apakah Anda yakin ingin keluar?');">
+                    <span>Keluar Aplikasi</span>
+                </a>
+            </div>
         </aside>
 
         <main class="content-wrapper">
@@ -408,6 +412,9 @@ sort($daftar_layanan);
                     </ul>
                 </nav>
                 <?php endif; ?>
+            </div>
+            <div class="dashboard-footer" style="margin-top: 25px; text-align: center; color: #999; font-size: 0.8rem;">
+                <p>© <?php echo date('Y'); ?> Admin Panel - Disdikbud Paser</p>
             </div>
             </main>
     </div>

@@ -2,30 +2,30 @@
     "index": {
         "hero_data": {
             "hero_text": "Pusat Layanan dan Informasi ",
-            "hero_subtext": "Bersama Paser TUNTAS (TANGGUH, UNGGUL, TRANSFORMATIF, ADIL, DAN SEJAHTERA)",
+            "hero_subtext": "Pendidikan dan Kebudayaan Kabupaten Paser",
             "hero_paragraph": "Bersama Paser TUNTAS (Tangguh, Unggul, Transformatif, Adil, dan Sejahtera)",
             "hero_images": [
                 "assets\/uploads\/69317b2905d54_68716-ilustrasi-wisata-di-kabupaten-paser-kaltim.jpg",
                 "assets\/uploads\/69317b393a82f_Pemandangan_Tanah_Grogot.jpg",
                 "assets\/uploads\/69317b2df1a57_photo-1523580494863-6f3031224c94.jpeg",
-                ""
+                "assets\/Tari_Ronggeng_Paser.jpeg"
             ]
         },
         "pimpinan_data": [
             {
                 "nama": "Dr. Fahmi Fadli",
                 "jabatan": "Bupati Paser",
-                "foto": "assets\/uploads\/69317ef18ad6b_bupati.jpeg"
+                "foto": "assets\/Bupati_Paser_Fahmi_Fadli.jpg"
             },
             {
-                "nama": "",
-                "jabatan": "",
-                "foto": ""
+                "nama": "H. Ikhwan Antasari, S.Sos.",
+                "jabatan": "Wakil Bupati Paser",
+                "foto": "assets\/Wakil_Bupati_Paser_Ikhwan_Antasari.jpg"
             },
             {
-                "nama": "",
-                "jabatan": "",
-                "foto": ""
+                "nama": "Drs. Katsul Wijaya, M.Si",
+                "jabatan": "Sekretaris Daerah",
+                "foto": "assets\/sekda-paser-2024.jpg"
             }
         ],
         "visi_misi": {
@@ -41,27 +41,27 @@
         "layanan_data": [
             {
                 "id": "legalisir-ijazah",
-                "title": "Legalisir Ijazah TEST",
-                "desc": "Pelayanan legalisir ijazah dan transkrip nilai TEST",
+                "title": "Legalisir Ijazah\/Dokumen Kelulusan",
+                "desc": "Layanan legalisir ijazah dan dokumen kelulusan untuk berbagai keperluan administrasi.",
                 "icon": "assets\/legalisir.png"
             },
             {
                 "id": "surat-mutasi",
-                "title": "",
-                "desc": "",
-                "icon": ""
+                "title": "Surat Keterangan Pindah Sekolah",
+                "desc": "Layanan penerbitan surat mutasi untuk siswa yang akan berpindah sekolah.",
+                "icon": "assets\/document.png"
             },
             {
                 "id": "tunjangan-guru",
-                "title": "",
-                "desc": "",
-                "icon": ""
+                "title": "Pengusulan Tunjangan Profesi Guru",
+                "desc": "Layanan pengusulan tunjangan profesi guru bagi guru yang memenuhi persyaratan.",
+                "icon": "assets\/tunjangan.png"
             },
             {
                 "id": "izin-pendirian",
-                "title": "",
-                "desc": "",
-                "icon": ""
+                "title": "Izin Pendirian Satuan Pendidikan",
+                "desc": "Layanan perizinan pendirian PAUD, SD, SMP, dan Lembaga Kursus dan Pelatihan.",
+                "icon": "assets\/institusi.png"
             }
         ]
     },

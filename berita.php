@@ -352,7 +352,7 @@ if ($halaman_aktif > $total_halaman && $total_halaman > 0) $halaman_aktif = $tot
         <div class="container">
             <div class="header-top">
                 <div class="logo">
-                    <img src="assets/logo-kabupaten.png" alt="Logo Pemerintahan">
+                    <img src="assets/logo-kabupaten.png" alt="Logo">
                     <div class="logo-text">
                         <h1>Dinas Pendidikan dan Kebudayaan</h1>
                         <p>Kabupaten Paser</p>
@@ -363,7 +363,8 @@ if ($halaman_aktif > $total_halaman && $total_halaman > 0) $halaman_aktif = $tot
                     <ul>
                         <li><a href="index.php" onclick="closeMobileMenu()">Beranda</a></li>
                         <li><a href="profil.php" onclick="closeMobileMenu()">Profil</a></li>
-                        <li><a href="layanan.php" onclick="closeMobileMenu(); scrollToLayanan();">Layanan</a></li>
+                        <li><a href="Statistik.php" onclick="closeMobileMenu()">Data & Statistik</a></li>
+                        <li><a href="layanan.php" onclick="closeMobileMenu()">Layanan</a></li>
                         <li><a href="berita.php" onclick="closeMobileMenu()" class="active">Berita</a></li>
                         <li><a href="kontak.php" onclick="closeMobileMenu()">Kontak</a></li>
                         <li><a href="faq.php" onclick="closeMobileMenu()">FAQ</a></li>

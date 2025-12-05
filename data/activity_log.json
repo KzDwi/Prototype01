@@ -1,0 +1,210 @@
+[
+    {
+        "timestamp": 1764922344,
+        "date": "2025-12-05 16:12:24",
+        "action": "login",
+        "details": "Mengakses dashboard admin",
+        "user": "admin",
+        "ip": "::1"
+    },
+    {
+        "timestamp": 1764920916,
+        "date": "2025-12-05 15:48:36",
+        "action": "login",
+        "details": "Mengakses dashboard admin",
+        "user": "admin",
+        "ip": "::1"
+    },
+    {
+        "timestamp": 1764920705,
+        "date": "2025-12-05 15:45:05",
+        "action": "logout",
+        "details": "Logout dari sistem",
+        "user": "admin",
+        "ip": "::1"
+    },
+    {
+        "timestamp": 1764920663,
+        "date": "2025-12-05 15:44:23",
+        "action": "login",
+        "details": "Mengakses dashboard admin",
+        "user": "admin",
+        "ip": "::1"
+    },
+    {
+        "timestamp": 1764919821,
+        "date": "2025-12-05 15:30:21",
+        "action": "logout",
+        "details": "Logout dari sistem",
+        "user": "admin",
+        "ip": "::1"
+    },
+    {
+        "timestamp": 1764905706,
+        "date": "2025-12-05 03:35:06",
+        "action": "create",
+        "details": "Menambahkan berita baru: ss",
+        "user": "admin",
+        "ip": "::1"
+    },
+    {
+        "timestamp": 1764903716,
+        "date": "2025-12-05 03:01:56",
+        "action": "create",
+        "details": "Menambahkan berita baru: ss",
+        "user": "admin",
+        "ip": "::1"
+    },
+    {
+        "timestamp": 1764903668,
+        "date": "2025-12-05 03:01:08",
+        "action": "unpublish",
+        "details": "Mengubah status berita ID: 8 menjadi draft",
+        "user": "admin",
+        "ip": "::1"
+    },
+    {
+        "timestamp": 1764903600,
+        "date": "2025-12-05 03:00:00",
+        "action": "unpublish",
+        "details": "Mengubah status berita ID: 8 menjadi draft",
+        "user": "admin",
+        "ip": "::1"
+    },
+    {
+        "timestamp": 1764903557,
+        "date": "2025-12-05 02:59:17",
+        "action": "unpublish",
+        "details": "Mengubah status berita ID: 8 menjadi draft",
+        "user": "admin",
+        "ip": "::1"
+    },
+    {
+        "timestamp": 1764903369,
+        "date": "2025-12-05 02:56:09",
+        "action": "unpublish",
+        "details": "Mengubah status berita ID: 8 menjadi draft",
+        "user": "admin",
+        "ip": "::1"
+    },
+    {
+        "timestamp": 1764903347,
+        "date": "2025-12-05 02:55:47",
+        "action": "publish",
+        "details": "Mengubah status berita ID: 8 menjadi publish",
+        "user": "admin",
+        "ip": "::1"
+    },
+    {
+        "timestamp": 1764903347,
+        "date": "2025-12-05 02:55:47",
+        "action": "unpublish",
+        "details": "Mengubah status berita ID: 8 menjadi draft",
+        "user": "admin",
+        "ip": "::1"
+    },
+    {
+        "timestamp": 1764903347,
+        "date": "2025-12-05 02:55:47",
+        "action": "publish",
+        "details": "Mengubah status berita ID: 8 menjadi publish",
+        "user": "admin",
+        "ip": "::1"
+    },
+    {
+        "timestamp": 1764903346,
+        "date": "2025-12-05 02:55:46",
+        "action": "unpublish",
+        "details": "Mengubah status berita ID: 8 menjadi draft",
+        "user": "admin",
+        "ip": "::1"
+    },
+    {
+        "timestamp": 1764903346,
+        "date": "2025-12-05 02:55:46",
+        "action": "publish",
+        "details": "Mengubah status berita ID: 8 menjadi publish",
+        "user": "admin",
+        "ip": "::1"
+    },
+    {
+        "timestamp": 1764903346,
+        "date": "2025-12-05 02:55:46",
+        "action": "unpublish",
+        "details": "Mengubah status berita ID: 8 menjadi draft",
+        "user": "admin",
+        "ip": "::1"
+    },
+    {
+        "timestamp": 1764903346,
+        "date": "2025-12-05 02:55:46",
+        "action": "publish",
+        "details": "Mengubah status berita ID: 8 menjadi publish",
+        "user": "admin",
+        "ip": "::1"
+    },
+    {
+        "timestamp": 1764903345,
+        "date": "2025-12-05 02:55:45",
+        "action": "unpublish",
+        "details": "Mengubah status berita ID: 8 menjadi draft",
+        "user": "admin",
+        "ip": "::1"
+    },
+    {
+        "timestamp": 1764903345,
+        "date": "2025-12-05 02:55:45",
+        "action": "publish",
+        "details": "Mengubah status berita ID: 8 menjadi publish",
+        "user": "admin",
+        "ip": "::1"
+    },
+    {
+        "timestamp": 1764903344,
+        "date": "2025-12-05 02:55:44",
+        "action": "unpublish",
+        "details": "Mengubah status berita ID: 8 menjadi draft",
+        "user": "admin",
+        "ip": "::1"
+    },
+    {
+        "timestamp": 1764902050,
+        "date": "2025-12-05 02:34:10",
+        "action": "publish",
+        "details": "Mengubah status berita ID: 8 menjadi publish",
+        "user": "admin",
+        "ip": "::1"
+    },
+    {
+        "timestamp": 1764902045,
+        "date": "2025-12-05 02:34:05",
+        "action": "unpublish",
+        "details": "Mengubah status berita ID: 8 menjadi draft",
+        "user": "admin",
+        "ip": "::1"
+    },
+    {
+        "timestamp": 1764902037,
+        "date": "2025-12-05 02:33:57",
+        "action": "publish",
+        "details": "Mengubah status berita ID: 8 menjadi publish",
+        "user": "admin",
+        "ip": "::1"
+    },
+    {
+        "timestamp": 1764902027,
+        "date": "2025-12-05 02:33:47",
+        "action": "create",
+        "details": "Menambahkan berita baru: aa",
+        "user": "admin",
+        "ip": "::1"
+    },
+    {
+        "id": "act_693220f3a9ec48.65595116",
+        "action": "login",
+        "details": "Mengakses dashboard admin",
+        "user": "admin",
+        "timestamp": 1764892915,
+        "date": "2025-12-05 00:01:55"
+    }
+]

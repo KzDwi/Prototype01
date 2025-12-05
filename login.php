@@ -8,6 +8,11 @@ if (isset($_GET['logout'])) {
     exit;
 }
 
+// Generate Captcha Code jika belum ada
+if (!isset($_SESSION['captcha_code'])) {
+    $_SESSION['captcha_code'] = rand(1000, 9999);
+}
+
 // Kredensial admin
 $valid_username = "admin";
 $valid_password = "admin1234";
@@ -19,12 +24,28 @@ $success = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'] ?? '';
     $password = $_POST['password'] ?? '';
+    $input_captcha = $_POST['captcha'] ?? '';
     
-    // Validasi kredensial
-    if ($username === $valid_username && $password === $valid_password) {
+    // Ambil captcha dari session saat ini untuk validasi
+    $valid_captcha = $_SESSION['captcha_code'] ?? '';
+    
+    // Regenerate captcha baru untuk attempt selanjutnya (keamanan anti-replay)
+    // Kita simpan di variabel temp dulu jika login sukses, agar tidak hilang saat render
+    $new_captcha = rand(1000, 9999);
+    $_SESSION['captcha_code'] = $new_captcha;
+    
+    // 1. Validasi Captcha Terlebih Dahulu
+    if ($input_captcha != $valid_captcha) {
+        $error = "Kode keamanan (CAPTCHA) salah! Silakan coba lagi.";
+    } 
+    // 2. Jika Captcha Benar, Validasi Kredensial
+    else if ($username === $valid_username && $password === $valid_password) {
         $_SESSION['admin_logged_in'] = true;
         $_SESSION['admin_username'] = $username;
         $_SESSION['login_time'] = time();
+        
+        // PERBAIKAN: Baris unset dihapus agar tidak memicu error "Undefined array key" saat render HTML di bawah
+        // unset($_SESSION['captcha_code']); 
         
         // Set session parameters untuk keamanan
         session_regenerate_id(true);
@@ -122,6 +143,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             box-shadow: 0 0 0 3px rgba(0, 51, 153, 0.1);
         }
 
+        /* Styles untuk Captcha */
+        .captcha-wrapper {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .captcha-code {
+            flex: 0 0 100px;
+            background: #e9ecef;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
+            letter-spacing: 5px;
+            color: #003399;
+            border-radius: 6px;
+            border: 1px solid #ced4da;
+            text-decoration: line-through; /* Efek coret agar susah di OCR */
+            user-select: none; /* Mencegah user melakukan select text */
+            opacity: 0.8;
+        }
+
         .login-btn {
             width: 100%;
             padding: 12px;
@@ -206,7 +251,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </style>
 </head>
 <body>
-    <!-- Header & Navigation -->
     <header id="main-header">
         <div class="container">
             <div class="header-top">
@@ -220,25 +264,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
                 <nav id="main-nav">
                     <ul>
-                        <li><a href="index.html" onclick="closeMobileMenu()">Beranda</a></li>
-                        <li><a href="profil.html" onclick="closeMobileMenu()">Profil</a></li>
-                        <li><a href="layanan.html" onclick="closeMobileMenu(); scrollToLayanan();">Layanan</a></li>
+                        <li><a href="index.php" onclick="closeMobileMenu()">Beranda</a></li>
+                        <li><a href="profil.php" onclick="closeMobileMenu()">Profil</a></li>
+                        <li><a href="layanan.php" onclick="closeMobileMenu(); scrollToLayanan();">Layanan</a></li>
                         <li><a href="berita.php" onclick="closeMobileMenu()">Berita</a></li>
-                        <li><a href="#kontak" onclick="closeMobileMenu()">Kontak</a></li>
-                        <li><a href="faq.html" onclick="closeMobileMenu()">FAQ</a></li>
+                        <li><a href="kontak.php" onclick="closeMobileMenu()">Kontak</a></li>
+                        <li><a href="faq.php" onclick="closeMobileMenu()">FAQ</a></li>
                     </ul>
                 </nav>
             </div>
         </div>
     </header>
 
-    <!-- Login Section -->
     <section class="login-container">
         <div class="login-card fade-in">
             <div class="login-logo">
                 <img src="assets/logo-kabupaten.png" alt="Logo Pemerintahan">
                 <h2>Admin Login</h2>
-                <p>Dinas Pendidikan dan Kebudayaan Kabupaten Paser</p>
+                <p>Dinas Pendidikan dan Kebudayaan Paser</p>
             </div>
 
             <?php
@@ -263,20 +306,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <label for="password">Password</label>
                     <input type="password" id="password" name="password" class="form-control" placeholder="Masukkan password" required>
                 </div>
+
+                <div class="form-group">
+                    <label for="captcha">Kode Keamanan</label>
+                    <div class="captcha-wrapper">
+                        <div class="captcha-code">
+                            <?php echo $_SESSION['captcha_code'] ?? '....'; ?>
+                        </div>
+                        <input type="text" id="captcha" name="captcha" class="form-control" placeholder="Salin kode di samping" required autocomplete="off">
+                    </div>
+                </div>
                 
                 <button type="submit" class="login-btn">Login</button>
             </form>
 
             <a href="index.html" class="back-link">← Kembali ke Beranda</a>
-            
-            <div class="login-footer">
-                <p>Hanya untuk administrator sistem</p>
-                <p><small>Default: admin / admin1234</small></p>
-            </div>
         </div>
     </section>
 
-    <!-- Footer -->
     <footer>
         <div class="container">
             <div class="footer-content" id="kontak">
@@ -323,7 +370,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 Dinas Pendidikan dan Kebudayaan Kabupaten Paser. Hak Cipta Dilindungi.</p>
+                <p>© 2025 Dinas Pendidikan dan Kebudayaan Kabupaten Paser. Hak Cipta Dilindungi.</p>
             </div>
         </div>
     </footer>
@@ -341,10 +388,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         document.querySelector('.login-form').addEventListener('submit', function(e) {
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
+            const captcha = document.getElementById('captcha').value;
             
-            if (!username || !password) {
+            if (!username || !password || !captcha) {
                 e.preventDefault();
-                alert('Harap isi semua field!');
+                alert('Harap isi semua field termasuk kode keamanan!');
             }
         });
 

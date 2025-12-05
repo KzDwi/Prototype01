@@ -3,22 +3,8 @@
 session_start();
 require_once 'functions.php';
 
-// FUNGSI UNTUK MEMBACA CONTENT.JSON
-function getContentData() {
-    $file_path = 'data/content.json';
-    if (file_exists($file_path)) {
-        $data = json_decode(file_get_contents($file_path), true);
-        return $data ?: ['index' => []];
-    }
-    return ['index' => []];
-}
-
-// Ambil semua data dari content.json
-$content_data = getContentData();
-$index_data = $content_data['index'] ?? [];
-
-// Ambil data pimpinan dari content.json
-$pimpinan_data = $index_data['pimpinan_data'] ?? [
+// Ambil data pimpinan dari database (jika ada) atau gunakan default
+$pimpinan_data = [
     [
         'nama' => 'Dr. Fahmi Fadli',
         'jabatan' => 'Bupati Paser',
@@ -36,11 +22,11 @@ $pimpinan_data = $index_data['pimpinan_data'] ?? [
     ]
 ];
 
-// Ambil berita terbaru untuk slider (tetap dari database)
+// Ambil berita terbaru untuk slider
 $berita_terbaru = ambilSemuaBerita('semua', 3);
 
-// Ambil data layanan dari content.json
-$layanan_data = $index_data['layanan_data'] ?? [
+// Ambil data layanan dari database jika ada
+$layanan_data = [
     [
         'id' => 'legalisir-ijazah',
         'title' => 'Legalisir Ijazah/Dokumen Kelulusan',
@@ -67,8 +53,8 @@ $layanan_data = $index_data['layanan_data'] ?? [
     ]
 ];
 
-// Ambil data visi misi dari content.json
-$visi_misi_data = $index_data['visi_misi'] ?? [
+// Data visi misi
+$visi_misi = [
     'visi' => 'Terwujudnya Paser yang Sejahtera, Berakhlak Mulia dan Berdaya Saing',
     'misi' => [
         'Mewujudkan Sumber Daya Manusia yang handal dan berdaya saing melalui Peningkatan Mutu Pendidikan, Derajat Kesehatan serta Kesejahteraan Sosial',
@@ -76,19 +62,6 @@ $visi_misi_data = $index_data['visi_misi'] ?? [
         'Mewujudkan Pembangunan yang merata dan berkesinambungan yang berwawasan lingkungan',
         'Meningkatkan kemandirian ekonomi daerah dan masyarakat berbasis potensi lokal',
         'Menciptakan Kota yang Aman, Nyaman, dan Kondusif'
-    ]
-];
-
-// Ambil data hero dari content.json
-$hero_data = $index_data['hero_data'] ?? [
-    'hero_text' => 'Pusat Layanan dan Informasi',
-    'hero_subtext' => 'Pendidikan dan Kebudayaan Kabupaten Paser',
-    'hero_paragraph' => 'Bersama Paser TUNTAS (Tangguh, Unggul, Transformatif, Adil, dan Sejahtera)',
-    'hero_images' => [
-        'https://upload.wikimedia.org/wikipedia/commons/c/c1/Pemandangan_Tanah_Grogot.jpg?20100504072853',
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Tari_Ronggeng_Paser.JPG/1200px-Tari_Ronggeng_Paser.JPG',
-        'https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-4.0.1&auto=format&fit=crop&w=1350&q=80',
-        'https://media.suara.com/images/2024/12/30/68716-ilustrasi-wisata-di-kabupaten-paser-kaltim.jpg'
     ]
 ];
 ?>
@@ -110,7 +83,7 @@ $hero_data = $index_data['hero_data'] ?? [
         <div class="container">
             <div class="header-top">
                 <div class="logo">
-                    <img src="assets/logo-kabupaten.png" alt="Logo Pemerintahan">
+                    <img src="assets/logo-kabupaten.png" alt="Logo">
                     <div class="logo-text">
                         <h1>Dinas Pendidikan dan Kebudayaan</h1>
                         <p>Kabupaten Paser</p>
@@ -119,9 +92,10 @@ $hero_data = $index_data['hero_data'] ?? [
                 <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
                 <nav id="main-nav">
                     <ul>
-                        <li><a href="#" onclick="closeMobileMenu()" class="active">Beranda</a></li>
+                        <li><a href="index.php" onclick="closeMobileMenu()" class="active">Beranda</a></li>
                         <li><a href="profil.php" onclick="closeMobileMenu()">Profil</a></li>
-                        <li><a href="layanan.php" onclick="closeMobileMenu(); scrollToLayanan();">Layanan</a></li>
+                        <li><a href="Statistik.php" onclick="closeMobileMenu()">Data & Statistik</a></li>
+                        <li><a href="layanan.php" onclick="closeMobileMenu()">Layanan</a></li>
                         <li><a href="berita.php" onclick="closeMobileMenu()">Berita</a></li>
                         <li><a href="kontak.php" onclick="closeMobileMenu()">Kontak</a></li>
                         <li><a href="faq.php" onclick="closeMobileMenu()">FAQ</a></li>
@@ -132,33 +106,39 @@ $hero_data = $index_data['hero_data'] ?? [
     </header>
 
     <!-- Hero Section dengan Slider -->
-<!-- Hero Section dengan Slider -->
-    <section class="hero">
-        <div class="hero-slider">
-            <?php for ($i = 0; $i < 4; $i++): ?>
-            <div class="slide <?php echo $i === 0 ? 'active' : ''; ?>" 
-                 style="background-image: url('<?php echo htmlspecialchars($hero_data['hero_images'][$i] ?? ''); ?>')">
-                <div class="slide-overlay"></div>
-            </div>
-            <?php endfor; ?>
+<section class="hero">
+    <div class="hero-slider">
+        <div class="slide active" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/c/c1/Pemandangan_Tanah_Grogot.jpg?20100504072853')">
+            <div class="slide-overlay"></div>
         </div>
-        
-        <!-- Tombol navigasi hero slider -->
-        <button class="hero-slider-btn hero-prev-btn" aria-label="Slide sebelumnya">
-            <span class="material-symbols-outlined">chevron_left</span>
-        </button>
-        
-        <div class="hero-content">
-            <h2><?php echo htmlspecialchars($hero_data['hero_text']); ?></h2>
-            <h3 style="font-size: 2rem;"><?php echo htmlspecialchars($hero_data['hero_subtext']); ?></h3><br>
-            <p><?php echo htmlspecialchars($hero_data['hero_paragraph']); ?></p> <br> <br>
-            <a href="#layanan-section" class="btn" onclick="scrollToLayanan()">Jelajahi Layanan</a>
+        <div class="slide" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Tari_Ronggeng_Paser.JPG/1200px-Tari_Ronggeng_Paser.JPG')">
+            <div class="slide-overlay"></div>
         </div>
-        
-        <button class="hero-slider-btn hero-next-btn" aria-label="Slide berikutnya">
-            <span class="material-symbols-outlined">chevron_right</span>
-        </button>
-    </section>
+        <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-4.0.1&auto=format&fit=crop&w=1350&q=80')">
+            <div class="slide-overlay"></div>
+        </div>
+        <div class="slide" style="background-image: url('https://media.suara.com/images/2024/12/30/68716-ilustrasi-wisata-di-kabupaten-paser-kaltim.jpg')">
+            <div class="slide-overlay"></div>
+        </div>
+    </div>
+    
+    <!-- Tombol navigasi hero slider -->
+    <button class="hero-slider-btn hero-prev-btn" aria-label="Slide sebelumnya">
+        <span class="material-symbols-outlined">chevron_left</span>
+    </button>
+    
+    <div class="hero-content">
+        <h2>Pusat Layanan dan Informasi</h2>
+        <h3 style="font-size: 2rem;">Pendidikan dan Kebudayaan Kabupaten Paser</h3><br>
+        <p>Bersama Paser TUNTAS (Tangguh, Unggul, Transformatif, Adil, dan Sejahtera)</p> <br> <br>
+        <a href="#layanan-section" class="btn" onclick="scrollToLayanan()">Jelajahi Layanan</a>
+    </div>
+    
+    <button class="hero-slider-btn hero-next-btn" aria-label="Slide berikutnya">
+        <span class="material-symbols-outlined">chevron_right</span>
+    </button>
+    
+</section>
 
     <!-- Pimpinan Daerah Section -->
     <section id="pimpinan" class="pimpinan fullscreen-section">
@@ -170,13 +150,13 @@ $hero_data = $index_data['hero_data'] ?? [
                 <?php foreach ($pimpinan_data as $pimpinan): ?>
                 <div class="pimpinan-card">
                     <div class="pimpinan-img portrait">
-                        <img src="<?php echo htmlspecialchars($pimpinan['foto'] ?? ''); ?>" 
-                             alt="<?php echo htmlspecialchars(($pimpinan['nama'] ?? '') . ' - ' . ($pimpinan['jabatan'] ?? '')); ?>" 
-                             onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiBmaWxsPSIjMDAzMzk5IiBmaWxsLW9wYWNpdHk9IjAuMSIvPgo8Y2lyY2xlIGN4PSI2MCIgY3k9IjQ1IiByPSIyMCIgZmlsbD0iIzAwMzM5OSIgZmlsbC1vcGFjaXR5PSIwLjMiLz4KPHBhdGggZD0iTTYwIDc1IEM0MCA3NSAzMCA4NSAzMDk1IEMzMDEwNSA0MDExNSA2MDExNSBDODAxMTUgOTAxMDUgOTAgOTUgQzkwIDg1IDgwIDc1IDYwIDc1IFoiIGZpbGw9IiMwMDMzOTkiIGZpbGwtb3BhY2l0eT0iMC4zIi8+Cjwvc3ZnPg=='">
+                        <img src="<?php echo htmlspecialchars($pimpinan['foto']); ?>" 
+                             alt="<?php echo htmlspecialchars($pimpinan['nama'] . ' - ' . $pimpinan['jabatan']); ?>" 
+                             onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiBmaWxsPSIjMDAzMzk5IiBmaWxsLW9wYWNpdHk9IjAuMSIvPgo8Y2lyY2xlIGN4PSI2MCIgY3k9IjQ1IiByPSIyMCIgZmlsbD0iIzAwMzM5OSIgZmlsbC1vcGFjaXR5PSIwLjMiLz4KPHBhdGggZD0iTTYwIDc1IEM0MCA3NSAzMCA4NSAzMCA5NSBDMzAgMTA1IDQwIDExNSA2MCAxMTUgQzgwIDExNSA5MCAxMDUgOTAgOTUgQzkwIDg1IDgwIDc1IDYwIDc1IFoiIGZpbGw9IiMwMDMzOTkiIGZpbGwtb3BhY2l0eT0iMC4zIi8+Cjwvc3ZnPg=='">
                     </div>
                     <div class="pimpinan-info">
-                        <h3><?php echo htmlspecialchars($pimpinan['nama'] ?? ''); ?></h3>
-                        <p><?php echo htmlspecialchars($pimpinan['jabatan'] ?? ''); ?></p>
+                        <h3><?php echo htmlspecialchars($pimpinan['nama']); ?></h3>
+                        <p><?php echo htmlspecialchars($pimpinan['jabatan']); ?></p>
                     </div>
                 </div>
                 <?php endforeach; ?>
@@ -193,12 +173,12 @@ $hero_data = $index_data['hero_data'] ?? [
             <div class="visi-misi-content">
                 <div class="visi">
                     <h3>Visi</h3>
-                    <p><?php echo htmlspecialchars($visi_misi_data['visi'] ?? ''); ?></p>
+                    <p><?php echo htmlspecialchars($visi_misi['visi']); ?></p>
                 </div>
                 <div class="misi">
                     <h3>Misi</h3>
                     <ul>
-                        <?php foreach (($visi_misi_data['misi'] ?? []) as $misi_item): ?>
+                        <?php foreach ($visi_misi['misi'] as $misi_item): ?>
                         <li><?php echo htmlspecialchars($misi_item); ?></li>
                         <?php endforeach; ?>
                     </ul>

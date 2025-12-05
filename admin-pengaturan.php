@@ -37,6 +37,13 @@ $editable_files = [
             'tupoksi' => 'Tugas Pokok & Fungsi',
         ]
     ],  
+    'statistik' => [
+        'name' => 'Halaman Statistik',
+        'path' => 'Statistik.php',
+        'sections' => [
+            'rincian' => 'Rincian Data (Tabel)'
+        ]
+    ],
     'layanan' => [
         'name' => 'Halaman Layanan',
         'path' => 'layanan.php',
@@ -69,6 +76,16 @@ $layanan_keys = [
     3 => 'tunjangan-guru',
     4 => 'izin-pendirian'
 ];
+
+// --- FUNGSI BARU UNTUK STATISTIK ---
+function loadStatistikData() {
+    $file_path = 'data/statistik.json';
+    return file_exists($file_path) ? json_decode(file_get_contents($file_path), true) : [];
+}
+
+function saveStatistikData($data) {
+    return file_put_contents('data/statistik.json', json_encode($data, JSON_PRETTY_PRINT));
+}
 
 // FUNGSI UNTUK CONTENT.JSON
 function loadContentData() {
@@ -410,6 +427,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $success = true;
         }
+
+        elseif ($file_type === 'statistik') {
+            $stats_data = loadStatistikData();
+            
+            if ($section_id === 'indikator') {
+                $stats_data['indikator'] = [
+                    'total_sekolah' => intval($_POST['total_sekolah'] ?? 0),
+                    'total_siswa'   => intval($_POST['total_siswa'] ?? 0),
+                    'total_guru'    => intval($_POST['total_guru'] ?? 0),
+                    'total_kelas'   => intval($_POST['total_kelas'] ?? 0)
+                ];
+                $success = saveStatistikData($stats_data);
+            } 
+            elseif ($section_id === 'rincian') {
+                $stats_data['tabel_rincian'] = $_POST['rincian'] ?? [];
+                $success = saveStatistikData($stats_data);
+            }
+        }
         
         elseif ($file_type === 'kontak') {
             if ($section_id === 'info') {
@@ -572,6 +607,16 @@ if (!isset($editable_files[$current_file]['sections'][$current_section])) {
 // AMBIL KONTEN DARI CONTENT.JSON
 $current_content = [];
 $content_data = loadContentData();
+
+// === TAMBAHAN LOAD DATA ===
+if ($current_file === 'statistik') {
+    $stats = loadStatistikData();
+    if ($current_section === 'indikator') {
+        $current_content = $stats['indikator'] ?? [];
+    } elseif ($current_section === 'rincian') {
+        $current_content['rincian'] = $stats['tabel_rincian'] ?? [];
+    }
+}
 
 if ($current_file === 'index') {
     if ($current_section === 'hero') {
@@ -1064,6 +1109,94 @@ if (isset($_GET['success'])) {
                 flex-direction: column;
             }
         }
+
+        /* === STYLE BARU TABEL EDITOR (Admin) === */
+
+        .table-responsive-admin {
+            overflow-x: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+        }
+
+        .stats-table-input {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        /* Header Tabel */
+        .stats-table-input th {
+            background: #003399; /* Warna Biru Dinas */
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-right: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .stats-table-input th:first-child {
+            text-align: left;
+            padding-left: 20px;
+            width: 30%;
+        }
+
+        /* Body Tabel */
+        .stats-table-input td {
+            padding: 0; /* Padding 0 agar input memenuhi sel */
+            border-bottom: 1px solid #eee;
+            border-right: 1px solid #eee;
+        }
+
+        /* Kolom Label (Kiri) */
+        .stats-table-input td:first-child {
+            padding: 12px 20px;
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #444;
+            border-right: 2px solid #e0e0e0;
+        }
+
+        /* Input Field Style - Seperti Spreadsheet */
+        .stats-table-input input[type="number"] {
+            width: 100%;
+            height: 100%;
+            border: none;
+            padding: 15px 10px;
+            text-align: center;
+            background: transparent;
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        /* Efek Focus pada Input */
+        .stats-table-input input[type="number"]:focus {
+            background-color: #eef6ff; /* Biru sangat muda */
+            box-shadow: inset 0 0 0 2px #003399; /* Border biru saat aktif */
+            color: #003399;
+            font-weight: bold;
+        }
+
+        /* Hover Baris */
+        .stats-table-input tr:hover td:first-child {
+            background-color: #e9ecef;
+            color: #003399;
+        }
+
+        /* Menghilangkan panah spinner pada input number agar bersih */
+        .stats-table-input input::-webkit-outer-spin-button,
+        .stats-table-input input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
     </style>
 </head>
 <body>
@@ -1082,35 +1215,6 @@ if (isset($_GET['success'])) {
                 <span class="brand-text">Dinas Pendidikan dan Kebudayaan Kabupaten Paser</span>
             </div>
             
-            <ul class="navbar-nav navbar-nav-right">
-                <li class="nav-item">
-                    <a class="nav-link" href="admin-dashboard.php">
-                        <span class="icon icon-dashboard"></span> Dasbor
-                    </a>
-                </li>
-                <li class="nav-item user-dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button">
-                        <span class="icon icon-user"></span>
-                        <?php echo $_SESSION['admin_username']; ?>
-                    </a>
-                    <div class="dropdown-menu" id="userDropdownMenu">
-                        <div class="dropdown-header">
-                            <h6><?php echo $_SESSION['admin_username']; ?></h6>
-                            <span class="text-muted">Administrator</span>
-                        </div>
-                        <a class="dropdown-item" href="#">
-                            <span class="icon icon-user"></span> Profil
-                        </a>
-                        <a class="dropdown-item" href="#">
-                            <span class="icon icon-settings"></span> Pengaturan
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="?logout=true">
-                            <span class="icon icon-logout"></span> Logout
-                        </a>
-                    </div>
-                </li>
-            </ul>
         </div>
     </nav>
 
@@ -1122,28 +1226,33 @@ if (isset($_GET['success'])) {
                 <li class="sidebar-menu-item">
                     <a href="admin-dashboard.php" class="sidebar-menu-link">
                         <span class="icon icon-dashboard"></span>
-                        <span class="sidebar-menu-text">Dasbor</span>
+                        <span class="sidebar-menu-text">Dashboard</span>
                     </a>
                 </li>
                 <li class="sidebar-menu-item">
                     <a href="admin-berita.php" class="sidebar-menu-link">
                         <span class="icon icon-news"></span>
-                        <span class="sidebar-menu-text">Berita</span>
+                        <span class="sidebar-menu-text">Kelola Berita</span>
                     </a>
                 </li>
                 <li class="sidebar-menu-item">
-                    <a href="admin-pengaturan.php" class="sidebar-menu-link active">
-                        <span class="icon icon-settings"></span>
-                        <span class="sidebar-menu-text">Pengaturan</span>
+                    <a href="layanan_pesan.php" class="sidebar-menu-link">
+                        <span class="icon icon-envelope"></span>
+                        <span class="sidebar-menu-text">Pesan Pengaduan</span>
                     </a>
                 </li>
                 <li class="sidebar-menu-item">
-                    <a href="#" class="sidebar-menu-link">
-                        <span class="icon icon-users"></span>
-                        <span class="sidebar-menu-text">Pengguna</span>
+                    <a href="admin-pengaturan.php" class="sidebar-menu-link active"> <span class="icon icon-settings"></span>
+                        <span class="sidebar-menu-text">Pengaturan Konten</span>
                     </a>
                 </li>
             </ul>
+            
+            <div class="sidebar-footer">
+                <a href="?logout=true" class="btn-sidebar-logout" onclick="return confirm('Apakah Anda yakin ingin keluar?');">
+                    <span>Keluar Aplikasi</span>
+                </a>
+            </div>
         </aside>
 
         <!-- Main Content -->
@@ -1207,6 +1316,77 @@ if (isset($_GET['success'])) {
                         <input type="hidden" name="file_type" value="<?php echo $current_file; ?>">
                         <input type="hidden" name="section_id" value="<?php echo $current_section; ?>">
                         
+                        <?php if ($current_file === 'statistik'): ?>
+    
+    <?php if ($current_section === 'indikator'): ?>
+        <div class="form-group"><label>Total Sekolah</label><input type="number" name="total_sekolah" class="form-control" value="<?= $current_content['total_sekolah'] ?? 0 ?>"></div>
+        <div class="form-group"><label>Total Siswa</label><input type="number" name="total_siswa" class="form-control" value="<?= $current_content['total_siswa'] ?? 0 ?>"></div>
+        <div class="form-group"><label>Total Guru</label><input type="number" name="total_guru" class="form-control" value="<?= $current_content['total_guru'] ?? 0 ?>"></div>
+        <div class="form-group"><label>Total Ruang Kelas</label><input type="number" name="total_kelas" class="form-control" value="<?= $current_content['total_kelas'] ?? 0 ?>"></div>
+
+    <?php elseif ($current_section === 'rincian'): ?>
+        <div class="form-section">
+            <h4>Rincian Data Berdasarkan Jenjang</h4>
+            <div class="alert alert-info" style="margin-bottom: 20px; display:flex; gap:10px; align-items:center;">
+                <i class="fas fa-info-circle" style="font-size: 20px;"></i>
+                <div>
+                    <strong>Mode Edit Cepat:</strong> Klik langsung pada angka di dalam tabel untuk mengedit.<br>
+                    <small>Kolom "Total" akan dihitung otomatis di halaman depan pengunjung.</small>
+                </div>
+            </div>
+            
+            <?php 
+                $rin = $current_content['rincian'] ?? []; 
+                function gv($d, $k1, $k2) {
+                    return isset($d[$k1][$k2]) ? htmlspecialchars($d[$k1][$k2]) : '0';
+                }
+                
+                // Definisi Baris agar kode lebih rapi
+                $rows = [
+                    'sekolah_negeri' => 'Sekolah (Negeri)',
+                    'sekolah_swasta' => 'Sekolah (Swasta)',
+                    'siswa'          => 'Siswa',
+                    'guru_asn'       => 'Guru (ASN)',
+                    'guru_non_asn'   => 'Guru (Non-ASN)'
+                ];
+            ?>
+
+            <div class="table-responsive-admin">
+                <table class="stats-table-input">
+                    <thead>
+                        <tr>
+                            <th>Indikator</th>
+                            <th>PAUD</th>
+                            <th>SD</th>
+                            <th>SMP</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach($rows as $key => $label): ?>
+                        <tr>
+                            <td><?php echo $label; ?></td>
+                            <td>
+                                <input type="number" name="rincian[<?php echo $key; ?>][paud]" 
+                                       value="<?php echo gv($rin, $key, 'paud'); ?>" placeholder="0">
+                            </td>
+                            <td>
+                                <input type="number" name="rincian[<?php echo $key; ?>][sd]" 
+                                       value="<?php echo gv($rin, $key, 'sd'); ?>" placeholder="0">
+                            </td>
+                            <td>
+                                <input type="number" name="rincian[<?php echo $key; ?>][smp]" 
+                                       value="<?php echo gv($rin, $key, 'smp'); ?>" placeholder="0">
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    <?php endif; ?>
+
+<?php endif; ?>
+
                         <?php if ($current_file === 'index'): ?>
                             
                             <?php if ($current_section === 'hero'): ?>
@@ -1783,10 +1963,6 @@ Konsultasi Umum"><?php echo htmlspecialchars($cur_contact_options); ?></textarea
                                     <label for="email">Alamat Email:</label>
                                     <input type="text" id="email" name="email" class="form-control" value="<?php echo htmlspecialchars($current_content['email'] ?? ''); ?>">
                                 </div>
-                                <div class="form-group">
-                                    <label for="website">Website:</label>
-                                    <input type="text" id="website" name="website" class="form-control" value="<?php echo htmlspecialchars($current_content['website'] ?? ''); ?>">
-                                </div>
                             </div>
                             
                             <div class="form-section">
@@ -1958,6 +2134,9 @@ Konsultasi Umum"><?php echo htmlspecialchars($cur_contact_options); ?></textarea
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="dashboard-footer" style="margin-top: 25px; text-align: center; color: #999; font-size: 0.8rem;">
+                <p>© <?php echo date('Y'); ?> Admin Panel - Disdikbud Paser</p>
             </div>
         </main>
     </div>

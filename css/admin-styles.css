@@ -809,3 +809,50 @@ body {
     border-color: #ffeaa7;
     color: #856404;
 }
+
+/* === TAMBAHAN UNTUK SIDEBAR STANDAR === */
+
+/* Icon amplop untuk pesan */
+.icon-envelope::before { content: "📩"; }
+
+/* Layout Sidebar agar Footer di Bawah */
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: calc(100vh - var(--navbar-height)); /* Pastikan full height */
+}
+
+.sidebar-menu {
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+/* Footer Sidebar (Tombol Logout) */
+.sidebar-footer {
+    padding: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    /* background: var(--sidebar-gradient-color-2); */
+    margin-top: auto;
+}
+
+.btn-sidebar-logout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 10px;
+    color: #ff6b6b;
+    border: 1px solid rgba(220, 53, 69, 0.8);
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    gap: 10px;
+}
+
+.btn-sidebar-logout:hover {
+    background: #dc3545;
+    color: white;
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
