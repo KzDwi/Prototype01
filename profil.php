@@ -1,3 +1,54 @@
+<?php
+// Load Data dari content.json
+$file_path = 'data/content.json';
+$profil_data = [];
+
+// Default Data Profil
+$default_profil = [
+    'hero_title' => 'Profil Dinas Pendidikan dan Kebudayaan',
+    'hero_subtitle' => 'Kabupaten Paser',
+    'visi' => 'Terwujudnya Paser yang Sejahtera, Berakhlak Mulia dan Berdaya Saing',
+    'misi' => [
+        'Mewujudkan Sumber Daya Manusia yang handal dan berdaya saing',
+        'Mewujudkan tata kelola pemerintahan yang baik',
+        'Meningkatkan kemandirian ekonomi daerah'
+    ],
+    'tupoksi' => [
+        'Perumusan kebijakan teknis di bidang pendidikan',
+        'Pelaksanaan kebijakan di bidang pengelolaan PAUD, SD, SMP',
+        'Pembinaan, pengawasan, dan pengendalian pelaksanaan tugas',
+        'Pengelolaan dan pembinaan pendidik dan tenaga kependidikan'
+    ]
+];
+
+// Data Kontak untuk Footer (tetap diambil meski section kontak dihapus)
+$default_kontak = [
+    'address' => "Jl. Jenderal Sudirman No. 27\nTanah Grogot, Kabupaten Paser",
+    'phone' => "(0543) 21023",
+    'email' => "disdik@paserkab.go.id",
+    'map_embed_url' => "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3987.6060327839327!2d116.1914303!3d-1.9081035!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2df047988e6b3c0b%3A0xdaa84941bfe1b7df!2sJl.%20Jenderal%20Sudirman%20No.27%2C%20Tanah%20Grogot%2C%20Kec.%20Tanah%20Grogot%2C%20Kabupaten%20Paser%2C%20Kalimantan%20Timur%2076251!5e0!3m2!1sid!2sid!4v1764218368388!5m2!1sid!2sid"
+];
+
+$kontak_data = $default_kontak;
+
+if (file_exists($file_path)) {
+    $json = json_decode(file_get_contents($file_path), true);
+    
+    // Merge Profil Data
+    if (isset($json['profil'])) {
+        $profil_data = array_merge($default_profil, $json['profil']);
+    } else {
+        $profil_data = $default_profil;
+    }
+
+    // Merge Kontak Data (untuk footer)
+    if (isset($json['kontak_page'])) {
+        $kontak_data = array_merge($default_kontak, $json['kontak_page']);
+    }
+} else {
+    $profil_data = $default_profil;
+}
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -67,19 +118,6 @@
             background-color: #ffffff;
         }
 
-        .struktur-section {
-            background-color: #f0f8ff;
-        }
-
-        .pimpinan-section {
-            background-color: #f9f9f9;
-        }
-
-        .kontak-section {
-            background: linear-gradient(135deg, #2B557E 0%, #003399 100%);
-            color: white;
-        }
-
         /* Card Styles */
         .profil-card {
             background: white;
@@ -134,67 +172,6 @@
             border-bottom: none;
         }
 
-        /* Navigation Dots */
-        .section-nav {
-            border: solid #DDD;
-            background-color: #f9f9f9;
-            border-radius: 0.7rem;
-            padding: 1rem;
-            position: fixed;
-            right: 30px;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 1000;
-        }
-
-        .nav-dot {
-            display: block;
-            width: 12px;
-            height: 12px;
-            margin: 15px 0;
-            border-radius: 50%;
-            background: rgba(0,51,153,0.3);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .nav-dot.active {
-            background: #003399;
-            transform: scale(1.3);
-        }
-
-        .nav-dot:hover {
-            background: #003399;
-            transform: scale(1.2);
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .profil-fullscreen-section {
-                padding: 80px 0 60px;
-                min-height: 100vh;
-            }
-
-            .profil-section-title h2 {
-                font-size: 2rem;
-            }
-
-            .profil-card {
-                padding: 30px 20px;
-                margin: 0 15px;
-            }
-
-            .section-nav {
-                right: 15px;
-            }
-
-            .nav-dot {
-                width: 10px;
-                height: 10px;
-                margin: 12px 0;
-            }
-        }
-
         /* Fade In Animation Styles untuk Profil */
         .fade-in {
             opacity: 0;
@@ -222,12 +199,6 @@
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
         }
 
-        .visi-icon, .misi-icon {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            color: #003399;
-        }
-
         .visi-card h3, .misi-card h3 {
             color: #003399;
             margin-bottom: 20px;
@@ -243,6 +214,8 @@
 
         .misi-card ul {
             text-align: left;
+            list-style: none;
+            padding: 0;
         }
 
         .misi-card ul li {
@@ -293,18 +266,26 @@
             transform: translateX(-50%);
         }
 
+        @media (max-width: 768px) {
+            .profil-fullscreen-section {
+                padding: 80px 0 60px;
+                min-height: 100vh;
+            }
+            .profil-card {
+                padding: 30px 20px;
+                margin: 0 15px;
+            }
+            .visi-misi-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
         @media (max-width: 480px) {
             .profil-section-title h2 {
                 font-size: 1.8rem;
             }
-
             .profil-card {
                 padding: 25px 15px;
-            }
-
-            .profil-list li {
-                font-size: 1rem;
-                padding-left: 25px;
             }
         }
 
@@ -325,7 +306,6 @@
     </style>
 </head>
 <body>
-    <!-- Header & Navigation -->
     <header id="main-header">
         <div class="container">
             <div class="header-top">
@@ -351,34 +331,23 @@
         </div>
     </header>
 
-    <!-- Navigation Dots -->
-    <!-- <div class="section-nav">
-        <a href="#hero" class="nav-dot active" data-section="hero"></a>
-        <a href="#visi-misi" class="nav-dot" data-section="visi-misi"></a>
-        <a href="#tupoksi" class="nav-dot" data-section="tupoksi"></a>
-        <a href="#kontak" class="nav-dot" data-section="kontak"></a>
-    </div> -->
-
-    <!-- Hero Section -->
     <section id="hero" class="profil-hero-section fade-in">
         <div class="container">
             <nav class="breadcrumb-nav">
                 <a href="index.php">Halaman Utama</a>
                 <span>/</span>
-                <a href="layanan.html" class="active">Layanan</a>
+                <a href="profil.php" class="active">Profil</a>
             </nav>
-            <br>
-            <br>    
+            <br><br>    
         </div>
         <div class="profil-section-content">
             <div class="profil-section-title">
-                <h1>Profil Dinas Pendidikan dan Kebudayaan</h1>
-                <p style="color : #DDD;">Kabupaten Paser</p>
+                <h1><?php echo htmlspecialchars($profil_data['hero_title']); ?></h1>
+                <p style="color : #DDD;"><?php echo htmlspecialchars($profil_data['hero_subtitle']); ?></p>
             </div>
         </div>
     </section>
 
-    <!-- Visi Misi Section -->
     <section id="visi-misi" class="profil-fullscreen-section visi-misi-section">
         <div class="container">
             <div class="section-title fade-in">
@@ -387,146 +356,62 @@
             <div class="visi-misi-content">
                 <div class="visi-card fade-in">
                     <h3>Visi</h3>
-                    <p><?php
-                        // Ambil konten dari file profil.html
-                        $file_content = file_get_contents('profil.php');
-                        
-                        // Pattern untuk mengambil visi
-                        $pattern = '/<div class="visi-card fade-in">\s*<h3>Visi<\/h3>\s*<p>([^<]+)<\/p>\s*<\/div>/s';
-                        preg_match($pattern, $file_content, $matches);
-                        
-                        if (!empty($matches[1])) {
-                            echo htmlspecialchars($matches[1]);
-                        } else {
-                            // Fallback jika tidak ditemukan
-                            echo "“Terwujudnya Paser yang Sejahtera, Berakhlak Mulia dan Berdaya Saing”";
-                        }
-                    ?></p>
+                    <p style="font-style: italic;">
+                        "<?php echo htmlspecialchars($profil_data['visi']); ?>"
+                    </p>
                 </div>
                 <div class="misi-card fade-in">
-                    <h3><center>Misi</center></h3>
+                    <h3>Misi</h3>
                     <ul>
-                        <li>Mewujudkan Sumber Daya Manusia yang handal dan berdaya saing melalui Peningkatan Mutu Pendidikan, Derajat Kesehatan serta Kesejahteraan Sosial</li>
-                        <li>Mewujudkan tata kelola pemerintahan yang baik (Good Governance) yang bersih, efektif, efesien, transparan dan akuntabel berbasis Teknologi Informasi dan Komunikasi</li>
-                        <li>Mewujudkan Pembangunan yang merata dan berkesinambungan yang berwawasan lingkungan</li>
-                        <li>Meningkatkan kemandirian ekonomi daerah dan masyarakat berbasis potensi lokal</li>
-                        <li>Menciptakan Kota yang Aman, Nyaman, dan Kondusif</li>
+                        <?php foreach($profil_data['misi'] as $misi): ?>
+                            <li><?php echo htmlspecialchars($misi); ?></li>
+                        <?php endforeach; ?>
                     </ul>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Tugas Pokok dan Fungsi Section -->
     <section id="tupoksi" class="profil-fullscreen-section tupoksi-section fade-in">
         <div class="profil-section-content">
             <div class="container profil-section-title">
                 <h2>Tugas Pokok dan Fungsi</h2>
             </div>
             <div class="profil-card tupoksi-card">
-                <div style="text-align: center; margin-bottom: 40px;">
-                </div>
                 <ul class="profil-list">
-                    <li><strong>Perumusan kebijakan teknis</strong> di bidang pendidikan dan kebudayaan</li>
-                    <li><strong>Pelaksanaan kebijakan</strong> di bidang pengelolaan PAUD, SD, SMP, serta pendidikan kesetaraan dan keaksaraan</li>
-                    <li><strong>Pembinaan, pengawasan, dan pengendalian</strong> pelaksanaan tugas di bidang pendidikan</li>
-                    <li><strong>Pengelolaan dan pembinaan</strong> pendidik dan tenaga kependidikan</li>
-                    <li><strong>Pelaksanaan evaluasi dan pelaporan</strong> bidang pendidikan</li>
-                    <li><strong>Pelaksanaan administrasi dinas</strong> sesuai dengan lingkup tugasnya</li>
+                    <?php foreach($profil_data['tupoksi'] as $tupoksi): ?>
+                        <li><?php echo $tupoksi; ?></li>
+                    <?php endforeach; ?>
                 </ul>
             </div>
         </div>
     </section>
 
-    <!-- Kontak Section -->
-    <section id="kontak" class="profil-fullscreen-section kontak-section">
-        <div class="profil-section-content fade-in">
-            <div class="profil-section-title">
-                <h2 style="color: #DDD;">Kontak Kami</h2>
-                <p style="color: #DDD;">Hubungi kami untuk informasi lebih lanjut</p>
-            </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 50px; max-width: 1200px; margin: 0 auto; align-items: start;">
-                <div>
-                    <div class="profil-card" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);">
-                        <h3 style="color: white; margin-bottom: 30px; text-align: center;">Informasi Kontak</h3>
-                        
-                        <div style="margin-bottom: 25px;">
-                            <h4 style="color: white; margin-bottom: 10px;">Alamat Kantor</h4>
-                            <p style="color: rgba(255,255,255,0.9); line-height: 1.6;">
-                                Jl. Jenderal Sudirman No. 27<br>
-                                Tanah Grogot, Kabupaten Paser<br>
-                                Kalimantan Timur 76251
-                            </p>
-                        </div>
-
-                        <div style="margin-bottom: 25px;">
-                            <h4 style="color: white; margin-bottom: 10px;">Kontak</h4>
-                            <p style="color: rgba(255,255,255,0.9);">
-                                <strong>Telepon:</strong> (0543) 21023<br>
-                                <strong>Email:</strong> disdik@paserkab.go.id
-                            </p>
-                        </div>
-
-                        <div style="margin-bottom: 25px;">
-                            <h4 style="color: white; margin-bottom: 10px;">Jam Operasional</h4>
-                            <p style="color: rgba(255,255,255,0.9);">
-                                <strong>Senin - Kamis:</strong> 08.00 - 16.00 WITA<br>
-                                <strong>Jumat:</strong> 08.00 - 11.00 WITA<br>
-                                <strong>Sabtu - Minggu:</strong> Libur
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <br><br><br>
-                    <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3987.6060327839327!2d116.1914303!3d-1.9081035!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2df047988e6b3c0b%3A0xdaa84941bfe1b7df!2sJl.%20Jenderal%20Sudirman%20No.27%2C%20Tanah%20Grogot%2C%20Kec.%20Tanah%20Grogot%2C%20Kabupaten%20Paser%2C%20Kalimantan%20Timur%2076251!5e0!3m2!1sid!2sid!4v1764218368388!5m2!1sid!2sid" 
-                        width="100%" 
-                        height="400" 
-                        style="border:0; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);" 
-                        allowfullscreen="" 
-                        loading="lazy" 
-                        referrerpolicy="no-referrer-when-downgrade" class="fade-in">
-                    </iframe>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
     <footer>
         <div class="container">
             <div class="footer-content" id="kontak">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3987.6060327839327!2d116.1914303!3d-1.9081035!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2df047988e6b3c0b%3A0xdaa84941bfe1b7df!2sJl.%20Jenderal%20Sudirman%20No.27%2C%20Tanah%20Grogot%2C%20Kec.%20Tanah%20Grogot%2C%20Kabupaten%20Paser%2C%20Kalimantan%20Timur%2076251!5e0!3m2!1sid!2sid!4v1764218368388!5m2!1sid!2sid" width="250" height="200" style="border:0; border-radius: 0.3rem;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                <iframe src="<?php echo htmlspecialchars($kontak_data['map_embed_url']); ?>" width="250" height="200" style="border:0; border-radius: 0.3rem;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                 <div class="footer-section">
                     <h3>Kontak Kami</h3>
                     <ul>
-                        <li>Jl. Jenderal Sudirman No. 27, Tanah Grogot, Kabupaten Paser, Kalimantan Timur 76251</li>
-                        <li>Telp: (0543) 21023</li>
-                        <li>Email: disdik@paserkab.go.id</li>
+                        <li><?php echo htmlspecialchars(str_replace("\n", ", ", $kontak_data['address'])); ?></li>
+                        <li>Telp: <?php echo htmlspecialchars($kontak_data['phone']); ?></li>
+                        <li>Email: <?php echo htmlspecialchars($kontak_data['email']); ?></li>
                         <li class="social-icons">
-                            <a href="#" aria-label="Facebook">
-                                <i class="fab fa-facebook-f"></i>
-                            </a>
-                            <a href="#" aria-label="Twitter">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                            <a href="#" aria-label="Instagram">
-                                <i class="fab fa-instagram"></i>
-                            </a>
-                            <a href="#" aria-label="YouTube">
-                                <i class="fab fa-youtube"></i>
-                            </a>
+                            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
                         </li>
                     </ul>
                 </div>
                 <div class="footer-section">
                     <h3>Layanan Cepat</h3>
                     <ul>
-                        <li><a href="layanan.html%20#layanan" onclick="scrollToLayanan()">Legalisir Ijazah/Dokumen Kelulusan</a></li>
-                        <li><a href="layanan.html%20#layanan" onclick="scrollToLayanan()">Surat Keterangan Pindah Sekolah</a></li>
-                        <li><a href="layanan.html%20#layanan" onclick="scrollToLayanan()">Tunjangan Profesi Guru</a></li>
-                        <li><a href="layanan.html%20#layanan" onclick="scrollToLayanan()">Izin Pendirian Satuan Pendidikan</a></li>
+                        <li><a href="layanan.php#layanan" onclick="scrollToLayanan()">Legalisir Ijazah</a></li>
+                        <li><a href="layanan.php#layanan" onclick="scrollToLayanan()">Surat Mutasi</a></li>
+                        <li><a href="layanan.php#layanan" onclick="scrollToLayanan()">Tunjangan Guru</a></li>
+                        <li><a href="layanan.php#layanan" onclick="scrollToLayanan()">Izin Pendirian</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
@@ -540,7 +425,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 Dinas Pendidikan dan Kebudayaan Kabupaten Paser. Hak Cipta Dilindungi.</p>
+                <p>© 2025 Dinas Pendidikan dan Kebudayaan Kabupaten Paser. Hak Cipta Dilindungi.</p>
             </div>
         </div>
     </footer>

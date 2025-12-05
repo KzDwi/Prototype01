@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once 'functions.php';
+require_once 'functions_faq.php';
 
 // Cek jika admin sudah login
 if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
@@ -18,41 +19,45 @@ if (isset($_GET['logout'])) {
 // Konfigurasi file yang dapat diedit
 $editable_files = [
     'index' => [
-        'name' => 'Halaman Utama (index.html)',
-        'path' => 'index.html',
+        'name' => 'Halaman Utama',
+        'path' => 'index.php',
         'sections' => [
             'hero' => 'Hero Section (Slider)',
             'pimpinan' => 'Pimpinan Daerah',
             'visi-misi' => 'Visi & Misi',
-            'berita' => 'Berita Cepat',
             'layanan-section' => 'Layanan'
         ]
     ],
     'profil' => [
-        'name' => 'Halaman Profil (profil.html)',
-        'path' => 'profil.html',
+        'name' => 'Halaman Profil',
+        'path' => 'profil.php',
         'sections' => [
             'hero' => 'Hero Profil',
             'visi-misi' => 'Visi & Misi',
             'tupoksi' => 'Tugas Pokok & Fungsi',
-            'kontak' => 'Kontak Profil'
         ]
     ],  
     'layanan' => [
-        'name' => 'Halaman Layanan (layanan.html)',
-        'path' => 'layanan.html',
+        'name' => 'Halaman Layanan',
+        'path' => 'layanan.php',
         'sections' => [
-            'layanan-hero' => 'Hero Layanan',
             'layanan' => 'Daftar Layanan',
-            'faq' => 'FAQ Layanan',
-            'contact' => 'Form Kontak'
+            'contact' => 'Form  '
         ]
     ],
     'faq' => [
-        'name' => 'Halaman FAQ (faq.html)',
-        'path' => 'faq.html',
+        'name' => 'Halaman FAQ',
+        'path' => 'faq.php',
         'sections' => [
             'faq-content' => 'Konten FAQ'
+        ]
+    ],
+    // TAMBAHKAN KODE INI DI BAWAH FAQ:
+    'kontak' => [
+        'name' => 'Halaman Kontak',
+        'path' => 'kontak.php',
+        'sections' => [
+            'info' => 'Alamat & Kontak'
         ]
     ]
 ];
@@ -64,6 +69,25 @@ $layanan_keys = [
     3 => 'tunjangan-guru',
     4 => 'izin-pendirian'
 ];
+
+// FUNGSI UNTUK CONTENT.JSON
+function loadContentData() {
+    $file_path = 'data/content.json';
+    if (file_exists($file_path)) {
+        $data = json_decode(file_get_contents($file_path), true);
+        return $data ?: ['index' => []];
+    }
+    return ['index' => []];
+}
+
+function saveContentData($data) {
+    $dir = 'data';
+    if (!file_exists($dir)) {
+        mkdir($dir, 0777, true);
+    }
+    $file_path = $dir . '/content.json';
+    return file_put_contents($file_path, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+}
 
 // Fungsi untuk membaca/simpan data popup
 function loadLayananPopupData() {
@@ -89,361 +113,377 @@ $pesan_sukses = '';
 $pesan_error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['save_faq'])) {
+        // Load data saat ini
+        $content_data = loadContentData();
+        
+        // Inisialisasi jika belum ada
+        if (!isset($content_data['faq'])) {
+            $content_data['faq'] = [];
+        }
+        
+        $categories = ['informasi_umum', 'layanan_kesiswaan', 'guru_tenaga_kependidikan', 'ppdb'];
+        $faq_updated = false;
+        
+        foreach ($categories as $category) {
+            if (isset($_POST['faq'][$category]) && is_array($_POST['faq'][$category])) {
+                $content_data['faq'][$category] = [];
+                
+                foreach ($_POST['faq'][$category] as $index => $faq_item) {
+                    $question = trim($faq_item['question'] ?? '');
+                    $answer = trim($faq_item['answer'] ?? '');
+                    
+                    // Hanya simpan jika ada pertanyaan dan jawaban
+                    if (!empty($question) && !empty($answer)) {
+                        $content_data['faq'][$category][] = [
+                            'question' => $question,
+                            'answer' => $answer
+                        ];
+                        $faq_updated = true;
+                    }
+                }
+            }
+        }
+        
+        // Save kembali
+        if (saveContentData($content_data)) {
+            $pesan_sukses = 'FAQ berhasil disimpan!';
+            header("Location: admin-pengaturan.php?file=faq&section=faq-content&success=1");
+            exit;
+        } else {
+            $pesan_error = 'Gagal menyimpan FAQ.';
+        }
+    }
     if (isset($_POST['save_content'])) {
         $file_type = $_POST['file_type'];
         $section_id = $_POST['section_id'];
         
-        if (isset($editable_files[$file_type])) {
-            $file_path = $editable_files[$file_type]['path'];
-            
-            // Baca isi file
-            $file_content = file_get_contents($file_path);
-            $new_content = $file_content;
-            $success = false;
-            
-            if ($file_type === 'index') {
-                if ($section_id === 'hero') {
-                    // Update teks hero - HANYA di Hero Section
-                    $hero_text = $_POST['hero_text'] ?? '';
-                    if (!empty($hero_text)) {
-                        // Pattern yang lebih spesifik: cari <h2> yang ada di dalam .hero-content
-                        $pattern = '/<div class="hero-content">\s*<h2>([^<]*)<\/h2>/s';
-                        if (preg_match($pattern, $new_content)) {
-                            $new_content = preg_replace($pattern, "<div class=\"hero-content\">\n                <h2>$hero_text</h2>", $new_content);
-                        } else {
-                            // Fallback: cari <h2> yang ada setelah .hero-slider
-                            $pattern = '/<div class="hero-slider">.*?<\/div>\s*<div class="hero-content">\s*<h2>([^<]*)<\/h2>/s';
-                            if (preg_match($pattern, $new_content)) {
-                                $new_content = preg_replace($pattern, "<div class=\"hero-slider\">\n        <div class=\"slide active\" style=\"background-image: url('" . ($current_content['hero_image_1'] ?? '') . "')\">\n            <div class=\"slide-overlay\"></div>\n        </div>\n        <div class=\"slide\" style=\"background-image: url('" . ($current_content['hero_image_2'] ?? '') . "')\">\n            <div class=\"slide-overlay\"></div>\n        </div>\n        <div class=\"slide\" style=\"background-image: url('" . ($current_content['hero_image_3'] ?? '') . "')\">\n            <div class=\"slide-overlay\"></div>\n        </div>\n        <div class=\"slide\" style=\"background-image: url('" . ($current_content['hero_image_4'] ?? '') . "')\">\n            <div class=\"slide-overlay\"></div>\n        </div>\n    </div>\n    <div class=\"hero-content\">\n        <h2>$hero_text</h2>", $new_content);
-                            }
-                        }
-                    }
-                    
-                    // Update subtext hero - HANYA di Hero Section
-                    $hero_subtext = $_POST['hero_subtext'] ?? '';
-                    if (!empty($hero_subtext)) {
-                        // Pattern yang spesifik: cari <p> yang langsung setelah <h2> di .hero-content
-                        $pattern = '/<div class="hero-content">\s*<h2>[^<]*<\/h2>\s*<p>([^<]*)<\/p>/s';
-                        if (preg_match($pattern, $new_content)) {
-                            $new_content = preg_replace($pattern, "<div class=\"hero-content\">\n                <h2>" . ($hero_text ?: ($current_content['hero_text'] ?? '')) . "</h2>\n                <p>$hero_subtext</p>", $new_content);
-                        } else {
-                            // Fallback pattern
-                            $pattern = '/<p>([^<]*)<\/p>\s*<a href="#layanan-section"/s';
-                            if (preg_match($pattern, $new_content)) {
-                                $new_content = preg_replace($pattern, "<p>$hero_subtext</p>\n        <a href=\"#layanan-section\"", $new_content);
-                            }
-                        }
-                    }
-                    
-                    // Update gambar slider
-                    for ($i = 1; $i <= 4; $i++) {
-                        $image_field = "hero_image_$i";
-                        if (!empty($_POST[$image_field])) {
-                            $image_url = $_POST[$image_field];
-                            // Cari semua slide
-                            $pattern = '/<div class="slide(.*?)style="background-image: url\(\'([^\']*)\'\)">/s';
-                            preg_match_all($pattern, $new_content, $slides, PREG_OFFSET_CAPTURE);
-                            
-                            if (isset($slides[0][$i-1])) {
-                                $old_slide = $slides[0][$i-1][0];
-                                $old_url = $slides[2][$i-1][0];
-                                $new_slide = str_replace($old_url, $image_url, $old_slide);
-                                $new_content = str_replace($old_slide, $new_slide, $new_content);
-                            }
-                        }
-                    }
-                    $success = true;
-                }
-                elseif ($section_id === 'pimpinan') {
-                    // Update data pimpinan (3 pimpinan)
-                    for ($i = 1; $i <= 3; $i++) {
-                        $nama_field = "pimpinan_nama_$i";
-                        $jabatan_field = "pimpinan_jabatan_$i";
-                        $image_field = "pimpinan_image_$i";
-                        
-                        $nama = $_POST[$nama_field] ?? '';
-                        $jabatan = $_POST[$jabatan_field] ?? '';
-                        $image = $_POST[$image_field] ?? '';
-                        
-                        if (!empty($nama) || !empty($jabatan) || !empty($image)) {
-                            // Cari card pimpinan ke-i
-                            $pattern = '/<div class="pimpinan-card">\s*<div class="pimpinan-img portrait">(.*?)<\/div>\s*<div class="pimpinan-info">(.*?)<\/div>\s*<\/div>/s';
-                            preg_match_all($pattern, $new_content, $cards, PREG_OFFSET_CAPTURE);
-                            
-                            if (isset($cards[0][$i-1])) {
-                                $card_html = $cards[0][$i-1][0];
-                                $card_pos = $cards[0][$i-1][1];
-                                
-                                // Update nama jika ada
-                                if (!empty($nama)) {
-                                    $nama_pattern = '/<h3>([^<]*)<\/h3>/';
-                                    if (preg_match($nama_pattern, $card_html, $matches)) {
-                                        $old_nama = $matches[0];
-                                        $new_nama = "<h3>$nama</h3>";
-                                        $card_html = str_replace($old_nama, $new_nama, $card_html);
-                                    }
-                                }
-                                
-                                // Update jabatan jika ada
-                                if (!empty($jabatan)) {
-                                    $jabatan_pattern = '/<p>([^<]*)<\/p>/';
-                                    if (preg_match($jabatan_pattern, $card_html, $matches)) {
-                                        $old_jabatan = $matches[0];
-                                        $new_jabatan = "<p>$jabatan</p>";
-                                        $card_html = str_replace($old_jabatan, $new_jabatan, $card_html);
-                                    }
-                                }
-                                
-                                // Update gambar jika ada
-                                if (!empty($image)) {
-                                    // Encode semua nilai
-                                    $safe_image = htmlspecialchars($image, ENT_QUOTES);
-                                    $safe_alt = htmlspecialchars("$nama - $jabatan", ENT_QUOTES);
-                                    
-                                    // SVG fallback yang sudah di-encode
-                                    $svg_fallback = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiBmaWxsPSIjMDAzMzk5IiBmaWxsLW9wYWNpdHk9IjAuMSIvPgo8Y2lyY2xlIGN4PSI2MCIgY3k9IjQ1IiByPSIyMCIgZmlsbD0iIzAwMzM5OSIgZmlsbC1vcGFjaXR5PSIwLjMiLz4KPHBhdGggZD0iTTYwIDc1IEM0MCA3NSAzMCA4NSAzMDk1IEMzMDEwNSA0MDExNSA2MDExNSBDODAxMTUgOTAxMDUgOTAgOTUgQzkwIDg1IDgwIDc1IDYwIDc1IFoiIGZpbGw9IiMwMDMzOTkiIGZpbGwtb3BhY2l0eT0iMC4zIi8+Cjwvc3ZnPg==';
-                                    
-                                    // Buat tag img dengan cara yang aman
-                                    $new_img = '<img src="' . $safe_image . '" alt="' . $safe_alt . '" onerror="this.onerror=null;this.src=\'' . $svg_fallback . '\';">';
-                                    
-                                    // Ganti gambar lama
-                                    $img_pattern = '/<img[^>]+src="[^"]*"[^>]*>/';
-                                    if (preg_match($img_pattern, $card_html, $matches)) {
-                                        $card_html = str_replace($matches[0], $new_img, $card_html);
-                                    }
-                                }
-                                
-                                // Ganti card di konten
-                                $new_content = substr_replace($new_content, $card_html, $card_pos, strlen($cards[0][$i-1][0]));
-                            }
-                        }
-                    }
-                    $success = true;
-                }
-                // Di bagian VISI (sekitar line 157):
-                elseif ($section_id === 'visi-misi') {
-                    // Update VISI - format sama dengan MISI (list)
-                    $visi_text = $_POST['visi'] ?? '';
-                    if (!empty($visi_text)) {
-                        // Pisahkan berdasarkan baris - SAMA PERSIS seperti misi
-                        $lines = explode("\n", $visi_text);
-                        $visi_items = [];
-                        
-                        foreach ($lines as $line) {
-                            $line = trim($line);
-                            if (!empty($line)) {
-                                // Jika baris dimulai dengan dash, hilangkan dash-nya
-                                if (substr($line, 0, 1) === '-') {
-                                    $line = trim(substr($line, 1));
-                                }
-                                $visi_items[] = $line;
-                            }
-                        }
-                        
-                        // Generate HTML untuk visi - SAMA dengan misi
-                        if (!empty($visi_items)) {
-                            $visi_html = "<div class=\"visi\">\n                    <h3>Visi</h3>\n                    <ul>\n";
-                            foreach ($visi_items as $item) {
-                                // Hapus escaping yang sudah ada, lalu escape dengan benar
-                                $clean_item = htmlspecialchars_decode($item, ENT_QUOTES);
-                                $visi_html .= "                        <li>" . htmlspecialchars($clean_item, ENT_QUOTES) . "</li>\n";
-                            }
-                            $visi_html .= "                    </ul>\n                </div>";
-                            
-                            // Ganti section visi
-                            $visi_pattern = '/<div class="visi">\s*<h3>Visi<\/h3>\s*<ul>.*?<\/ul>\s*<\/div>/si';
-                            if (preg_match($visi_pattern, $new_content)) {
-                                $new_content = preg_replace($visi_pattern, $visi_html, $new_content);
-                            }
-                        }
-                    }
-                    
-                    // Update MISI - format SAMA PERSIS
-                    $misi_text = $_POST['misi'] ?? '';
-                    if (!empty($misi_text)) {
-                        // Pisahkan berdasarkan baris
-                        $lines = explode("\n", $misi_text);
-                        $misi_items = [];
-                        
-                        foreach ($lines as $line) {
-                            $line = trim($line);
-                            if (!empty($line)) {
-                                // Jika baris dimulai dengan dash, hilangkan dash-nya
-                                if (substr($line, 0, 1) === '-') {
-                                    $line = trim(substr($line, 1));
-                                }
-                                $misi_items[] = $line;
-                            }
-                        }
-                        
-                        // Generate HTML untuk misi - SAMA PERSIS dengan visi
-                        if (!empty($misi_items)) {
-                            $misi_html = "<div class=\"misi\">\n                    <h3>Misi</h3>\n                    <ul>\n";
-                            foreach ($misi_items as $item) {
-                                $clean_item = htmlspecialchars_decode($item, ENT_QUOTES);
-                                $misi_html .= "                        <li>" . htmlspecialchars($clean_item, ENT_QUOTES) . "</li>\n";
-                            }
-                            $misi_html .= "                    </ul>\n                </div>";
-                            
-                            // Ganti section misi
-                            $misi_pattern = '/<div class="misi">\s*<h3>Misi<\/h3>\s*<ul>.*?<\/ul>\s*<\/div>/si';
-                            if (preg_match($misi_pattern, $new_content)) {
-                                $new_content = preg_replace($misi_pattern, $misi_html, $new_content);
-                            }
-                        }
-                    }
-                    $success = true;
-                }
-                elseif ($section_id === 'layanan-section') {
-                // Build HTML untuk semua 4 card layanan
-                $layanan_html = '';
-                
-                $onclick_functions = [
-                    1 => 'legalisir-ijazah',
-                    2 => 'surat-mutasi',
-                    3 => 'tunjangan-guru',
-                    4 => 'izin-pendirian'
-                ];
-                
-                for ($i = 1; $i <= 4; $i++) {
-                    $title_field = "layanan_title_$i";
-                    $desc_field = "layanan_desc_$i";
-                    $image_field = "layanan_image_$i";
-                    
-                    $title = $_POST[$title_field] ?? '';
-                    $desc = $_POST[$desc_field] ?? '';
-                    $image = $_POST[$image_field] ?? '';
-                    
-                    // Decode HTML entities jika ada
-                    $title = htmlspecialchars_decode($title, ENT_QUOTES);
-                    $desc = htmlspecialchars_decode($desc, ENT_QUOTES);
-                    
-                    $onclick_func = $onclick_functions[$i] ?? "layanan-$i";
-                    
-                    // Generate HTML untuk card ini - perhatikan spasi dan indentasi
-                    $layanan_html .= '                <div class="layanan-card fade-in" onclick="openLayananPopup(\'' . $onclick_func . '\')">
-                                <img src="' . htmlspecialchars($image) . '" alt="' . htmlspecialchars($title) . '" class="icon-layanan" style="width: 100px; height: 100px;">
-                                <div class="layanan-card-content">
-                                    <h3>' . htmlspecialchars($title) . '</h3>
-                                    <p>' . htmlspecialchars($desc) . '</p>
-                                    <button class="layanan-btn">Lihat Detail</button>
-                                </div>
-                            </div>
-            ';
-                }
-                
-                // Pattern yang spesifik: cari layanan-grid di dalam section layanan
-                // Gunakan pola yang lebih spesifik untuk menghindari duplikasi
-                $layanan_grid_pattern = '/<div class="layanan-grid">\s*((?:<div class="layanan-card fade-in".*?<\/div>\s*){4})\s*<\/div>/s';
-                
-                // Buat HTML baru untuk grid dengan indentasi yang benar
-                $new_layanan_grid = '            <div class="layanan-grid">
-            ' . $layanan_html . '            </div>';
-                
-                // Cari dan ganti hanya satu kali
-                if (preg_match($layanan_grid_pattern, $new_content, $matches, PREG_OFFSET_CAPTURE)) {
-                    $new_content = substr_replace($new_content, $new_layanan_grid, $matches[0][1], strlen($matches[0][0]));
-                    $success = true;
-                    
-                    // Debug: log perubahan
-                    error_log("REPLACED LAYANAN CONTENT");
-                    error_log("Old: " . substr($matches[0][0], 0, 200));
-                    error_log("New: " . substr($new_layanan_grid, 0, 200));
-                }
-            }
-            
-            elseif ($file_type === 'profil') {
-                if ($section_id === 'visi-misi') {
-                    // Update visi profil
-                    $visi = $_POST['visi'] ?? '';
-                    if (!empty($visi)) {
-                        $pattern = '/<div class="visi-card fade-in">\s*<h3>Visi<\/h3>\s*<p>([^<]*)<\/p>\s*<\/div>/s';
-                        if (preg_match($pattern, $new_content)) {
-                            $new_content = preg_replace($pattern, "<div class=\"visi-card fade-in\">\n                    <h3>Visi</h3>\n                    <p>$visi</p>\n                </div>", $new_content);
-                        }
-                    }
-                    
-                    // Update misi profil dari format baris dengan dash
-                    $misi_text = $_POST['misi'] ?? '';
-                    if (!empty($misi_text)) {
-                        // Pisahkan berdasarkan baris
-                        $lines = explode("\n", $misi_text);
-                        $misi_items = [];
-                        
-                        foreach ($lines as $line) {
-                            $line = trim($line);
-                            if (!empty($line)) {
-                                // Jika baris dimulai dengan dash, hilangkan dash-nya
-                                if (substr($line, 0, 1) === '-') {
-                                    $line = trim(substr($line, 1));
-                                }
-                                $misi_items[] = $line;
-                            }
-                        }
-                        
-                        // Generate HTML untuk misi profil
-                        if (!empty($misi_items)) {
-                            $misi_html = "<div class=\"misi-card fade-in\">\n                    <h3><center>Misi</center></h3>\n                    <ul>\n";
-                            foreach ($misi_items as $item) {
-                                $misi_html .= "                        <li>$item</li>\n";
-                            }
-                            $misi_html .= "                    </ul>\n                </div>";
-                            
-                            // Ganti section misi
-                            $pattern = '/<div class="misi-card fade-in">\s*<h3><center>Misi<\/center><\/h3>\s*<ul>(.*?)<\/ul>\s*<\/div>/s';
-                            if (preg_match($pattern, $new_content)) {
-                                $new_content = preg_replace($pattern, $misi_html, $new_content);
-                            }
-                        }
-                    }
-                    $success = true;
-                }
-            } // <-- Ini untuk menutup elseif ($file_type === 'profil')
-            
-        } // <-- TAMBAHKAN INI untuk menutup if (isset($editable_files[$file_type]))
-        if ($file_type === 'index' && $section_id === 'layanan-section') {
-            error_log("OLD CONTENT: " . substr($file_content, strpos($file_content, '<div class="layanan-grid">'), 1000));
-            error_log("NEW CONTENT: " . substr($new_content, strpos($new_content, '<div class="layanan-grid">'), 1000));
-            error_log("LAYANAN HTML: " . $layanan_html);
-
-            $popup_data = loadLayananPopupData();
-            
-            for ($i = 1; $i <= 4; $i++) {
-                $layanan_key = $layanan_keys[$i] ?? "layanan_$i";
-                
-                // Inisialisasi jika belum ada
-                if (!isset($popup_data[$layanan_key])) {
-                    $popup_data[$layanan_key] = [
-                        'popup_desc' => '',
-                        'cara_kerja' => '',
-                        'persyaratan' => ''
+        // LOAD DATA DARI CONTENT.JSON
+        $content_data = loadContentData();
+        
+        if ($file_type === 'index') {
+            if ($section_id === 'hero') {
+                // Update data hero ke content.json
+                if (!isset($content_data['index']['hero_data'])) {
+                    $content_data['index']['hero_data'] = [
+                        'hero_text' => '',
+                        'hero_subtext' => '',
+                        'hero_paragraph' => '',
+                        'hero_images' => ['', '', '', '']
                     ];
                 }
                 
-                // Update data dari form
-                $popup_data[$layanan_key]['popup_desc'] = $_POST["layanan_popup_desc_$i"] ?? '';
-                $popup_data[$layanan_key]['cara_kerja'] = $_POST["layanan_cara_kerja_$i"] ?? '';
-                $popup_data[$layanan_key]['persyaratan'] = $_POST["layanan_persyaratan_$i"] ?? '';
+                // Update teks
+                if (!empty($_POST['hero_text'])) {
+                    $content_data['index']['hero_data']['hero_text'] = $_POST['hero_text'];
+                }
+                if (!empty($_POST['hero_subtext'])) {
+                    $content_data['index']['hero_data']['hero_subtext'] = $_POST['hero_subtext'];
+                }
+                if (!empty($_POST['hero_paragraph'])) {
+                    $content_data['index']['hero_data']['hero_paragraph'] = $_POST['hero_paragraph'];
+                }
+                
+                // Update gambar
+                for ($i = 1; $i <= 4; $i++) {
+                    $image_field = "hero_image_$i";
+                    if (!empty($_POST[$image_field])) {
+                        $content_data['index']['hero_data']['hero_images'][$i-1] = $_POST[$image_field];
+                    }
+                }
+                
+                $success = true;
             }
-            
-            // Simpan ke file
-            if (saveLayananPopupData($popup_data)) {
+            elseif ($section_id === 'pimpinan') {
+                // Update data pimpinan ke content.json
+                if (!isset($content_data['index']['pimpinan_data'])) {
+                    $content_data['index']['pimpinan_data'] = [
+                        ['nama' => '', 'jabatan' => '', 'foto' => ''],
+                        ['nama' => '', 'jabatan' => '', 'foto' => ''],
+                        ['nama' => '', 'jabatan' => '', 'foto' => '']
+                    ];
+                }
+                
+                for ($i = 1; $i <= 3; $i++) {
+                    $nama = $_POST["pimpinan_nama_$i"] ?? '';
+                    $jabatan = $_POST["pimpinan_jabatan_$i"] ?? '';
+                    $foto = $_POST["pimpinan_image_$i"] ?? '';
+                    
+                    if (!empty($nama) || !empty($jabatan) || !empty($foto)) {
+                        $content_data['index']['pimpinan_data'][$i-1]['nama'] = $nama;
+                        $content_data['index']['pimpinan_data'][$i-1]['jabatan'] = $jabatan;
+                        $content_data['index']['pimpinan_data'][$i-1]['foto'] = $foto;
+                    }
+                }
+                
+                $success = true;
+            }
+            elseif ($section_id === 'visi-misi') {
+                // Update visi misi ke content.json
+                if (!isset($content_data['index']['visi_misi'])) {
+                    $content_data['index']['visi_misi'] = [
+                        'visi' => '',
+                        'misi' => []
+                    ];
+                }
+                
+                // Update visi
+                $visi_text = $_POST['visi'] ?? '';
+                if (!empty($visi_text)) {
+                    // Format visi dari baris dengan dash menjadi array
+                    $lines = explode("\n", $visi_text);
+                    $visi_items = [];
+                    
+                    foreach ($lines as $line) {
+                        $line = trim($line);
+                        if (!empty($line)) {
+                            // Hilangkan dash jika ada
+                            if (substr($line, 0, 1) === '-') {
+                                $line = trim(substr($line, 1));
+                            }
+                            $visi_items[] = $line;
+                        }
+                    }
+                    
+                    // Untuk visi, gabungkan semua item jadi satu string
+                    $content_data['index']['visi_misi']['visi'] = implode(' ', $visi_items);
+                }
+                
+                // Update misi
+                $misi_text = $_POST['misi'] ?? '';
+                if (!empty($misi_text)) {
+                    $lines = explode("\n", $misi_text);
+                    $misi_items = [];
+                    
+                    foreach ($lines as $line) {
+                        $line = trim($line);
+                        if (!empty($line)) {
+                            // Hilangkan dash jika ada
+                            if (substr($line, 0, 1) === '-') {
+                                $line = trim(substr($line, 1));
+                            }
+                            $misi_items[] = $line;
+                        }
+                    }
+                    
+                    $content_data['index']['visi_misi']['misi'] = $misi_items;
+                }
+                
+                $success = true;
+            }
+            elseif ($section_id === 'layanan-section') {
+                // Update data layanan ke content.json
+                if (!isset($content_data['index']['layanan_data'])) {
+                    $content_data['index']['layanan_data'] = [
+                        ['id' => 'legalisir-ijazah', 'title' => '', 'desc' => '', 'icon' => ''],
+                        ['id' => 'surat-mutasi', 'title' => '', 'desc' => '', 'icon' => ''],
+                        ['id' => 'tunjangan-guru', 'title' => '', 'desc' => '', 'icon' => ''],
+                        ['id' => 'izin-pendirian', 'title' => '', 'desc' => '', 'icon' => '']
+                    ];
+                }
+                
+                for ($i = 1; $i <= 4; $i++) {
+                    $title = $_POST["layanan_title_$i"] ?? '';
+                    $desc = $_POST["layanan_desc_$i"] ?? '';
+                    $icon = $_POST["layanan_image_$i"] ?? '';
+                    
+                    if (!empty($title) || !empty($desc) || !empty($icon)) {
+                        $content_data['index']['layanan_data'][$i-1]['title'] = $title;
+                        $content_data['index']['layanan_data'][$i-1]['desc'] = $desc;
+                        $content_data['index']['layanan_data'][$i-1]['icon'] = $icon;
+                    }
+                }
+                
+                $success = true;
+                
+                // SIMPAN DATA POPUP KE JSON
+                $popup_data = loadLayananPopupData();
+                
+                for ($i = 1; $i <= 4; $i++) {
+                    $layanan_key = $layanan_keys[$i] ?? "layanan_$i";
+                    
+                    // Inisialisasi jika belum ada
+                    if (!isset($popup_data[$layanan_key])) {
+                        $popup_data[$layanan_key] = [
+                            'popup_desc' => '',
+                            'cara_kerja' => '',
+                            'persyaratan' => ''
+                        ];
+                    }
+                    
+                    // Update data dari form
+                    $popup_data[$layanan_key]['popup_desc'] = $_POST["layanan_popup_desc_$i"] ?? '';
+                    $popup_data[$layanan_key]['cara_kerja'] = $_POST["layanan_cara_kerja_$i"] ?? '';
+                    $popup_data[$layanan_key]['persyaratan'] = $_POST["layanan_persyaratan_$i"] ?? '';
+                }
+                
+                // Simpan ke file JSON
+                saveLayananPopupData($popup_data);
+            }
+        }
+        elseif ($file_type === 'layanan') {
+            // --- LOGIKA BARU UNTUK BAGIAN CONTACT ---
+            if ($section_id === 'contact') {
+                // Pastikan array contact_section ada
+                if (!isset($content_data['layanan']['contact_section'])) {
+                    $content_data['layanan']['contact_section'] = [];
+                }
+
+                // Simpan Judul dan Subjudul
+                $content_data['layanan']['contact_section']['title'] = $_POST['contact_title'] ?? '';
+                $content_data['layanan']['contact_section']['subtitle'] = $_POST['contact_subtitle'] ?? '';
+
+                // Simpan Opsi Layanan (dari Textarea ke Array)
+                $options_text = $_POST['contact_options'] ?? '';
+                $options_arr = [];
+                // Pecah per baris, trim, dan hapus baris kosong
+                foreach (preg_split('/\r?\n/', $options_text) as $line) {
+                    $line = trim($line);
+                    if ($line !== '') {
+                        $options_arr[] = $line;
+                    }
+                }
+                $content_data['layanan']['contact_section']['service_options'] = $options_arr;
+
+                $success = true;
+            }
+            // Update top-level layanan data in content.json
+            if (!isset($content_data['layanan']) || !is_array($content_data['layanan'])) {
+                $content_data['layanan'] = ['title' => 'Layanan Administrasi', 'layanan_data' => []];
+            }
+
+            // Ensure layanan_data exists
+            if (!isset($content_data['layanan']['layanan_data']) || !is_array($content_data['layanan']['layanan_data'])) {
+                $content_data['layanan']['layanan_data'] = [];
+            }
+
+            // Determine count from existing data or posted count
+            $count = max(count($content_data['layanan']['layanan_data']), intval($_POST['layanan_count'] ?? 0));
+            if ($count <= 0) $count = 1;
+
+            for ($i = 0; $i < $count; $i++) {
+                $idx = $i + 1; // form fields are 1-based
+                $title = $_POST["layanan_title_{$idx}"] ?? '';
+                $subtitle = $_POST["layanan_subtitle_{$idx}"] ?? '';
+                $description = $_POST["layanan_description_{$idx}"] ?? '';
+                $popup_desc = $_POST["layanan_popup_desc_{$idx}"] ?? '';
+                $icon = $_POST["layanan_icon_{$idx}"] ?? '';
+                $cara_text = $_POST["layanan_cara_kerja_{$idx}"] ?? '';
+                $pers_text = $_POST["layanan_persyaratan_{$idx}"] ?? '';
+
+                // Normalize cara_kerja and persyaratan into arrays
+                $cara_arr = [];
+                foreach (preg_split('/\r?\n/', $cara_text) as $line) {
+                    $line = trim($line);
+                    if ($line !== '') $cara_arr[] = $line;
+                }
+
+                $pers_arr = [];
+                foreach (preg_split('/\r?\n/', $pers_text) as $line) {
+                    $line = trim($line);
+                    if ($line !== '') $pers_arr[] = $line;
+                }
+
+                // Ensure item exists
+                if (!isset($content_data['layanan']['layanan_data'][$i])) {
+                    $content_data['layanan']['layanan_data'][$i] = [
+                        'id' => 'layanan_' . ($i+1),
+                        'title' => '',
+                        'subtitle' => '',
+                        'description' => '',
+                        'icon' => '',
+                        'popup_desc' => '',
+                        'cara_kerja' => [],
+                        'persyaratan' => []
+                    ];
+                }
+
+                // Update fields
+                if ($title !== '') $content_data['layanan']['layanan_data'][$i]['title'] = $title;
+                $content_data['layanan']['layanan_data'][$i]['subtitle'] = $subtitle;
+                $content_data['layanan']['layanan_data'][$i]['description'] = $description;
+                $content_data['layanan']['layanan_data'][$i]['popup_desc'] = $popup_desc;
+                $content_data['layanan']['layanan_data'][$i]['icon'] = $icon;
+                $content_data['layanan']['layanan_data'][$i]['cara_kerja'] = $cara_arr;
+                $content_data['layanan']['layanan_data'][$i]['persyaratan'] = $pers_arr;
+            }
+
+            $success = true;
+        }
+        
+        elseif ($file_type === 'kontak') {
+            if ($section_id === 'info') {
+                // Pastikan array kontak_page ada di JSON
+                if (!isset($content_data['kontak_page'])) {
+                    $content_data['kontak_page'] = [];
+                }
+
+                // Simpan Data dari Form ke Array
+                $content_data['kontak_page']['address'] = $_POST['address'] ?? '';
+                $content_data['kontak_page']['phone'] = $_POST['phone'] ?? '';
+                $content_data['kontak_page']['fax'] = $_POST['fax'] ?? '';
+                $content_data['kontak_page']['email'] = $_POST['email'] ?? '';
+                $content_data['kontak_page']['website'] = $_POST['website'] ?? '';
+                $content_data['kontak_page']['hours_weekdays'] = $_POST['hours_weekdays'] ?? '';
+                $content_data['kontak_page']['hours_friday'] = $_POST['hours_friday'] ?? '';
+                $content_data['kontak_page']['map_embed_url'] = $_POST['map_embed_url'] ?? '';
+
                 $success = true;
             }
         }
-        // Simpan perubahan ke file
-        if ($success && file_put_contents($file_path, $new_content)) {
-            $pesan_sukses = 'Konten berhasil diperbarui!';
-            // Refresh untuk melihat perubahan
+
+        elseif ($file_type === 'profil') {
+            // Pastikan array profil ada
+            if (!isset($content_data['profil'])) {
+                $content_data['profil'] = [];
+            }
+
+            if ($section_id === 'hero') {
+                $content_data['profil']['hero_title'] = $_POST['hero_title'] ?? '';
+                $content_data['profil']['hero_subtitle'] = $_POST['hero_subtitle'] ?? '';
+                $success = true;
+            }
+            elseif ($section_id === 'visi-misi') {
+                $content_data['profil']['visi'] = $_POST['visi'] ?? '';
+                
+                // Simpan Misi (Array)
+                $misi_text = $_POST['misi'] ?? '';
+                $misi_arr = [];
+                foreach (preg_split('/\r?\n/', $misi_text) as $line) {
+                    $line = trim($line);
+                    if ($line !== '') {
+                        if (substr($line, 0, 1) === '-') $line = trim(substr($line, 1));
+                        $misi_arr[] = $line;
+                    }
+                }
+                $content_data['profil']['misi'] = $misi_arr;
+                $success = true;
+            }
+            elseif ($section_id === 'tupoksi') {
+                // Simpan Tupoksi (Array)
+                $tupoksi_text = $_POST['tupoksi'] ?? '';
+                $tupoksi_arr = [];
+                foreach (preg_split('/\r?\n/', $tupoksi_text) as $line) {
+                    $line = trim($line);
+                    if ($line !== '') {
+                        if (substr($line, 0, 1) === '-') $line = trim(substr($line, 1));
+                        $tupoksi_arr[] = $line;
+                    }
+                }
+                $content_data['profil']['tupoksi'] = $tupoksi_arr;
+                $success = true;
+            }
+        }
+
+        // SIMPAN SEMUA PERUBAHAN KE CONTENT.JSON
+        if ($success && saveContentData($content_data)) {
+            $pesan_sukses = 'Konten berhasil disimpan ke database!';
             header("Location: admin-pengaturan.php?file=$file_type&section=$section_id&success=1");
             exit;
-        } else if (!$success) {
-            $pesan_error = 'Tidak ada perubahan yang dilakukan.';
         } else {
-            $pesan_error = 'Gagal menyimpan perubahan. Periksa permission file.';
+            $pesan_error = 'Gagal menyimpan perubahan ke database.';
         }
     }
-}
 }
 
 // Handle upload gambar
@@ -478,6 +518,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['upload_image'])) {
     }
 }
 
+// Handle upload icon dengan validasi ukuran
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['upload_icon'])) {
+    $target_dir = "assets/uploads/icons/";
+    
+    // Buat direktori jika belum ada
+    if (!file_exists($target_dir)) {
+        mkdir($target_dir, 0777, true);
+    }
+    
+    $filename = uniqid() . '_' . basename($_FILES["upload_icon"]["name"]);
+    $target_file = $target_dir . $filename;
+    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+    
+    // Validasi file gambar dan ukuran
+    $check = getimagesize($_FILES["upload_icon"]["tmp_name"]);
+    if ($check !== false) {
+        $width = $check[0];
+        $height = $check[1];
+        
+        // Validasi dimensi (minimal 32x32, maksimal 512x512)
+        if ($width < 32 || $height < 32) {
+            $pesan_error = "Ukuran icon terlalu kecil. Minimal harus 32x32 px. Ukuran file Anda: {$width}x{$height} px";
+        } elseif ($width > 512 || $height > 512) {
+            $pesan_error = "Ukuran icon terlalu besar. Maksimal harus 512x512 px. Ukuran file Anda: {$width}x{$height} px";
+        } elseif ($imageFileType == "jpg" || $imageFileType == "png" || $imageFileType == "jpeg" || $imageFileType == "gif" || $imageFileType == "svg") {
+            if (move_uploaded_file($_FILES["upload_icon"]["tmp_name"], $target_file)) {
+                $pesan_sukses = "Icon berhasil diupload! ({$width}x{$height} px) URL: " . $target_file;
+                $uploaded_icon_url = $target_file;
+            } else {
+                $pesan_error = "Maaf, terjadi kesalahan saat mengupload icon.";
+            }
+        } else {
+            $pesan_error = "Maaf, hanya file JPG, JPEG, PNG, GIF & SVG yang diperbolehkan untuk icon.";
+        }
+    } else {
+        $pesan_error = "File yang diupload bukan gambar.";
+    }
+}
+
 // Ambil konten yang akan diedit
 $current_file = $_GET['file'] ?? 'index';
 $current_section = $_GET['section'] ?? 'hero';
@@ -490,153 +569,130 @@ if (!isset($editable_files[$current_file]['sections'][$current_section])) {
     $current_section = array_key_first($editable_files[$current_file]['sections']);
 }
 
-// Ambil konten saat ini dari file
-// Ambil konten saat ini dari file
+// AMBIL KONTEN DARI CONTENT.JSON
 $current_content = [];
+$content_data = loadContentData();
 
-if (file_exists($editable_files[$current_file]['path'])) {
-    $file_content = file_get_contents($editable_files[$current_file]['path']);
-    
-    // Ekstrak konten berdasarkan file dan section
-    if ($current_file === 'index') {
-        if ($current_section === 'hero') {
-            // Ambil teks hero
-            preg_match('/<div class="hero-content">\s*<h2>([^<]+)<\/h2>/s', $file_content, $hero_title_matches);
-            $current_content['hero_text'] = $hero_title_matches[1] ?? '';
+if ($current_file === 'index') {
+    if ($current_section === 'hero') {
+        // Ambil data hero dari content.json
+        if (isset($content_data['index']['hero_data'])) {
+            $hero = $content_data['index']['hero_data'];
+            $current_content['hero_text'] = $hero['hero_text'] ?? '';
+            $current_content['hero_subtext'] = $hero['hero_subtext'] ?? '';
+            $current_content['hero_paragraph'] = $hero['hero_paragraph'] ?? '';
             
-            preg_match('/<div class="hero-content">\s*<h2>[^<]*<\/h2>\s*<p>([^<]+)<\/p>/s', $file_content, $hero_subtext_matches);
-            $current_content['hero_subtext'] = $hero_subtext_matches[1] ?? '';
-            
-            // Ambil gambar slider (4 gambar)
-            preg_match_all('/<div class="slide[^"]*"[^>]*style="[^"]*background-image: url\(\'([^\']+)\'\)[^"]*"/s', $file_content, $hero_images_matches);
+            // Ambil gambar slider
             for ($i = 0; $i < 4; $i++) {
-                $current_content["hero_image_" . ($i+1)] = $hero_images_matches[1][$i] ?? '';
+                $current_content["hero_image_" . ($i+1)] = $hero['hero_images'][$i] ?? '';
             }
-        }
-        elseif ($current_section === 'pimpinan') {
-            // Ambil data pimpinan (3 pimpinan)
-            $pattern = '/<div class="pimpinan-card">\s*<div class="pimpinan-img portrait">.*?<img[^>]+src="([^"]+)"[^>]*>.*?<\/div>\s*<div class="pimpinan-info">\s*<h3>([^<]+)<\/h3>\s*<p>([^<]+)<\/p>/s';
-            preg_match_all($pattern, $file_content, $matches);
-
-            for ($i = 0; $i < 3; $i++) {
-                if (isset($matches[2][$i])) {
-                    $current_content["pimpinan_nama_" . ($i+1)] = $matches[2][$i];
-                    $current_content["pimpinan_jabatan_" . ($i+1)] = $matches[3][$i];
-                    $current_content["pimpinan_image_" . ($i+1)] = $matches[1][$i];
-                }
-            }
-        }
-        elseif ($current_section === 'visi-misi') {
-            // Ambil VISI items (dari ul/li)
-            preg_match('/<div class="visi">.*?<ul>(.*?)<\/ul>.*?<\/div>/si', $file_content, $visi_section);
-            
-            $visi_items = [];
-            if (isset($visi_section[1])) {
-                preg_match_all('/<li>([^<]+)<\/li>/si', $visi_section[1], $matches);
-                foreach ($matches[1] as $item) {
-                    if (!empty(trim($item))) {
-                        $visi_items[] = '- ' . trim($item);
-                    }
-                }
-            }
-            $current_content['visi'] = implode("\n", $visi_items);
-            
-            // Ambil MISI items (tetap sama)
-            preg_match('/<div class="misi">.*?<ul>(.*?)<\/ul>.*?<\/div>/si', $file_content, $misi_section);
-            
-            $misi_items = [];
-            if (isset($misi_section[1])) {
-                preg_match_all('/<li>([^<]+)<\/li>/si', $misi_section[1], $matches);
-                foreach ($matches[1] as $item) {
-                    if (!empty(trim($item))) {
-                        $misi_items[] = '- ' . trim($item);
-                    }
-                }
-            }
-            $current_content['misi'] = implode("\n", $misi_items);
-        }
-        elseif ($current_section === 'layanan-section') {
-        // Cari section layanan
-        $start_pos = strpos($file_content, '<div class="layanan-grid">');
-        if ($start_pos !== false) {
-            $temp_content = substr($file_content, $start_pos);
-            
-            // Temukan penutup grid
-            $open_count = 0;
-            $close_count = 0;
-            $end_pos = 0;
-            
-            for ($i = 0; $i < strlen($temp_content); $i++) {
-                if (substr($temp_content, $i, 5) === '<div ') {
-                    $open_count++;
-                } elseif (substr($temp_content, $i, 6) === '</div>') {
-                    $close_count++;
-                    if ($open_count === $close_count) {
-                        $end_pos = $i;
-                        break;
-                    }
-                }
-            }
-            
-            if ($end_pos > 0) {
-                $grid_content = substr($temp_content, 0, $end_pos + 6);
-                
-                // Pattern untuk setiap card
-                $card_pattern = '/<div class="layanan-card fade-in"[^>]*onclick="openLayananPopup\(\'([^\']+)\'\)">\s*<img[^>]*src="([^"]*)"[^>]*alt="([^"]*)"[^>]*class="icon-layanan"[^>]*>\s*<div class="layanan-card-content">\s*<h3>([^<]+)<\/h3>\s*<p>([^<]*)<\/p>/s';
-                
-                if (preg_match_all($card_pattern, $grid_content, $matches, PREG_SET_ORDER)) {
-                    for ($i = 0; $i < 4; $i++) {
-                        if (isset($matches[$i])) {
-                            $current_content["layanan_title_" . ($i+1)] = htmlspecialchars_decode(trim($matches[$i][4]), ENT_QUOTES);
-                            $current_content["layanan_desc_" . ($i+1)] = htmlspecialchars_decode(trim($matches[$i][5]), ENT_QUOTES);
-                            $current_content["layanan_image_" . ($i+1)] = htmlspecialchars_decode(trim($matches[$i][2]), ENT_QUOTES);
-                            }
-                        }
-                    }
-                }
-            }
-
-            // BACA DATA POPUP DARI FILE JSON
-                $popup_data = loadLayananPopupData();
-                
-                for ($i = 1; $i <= 4; $i++) {
-                    $layanan_key = $layanan_keys[$i] ?? "layanan_$i";
-                    
-                    if (isset($popup_data[$layanan_key])) {
-                        $current_content["layanan_popup_desc_$i"] = $popup_data[$layanan_key]['popup_desc'] ?? '';
-                        $current_content["layanan_cara_kerja_$i"] = $popup_data[$layanan_key]['cara_kerja'] ?? '';
-                        $current_content["layanan_persyaratan_$i"] = $popup_data[$layanan_key]['persyaratan'] ?? '';
-                    } else {
-                        // Nilai default jika belum ada
-                        $current_content["layanan_popup_desc_$i"] = '';
-                        $current_content["layanan_cara_kerja_$i"] = '';
-                        $current_content["layanan_persyaratan_$i"] = '';
-                    }
-                }
-            }
-        }
-    elseif ($current_file === 'profil' && $current_section === 'visi-misi') {
-        // Ambil visi profil
-        preg_match('/<div class="visi-card fade-in">\s*<h3>Visi<\/h3>\s*<p>([^<]+)<\/p>\s*<\/div>/s', $file_content, $matches);
-        $current_content['visi'] = $matches[1] ?? '';
-        
-        // Ambil semua misi items profil HANYA dari section misi
-        preg_match('/<div class="misi-card fade-in">.*?<ul>(.*?)<\/ul>.*?<\/div>/s', $file_content, $misi_section);
-        
-        $misi_items = [];
-        if (isset($misi_section[1])) {
-            // Ambil hanya <li> yang ada di dalam section misi profil
-            preg_match_all('/<li>([^<]+)<\/li>/', $misi_section[1], $matches);
-            foreach ($matches[1] as $item) {
-                if (!empty(trim($item))) {
-                    $misi_items[] = '- ' . trim($item);
-                }
-            }
-        }
-        $current_content['misi'] = implode("\n", $misi_items);
         }
     }
- // <-- Closing brace untuk if (file_exists(...))
+    elseif ($current_section === 'pimpinan') {
+        // Ambil data pimpinan dari content.json
+        if (isset($content_data['index']['pimpinan_data'])) {
+            $pimpinan = $content_data['index']['pimpinan_data'];
+            for ($i = 0; $i < 3; $i++) {
+                if (isset($pimpinan[$i])) {
+                    $current_content["pimpinan_nama_" . ($i+1)] = $pimpinan[$i]['nama'] ?? '';
+                    $current_content["pimpinan_jabatan_" . ($i+1)] = $pimpinan[$i]['jabatan'] ?? '';
+                    $current_content["pimpinan_image_" . ($i+1)] = $pimpinan[$i]['foto'] ?? '';
+                }
+            }
+        }
+    }
+    elseif ($current_section === 'visi-misi') {
+        // Ambil data visi misi dari content.json
+        if (isset($content_data['index']['visi_misi'])) {
+            $visi_misi = $content_data['index']['visi_misi'];
+            
+            // Format visi untuk textarea (dengan dash)
+            $current_content['visi'] = '- ' . ($visi_misi['visi'] ?? '');
+            
+            // Format misi untuk textarea (dengan dash)
+            $misi_items = $visi_misi['misi'] ?? [];
+            $misi_lines = [];
+            foreach ($misi_items as $item) {
+                if (!empty(trim($item))) {
+                    $misi_lines[] = '- ' . trim($item);
+                }
+            }
+            $current_content['misi'] = implode("\n", $misi_lines);
+        }
+    }
+    elseif ($current_section === 'layanan-section') {
+        // Ambil data layanan dari content.json
+        if (isset($content_data['index']['layanan_data'])) {
+            $layanan = $content_data['index']['layanan_data'];
+            for ($i = 0; $i < 4; $i++) {
+                if (isset($layanan[$i])) {
+                    $current_content["layanan_title_" . ($i+1)] = $layanan[$i]['title'] ?? '';
+                    $current_content["layanan_desc_" . ($i+1)] = $layanan[$i]['desc'] ?? '';
+                    $current_content["layanan_image_" . ($i+1)] = $layanan[$i]['icon'] ?? '';
+                }
+            }
+        }
+        
+        // BACA DATA POPUP DARI FILE JSON
+        $popup_data = loadLayananPopupData();
+        
+        for ($i = 1; $i <= 4; $i++) {
+            $layanan_key = $layanan_keys[$i] ?? "layanan_$i";
+            
+            if (isset($popup_data[$layanan_key])) {
+                $current_content["layanan_popup_desc_$i"] = $popup_data[$layanan_key]['popup_desc'] ?? '';
+                $current_content["layanan_cara_kerja_$i"] = $popup_data[$layanan_key]['cara_kerja'] ?? '';
+                $current_content["layanan_persyaratan_$i"] = $popup_data[$layanan_key]['persyaratan'] ?? '';
+            } else {
+                // Nilai default jika belum ada
+                $current_content["layanan_popup_desc_$i"] = '';
+                $current_content["layanan_cara_kerja_$i"] = '';
+                $current_content["layanan_persyaratan_$i"] = '';
+            }
+        }
+    }
+}
+elseif ($current_file === 'profil') {
+    $p = $content_data['profil'] ?? [];
+    
+    // Hero Defaults
+    $current_content['hero_title'] = $p['hero_title'] ?? "Profil Dinas Pendidikan dan Kebudayaan";
+    $current_content['hero_subtitle'] = $p['hero_subtitle'] ?? "Kabupaten Paser";
+    
+    // Visi Misi Defaults
+    $current_content['visi'] = $p['visi'] ?? "Mewujudkan Pendidikan dan Kebudayaan Kabupaten Paser yang Berkualitas, Berkarakter, dan Berdaya Saing";
+    
+    $misi_items = $p['misi'] ?? [
+        "Meningkatkan akses dan mutu pendidikan dasar dan menengah",
+        "Mengembangkan pendidikan karakter berbasis kearifan lokal"
+    ];
+    // Convert array ke string untuk textarea
+    $current_content['misi'] = "";
+    foreach ($misi_items as $item) $current_content['misi'] .= "- " . $item . "\n";
+    
+    // Tupoksi Defaults
+    $tupoksi_items = $p['tupoksi'] ?? [
+        "Perumusan kebijakan teknis di bidang pendidikan",
+        "Pelaksanaan kebijakan di bidang pengelolaan PAUD, SD, SMP"
+    ];
+    // Convert array ke string untuk textarea
+    $current_content['tupoksi'] = "";
+    foreach ($tupoksi_items as $item) $current_content['tupoksi'] .= "- " . $item . "\n";
+}
+
+elseif ($current_file === 'kontak') {
+    // Ambil data dari JSON, kalau kosong pakai default
+    $k = $content_data['kontak_page'] ?? [];
+    
+    $current_content['address'] = $k['address'] ?? "Jl. Jenderal Sudirman No. 27\nTanah Grogot, Kabupaten Paser\nKalimantan Timur 76251";
+    $current_content['phone'] = $k['phone'] ?? "(0543) 21023";
+    $current_content['fax'] = $k['fax'] ?? "(0543) 21024";
+    $current_content['email'] = $k['email'] ?? "disdik@paserkab.go.id";
+    $current_content['website'] = $k['website'] ?? "disdik.paserkab.go.id";
+    $current_content['hours_weekdays'] = $k['hours_weekdays'] ?? "08.00 - 16.00 WITA";
+    $current_content['hours_friday'] = $k['hours_friday'] ?? "08.00 - 11.00 WITA";
+    $current_content['map_embed_url'] = $k['map_embed_url'] ?? "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3987.6060327839327!2d116.1914303!3d-1.9081035!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2df047988e6b3c0b%3A0xdaa84941bfe1b7df!2sJl.%20Jenderal%20Sudirman%20No.27%2C%20Tanah%20Grogot%2C%20Kec.%20Tanah%20Grogot%2C%20Kabupaten%20Paser%2C%20Kalimantan%20Timur%2076251!5e0!3m2!1sid!2sid!4v1764218368388!5m2!1sid!2sid";
+}
 
 // Check for success message
 if (isset($_GET['success'])) {
@@ -651,6 +707,7 @@ if (isset($_GET['success'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pengaturan Konten - Dinas Pendidikan dan Kebudayaan Kabupaten Paser</title>
     <link rel="stylesheet" href="css/admin-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* Custom Styles untuk Halaman Pengaturan */
         .settings-container {
@@ -947,6 +1004,53 @@ if (isset($_GET['success'])) {
             border-bottom: 1px solid #ddd;
         }
 
+        /* Button Styles */
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+            box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
         @media (max-width: 768px) {
             .settings-container {
                 flex-direction: column;
@@ -1099,7 +1203,7 @@ if (isset($_GET['success'])) {
                         <p>File: <?php echo $editable_files[$current_file]['name']; ?></p>
                     </div>
 
-                    <form method="POST" class="editor-form">
+                    <form method="POST" class="editor-form" id="editorForm">
                         <input type="hidden" name="file_type" value="<?php echo $current_file; ?>">
                         <input type="hidden" name="section_id" value="<?php echo $current_section; ?>">
                         
@@ -1110,14 +1214,23 @@ if (isset($_GET['success'])) {
                                 <div class="form-section">
                                     <h4>Judul Hero</h4>
                                     <div class="form-group">
-                                        <label for="hero_text">Judul Utama:</label>
+                                        <label for="hero_text">Judul Utama (h2):</label>
                                         <input type="text" id="hero_text" name="hero_text" class="form-control" 
-                                               value="<?php echo htmlspecialchars($current_content['hero_text'] ?? ''); ?>">
+                                            value="<?php echo htmlspecialchars($current_content['hero_text'] ?? ''); ?>"
+                                            placeholder="Contoh: Pusat Layanan dan Informasi">
                                     </div>
                                     
                                     <div class="form-group">
-                                        <label for="hero_subtext">Subjudul:</label>
-                                        <textarea id="hero_subtext" name="hero_subtext" class="form-control" rows="3"><?php echo htmlspecialchars($current_content['hero_subtext'] ?? ''); ?></textarea>
+                                        <label for="hero_subtext">Subjudul (h3):</label>
+                                        <input type="text" id="hero_subtext" name="hero_subtext" class="form-control" 
+                                            value="<?php echo htmlspecialchars($current_content['hero_subtext'] ?? ''); ?>"
+                                            placeholder="Contoh: Pendidikan dan Kebudayaan Kabupaten Paser">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="hero_paragraph">Paragraf (p):</label>
+                                        <textarea id="hero_paragraph" name="hero_paragraph" class="form-control" rows="3"
+                                                placeholder="Contoh: Bersama Paser TUNTAS (Tangguh, Unggul, Transformatif, Adil, dan Sejahtera)"><?php echo htmlspecialchars($current_content['hero_paragraph'] ?? ''); ?></textarea>
                                     </div>
                                 </div>
                                 
@@ -1126,20 +1239,22 @@ if (isset($_GET['success'])) {
                                     <?php for ($i = 1; $i <= 4; $i++): ?>
                                         <div class="form-group">
                                             <label for="hero_image_<?php echo $i; ?>">Gambar Slider <?php echo $i; ?>:</label>
-                                            <div class="image-input-group">
-                                                <input type="text" id="hero_image_<?php echo $i; ?>" 
-                                                       name="hero_image_<?php echo $i; ?>" class="form-control" 
-                                                       value="<?php echo htmlspecialchars($current_content['hero_image_' . $i] ?? ''); ?>"
-                                                       placeholder="URL gambar...">
-                                                <button type="button" class="select-image-btn" 
-                                                        onclick="openImageSelector('hero_image_<?php echo $i; ?>')">
-                                                    Pilih Gambar
+                                            <div style="display:flex; gap:8px; align-items:flex-start;">
+                                                <div style="flex:1;">
+                                                    <input type="text" id="hero_image_<?php echo $i; ?>" 
+                                                           name="hero_image_<?php echo $i; ?>" class="form-control" 
+                                                           value="<?php echo htmlspecialchars($current_content['hero_image_' . $i] ?? ''); ?>"
+                                                           placeholder="URL gambar...">
+                                                    <small style="color:#666;display:block;margin-top:5px;">Ukuran rekomendasi: 1920x600 px</small>
+                                                </div>
+                                                <button type="button" style="background:#003399;color:white;border:none;padding:8px 12px;border-radius:4px;cursor:pointer;font-weight:500;font-size:13px;white-space:nowrap;transition:all 0.2s ease;margin-top:2px;" onmouseover="this.style.background='#002280'" onmouseout="this.style.background='#003399'" onclick="openImageSelector('hero_image_<?php echo $i; ?>')">
+                                                    Pilih
                                                 </button>
                                             </div>
                                             <?php if (!empty($current_content['hero_image_' . $i])): ?>
-                                                <div class="image-preview">
+                                                <div style="margin-top:10px;padding:10px;background:#f9f9f9;border:1px solid #e0e0e0;border-radius:4px;text-align:center;">
                                                     <img src="<?php echo htmlspecialchars($current_content['hero_image_' . $i]); ?>" 
-                                                        alt="Slider <?php echo $i; ?>">
+                                                        alt="Slider <?php echo $i; ?>" style="max-width:100%;height:auto;max-height:120px;object-fit:cover;border-radius:4px;">
                                                 </div>
                                             <?php endif; ?>
                                         </div>
@@ -1182,21 +1297,22 @@ if (isset($_GET['success'])) {
                                             
                                             <div class="form-group">
                                                 <label for="pimpinan_image_<?php echo $i; ?>">Foto Pimpinan:</label>
-                                                <div class="image-input-group">
-                                                    <input type="text" id="pimpinan_image_<?php echo $i; ?>" 
-                                                           name="pimpinan_image_<?php echo $i; ?>" class="form-control" 
-                                                           value="<?php echo htmlspecialchars($current_content['pimpinan_image_' . $i] ?? ''); ?>"
-                                                           placeholder="URL gambar...">
-                                                    <button type="button" class="select-image-btn" 
-                                                            onclick="openImageSelector('pimpinan_image_<?php echo $i; ?>')">
-                                                        Pilih Gambar
+                                                <div style="display:flex; gap:8px; align-items:flex-start;">
+                                                    <div style="flex:1;">
+                                                        <input type="text" id="pimpinan_image_<?php echo $i; ?>" 
+                                                               name="pimpinan_image_<?php echo $i; ?>" class="form-control" 
+                                                               value="<?php echo htmlspecialchars($current_content['pimpinan_image_' . $i] ?? ''); ?>"
+                                                               placeholder="URL gambar...">
+                                                        <small style="color:#666;display:block;margin-top:5px;">Ukuran rekomendasi: 300x400 px</small>
+                                                    </div>
+                                                    <button type="button" style="background:#003399;color:white;border:none;padding:8px 12px;border-radius:4px;cursor:pointer;font-weight:500;font-size:13px;white-space:nowrap;transition:all 0.2s ease;margin-top:2px;" onmouseover="this.style.background='#002280'" onmouseout="this.style.background='#003399'" onclick="openImageSelector('pimpinan_image_<?php echo $i; ?>')">
+                                                        Pilih
                                                     </button>
                                                 </div>
                                                <?php if (!empty($current_content['pimpinan_image_' . $i])): ?>
-                                                    <div class="image-preview pimpinan-preview">
-                                                        <p><strong>Preview Foto:</strong></p>
+                                                    <div style="margin-top:10px;padding:10px;background:#f9f9f9;border:1px solid #e0e0e0;border-radius:4px;text-align:center;">
                                                         <img src="<?php echo htmlspecialchars($current_content['pimpinan_image_' . $i]); ?>" 
-                                                            alt="Pimpinan <?php echo $i; ?>">
+                                                            alt="Pimpinan <?php echo $i; ?>" style="max-width:100%;height:auto;max-height:200px;object-fit:cover;border-radius:4px;">
                                                     </div>
                                                 <?php endif; ?>
                                             </div>
@@ -1280,14 +1396,16 @@ if (isset($_GET['success'])) {
                                             
                                             <div class="form-group">
                                                 <label for="layanan_image_<?php echo $i; ?>">Gambar Kartu:</label>
-                                                <div class="image-input-group">
-                                                    <input type="text" id="layanan_image_<?php echo $i; ?>" 
-                                                        name="layanan_image_<?php echo $i; ?>" class="form-control" 
-                                                        value="<?php echo htmlspecialchars($current_content['layanan_image_' . $i] ?? ''); ?>"
-                                                        placeholder="URL gambar...">
-                                                    <button type="button" class="select-image-btn" 
-                                                            onclick="openImageSelector('layanan_image_<?php echo $i; ?>')">
-                                                        Pilih Gambar
+                                                <div style="display:flex; gap:8px; align-items:flex-start;">
+                                                    <div style="flex:1;">
+                                                        <input type="text" id="layanan_image_<?php echo $i; ?>" 
+                                                            name="layanan_image_<?php echo $i; ?>" class="form-control" 
+                                                            value="<?php echo htmlspecialchars($current_content['layanan_image_' . $i] ?? ''); ?>"
+                                                            placeholder="URL gambar...">
+                                                        <small style="color:#666;display:block;margin-top:5px;">Ukuran rekomendasi: 400x300 px</small>
+                                                    </div>
+                                                    <button type="button" style="background:#003399;color:white;border:none;padding:8px 12px;border-radius:4px;cursor:pointer;font-weight:500;font-size:13px;white-space:nowrap;transition:all 0.2s ease;margin-top:2px;" onmouseover="this.style.background='#002280'" onmouseout="this.style.background='#003399'" onclick="openImageSelector('layanan_image_<?php echo $i; ?>')">
+                                                        Pilih
                                                     </button>
                                                 </div>
                                             </div>
@@ -1343,7 +1461,268 @@ Bukti pembayaran (jika ada)</pre>
                                     <?php endfor; ?>
                                 </div>
                             <?php endif; ?>
+                        <?php endif; ?>
+
+                        <?php if ($current_file === 'layanan'): ?>
+                            <?php if ($current_section === 'layanan'): ?>
+                                <!-- CONTOH FORMAT DATA POPUP DETAIL (READ-ONLY) -->
+                                <div class="form-section" style="background:#f0f8ff;border:2px solid #003399;padding:25px;margin-bottom:30px;border-radius:8px;">
+                                    <h4 style="color:#003399;margin-top:0;">📋 Contoh: Format Data Popup Detail</h4>
+                                    <p style="color:#666;margin-bottom:20px;">Referensi format untuk mengedit data popup di bagian "Daftar Layanan" di bawah</p>
+                                    
+                                    <div style="margin-bottom:20px;">
+                                        <h5 style="color:#003399;margin-bottom:10px;">1. Deskripsi Lengkap (popup)</h5>
+                                        <div style="background:white;padding:15px;border-radius:4px;border-left:4px solid #2196f3;font-family:monospace;font-size:13px;color:#333;line-height:1.6;">
+                                            Layanan legalisir ijazah dan dokumen kelulusan untuk keperluan administrasi seperti melamar pekerjaan, melanjutkan pendidikan, atau keperluan lainnya
+                                        </div>
+                                    </div>
+
+                                    <div style="margin-bottom:20px;">
+                                        <h5 style="color:#003399;margin-bottom:10px;">2. Cara Kerja (satu baris = satu langkah)</h5>
+                                        <div style="background:white;padding:15px;border-radius:4px;border-left:4px solid #2196f3;font-family:monospace;font-size:13px;color:#333;line-height:1.8;white-space:pre-wrap;">
+Pemohon datang ke kantor Dinas Pendidikan dengan membawa dokumen asli
+Mengisi formulir permohonan legalisir
+Petugas memverifikasi dokumen asli
+Dokumen dicap dan ditandatangani oleh pejabat berwenang
+Pemohon menerima dokumen yang telah dilegalisir
+                                        </div>
+                                    </div>
+
+                                    <div style="margin-bottom:20px;">
+                                        <h5 style="color:#003399;margin-bottom:10px;">3. Persyaratan (satu baris = satu item)</h5>
+                                        <div style="background:white;padding:15px;border-radius:4px;border-left:4px solid #2196f3;font-family:monospace;font-size:13px;color:#333;line-height:1.8;white-space:pre-wrap;">
+Ijazah asli yang akan dilegalisir
+KTP asli dan fotokopi
+Formulir permohonan yang telah diisi
+Bukti pembayaran (jika ada)
+                                        </div>
+                                    </div>
+
+                                    <div style="background:#fff3cd;border:1px solid #ffc107;padding:12px;border-radius:4px;margin-top:15px;">
+                                        <strong style="color:#856404;">💡 Tips:</strong> Edit data popup di bagian <strong>"Daftar Layanan"</strong> di bawah. Gunakan format contoh di atas sebagai referensi.
+                                    </div>
+                                </div>
+
+                                <!-- DAFTAR LAYANAN EDITOR -->
+                                <div class="form-section">
+                                    <h4>Daftar Layanan (editable)</h4>
+                                    <p style="color:#666">Edit data kartu layanan dan popup detail untuk setiap layanan</p>
+                                    <?php
+                                    $layanan_list = $content_data['layanan']['layanan_data'] ?? [];
+                                    $count = max(1, count($layanan_list));
+                                    ?>
+                                    <input type="hidden" name="layanan_count" value="<?php echo $count; ?>">
+                                    <?php for ($i = 0; $i < $count; $i++):
+                                        $idx = $i + 1;
+                                        $item = $layanan_list[$i] ?? [];
+                                    ?>
+                                    <div class="form-section" style="border:1px solid #eee; padding:20px; margin-bottom:20px; border-radius:8px; background:#f4f7f6;">
+                                        <h5 style="color:#003399; margin-bottom: 20px; font-weight:700; font-size:1.2em;">
+                                            <i class="fas fa-cog"></i> Edit Layanan #<?php echo $idx; ?>
+                                        </h5>
+
+                                        <div style="background: white; padding: 25px; border-radius: 6px; border: 1px solid #e0e0e0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 20px;">
+                                            <h6 style="color: #444; margin-top: 0; margin-bottom: 20px; font-weight: 700; border-bottom: 2px solid #eee; padding-bottom: 10px; font-size: 1.1em;">
+                                                1. Informasi Teks & Detail Popup
+                                            </h6>
+
+                                            <div class="form-group">
+                                                <label for="layanan_title_<?php echo $idx; ?>">Judul Layanan</label>
+                                                <input type="text" id="layanan_title_<?php echo $idx; ?>" name="layanan_title_<?php echo $idx; ?>" class="form-control" value="<?php echo htmlspecialchars($item['title'] ?? ''); ?>" style="font-weight:bold;">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="layanan_subtitle_<?php echo $idx; ?>">Subjudul (Pendek)</label>
+                                                <input type="text" id="layanan_subtitle_<?php echo $idx; ?>" name="layanan_subtitle_<?php echo $idx; ?>" class="form-control" value="<?php echo htmlspecialchars($item['subtitle'] ?? ''); ?>">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="layanan_description_<?php echo $idx; ?>">Deskripsi Singkat (Tampil di Kartu Depan)</label>
+                                                <textarea id="layanan_description_<?php echo $idx; ?>" name="layanan_description_<?php echo $idx; ?>" class="form-control" rows="2"><?php echo htmlspecialchars($item['description'] ?? ''); ?></textarea>
+                                            </div>
+
+                                            <div style="margin-top: 25px; padding-top: 20px; border-top: 2px dashed #dde2e5; background-color: #fcfcfc; padding: 20px; border-radius: 4px;">
+                                                <label style="color:#003399; font-weight:bold; margin-bottom:15px; display:block; font-size: 1.05em;">
+                                                    <i class="fas fa-layer-group"></i> Detail Popup
+                                                </label>
+
+                                                <div class="form-group">
+                                                    <label for="layanan_popup_desc_<?php echo $idx; ?>">Deskripsi Lengkap (Popup):</label>
+                                                    <textarea id="layanan_popup_desc_<?php echo $idx; ?>" name="layanan_popup_desc_<?php echo $idx; ?>" class="form-control" rows="3" placeholder="Deskripsi detail..."><?php echo htmlspecialchars($item['popup_desc'] ?? ''); ?></textarea>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="layanan_cara_kerja_<?php echo $idx; ?>">Cara Kerja / Prosedur:</label>
+                                                    <textarea id="layanan_cara_kerja_<?php echo $idx; ?>" name="layanan_cara_kerja_<?php echo $idx; ?>" class="form-control" rows="5" placeholder="1. Langkah satu&#10;2. Langkah dua..."><?php 
+                                                        $cara = $item['cara_kerja'] ?? ($item['caraKerja'] ?? []); 
+                                                        echo htmlspecialchars(is_array($cara) ? implode("\n", $cara) : $cara); 
+                                                    ?></textarea>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="layanan_persyaratan_<?php echo $idx; ?>">Persyaratan Dokumen:</label>
+                                                    <textarea id="layanan_persyaratan_<?php echo $idx; ?>" name="layanan_persyaratan_<?php echo $idx; ?>" class="form-control" rows="5" placeholder="- Syarat satu&#10;- Syarat dua..."><?php 
+                                                        $pers = $item['persyaratan'] ?? []; 
+                                                        echo htmlspecialchars(is_array($pers) ? implode("\n", $pers) : $pers); 
+                                                    ?></textarea>
+                                                </div>
+                                            </div>
+                                            </div>
+
+                                        <div style="background: white; padding: 25px; border-radius: 6px; border: 1px solid #e0e0e0; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                                            <h6 style="font-size: 1.1em; color: #444; margin-top: 0; margin-bottom: 20px; font-weight: 700; border-bottom: 2px solid #eee; padding-bottom: 10px;">
+                                                2. Visual (Icon/Gambar)
+                                            </h6>
+                                            <div class="form-group" style="margin-bottom:0;">
+                                                <label for="layanan_icon_<?php echo $idx; ?>">Icon / Gambar Layanan</label>
+                                                <div style="display:flex; gap:10px; align-items:flex-start;">
+                                                    <div style="flex:1;">
+                                                        <input type="text" id="layanan_icon_<?php echo $idx; ?>" name="layanan_icon_<?php echo $idx; ?>" class="form-control" value="<?php echo htmlspecialchars($item['icon'] ?? ''); ?>" placeholder="URL icon atau fa-icon class (contoh: fas fa-scroll)">
+                                                        <small style="color:#666;display:block;margin-top:5px;">Mendukung FontAwesome class atau URL Gambar</small>
+                                                    </div>
+                                                    <button type="button" class="btn btn-secondary" style="background:#003399; border:none; color:white; padding: 10px 15px;" onclick="openIconUploader(<?php echo $idx; ?>)">
+                                                        <i class="fas fa-upload"></i> Upload
+                                                    </button>
+                                                </div>
+                                                
+                                                <?php if (!empty($item['icon'])): ?>
+                                                <div style="margin-top:15px; padding:15px; background:#f8f9fa; border:1px solid #dee2e6; border-radius:4px; text-align:center; min-height: 100px; display: flex; align-items: center; justify-content: center;">
+                                                    <?php 
+                                                    $icon = $item['icon'];
+                                                    if (strpos($icon, '/') !== false || strpos($icon, '.') !== false) {
+                                                        echo '<img src="' . htmlspecialchars($icon) . '" alt="Icon preview" style="max-width:80px; max-height:80px; object-fit:contain;">';
+                                                    } else {
+                                                        echo '<i class="' . htmlspecialchars($icon) . '" style="font-size:3.5em; color:#003399;"></i>';
+                                                    }
+                                                    ?>
+                                                </div>
+                                                <div style="text-align:center; margin-top:5px; font-size:12px; color:#666;">Preview Icon</div>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?php endfor; ?>
+                                </div>
                             
+                            <?php endif; ?>
+                            <?php if ($current_section === 'contact'): ?>
+                                <?php
+                                // Load data saat ini untuk form kontak
+                                $contact_data = $content_data['layanan']['contact_section'] ?? [];
+                                $cur_contact_title = $contact_data['title'] ?? 'Butuh Bantuan Administrasi Cepat?';
+                                $cur_contact_subtitle = $contact_data['subtitle'] ?? 'Isi formulir di bawah ini dan Admin akan menghubungi Anda dalam 2x24 jam.';
+                                
+                                // Siapkan data opsi untuk textarea (gabungkan array jadi string per baris)
+                                $cur_contact_options = isset($contact_data['service_options']) ? implode("\n", $contact_data['service_options']) : '';
+                                ?>
+
+                                <div class="form-section">
+                                    <h4>Pengaturan Form Kontak</h4>
+                                    <div class="format-hint">
+                                        <h5>Info:</h5>
+                                        <p>Bagian ini mengatur teks judul, subjudul, dan pilihan yang muncul di dropdown "Jenis Layanan" pada form kontak di halaman depan.</p>
+                                    </div>
+
+                                    <div class="form-group" style="margin-top: 20px;">
+                                        <label for="contact_title">Judul Form (h2):</label>
+                                        <input type="text" id="contact_title" name="contact_title" class="form-control" 
+                                               value="<?php echo htmlspecialchars($cur_contact_title); ?>">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="contact_subtitle">Subjudul Form (p):</label>
+                                        <textarea id="contact_subtitle" name="contact_subtitle" class="form-control" rows="3"><?php echo htmlspecialchars($cur_contact_subtitle); ?></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="form-section">
+                                    <h4>Opsi Dropdown "Pilih Jenis Layanan"</h4>
+                                    <div class="format-hint" style="background:#fff3cd;border-left-color:#ffc107;">
+                                        <strong style="color:#856404;">💡 Cara Penggunaan:</strong>
+                                        <ul>
+                                            <li>Masukkan satu jenis layanan per baris.</li>
+                                            <li>Jika diisi, daftar ini akan menggantikan daftar layanan default di dropdown form kontak.</li>
+                                            <li>Jika dikosongkan, dropdown akan otomatis mengambil data dari "Daftar Layanan" utama.</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="contact_options">Daftar Opsi Kustom (Satu per baris):</label>
+                                        <textarea id="contact_options" name="contact_options" class="form-control" rows="8" 
+                                                  placeholder="Contoh:
+Legalisir Ijazah
+Pindah Sekolah
+Konsultasi Umum"><?php echo htmlspecialchars($cur_contact_options); ?></textarea>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                        
+                        <?php if ($current_file === 'faq'): ?>
+                            <div class="form-section">
+                                <h4>Kelola FAQ</h4>
+                                <p style="color: #666; margin-bottom: 20px;">Edit pertanyaan dan jawaban untuk setiap kategori. Hapus isi pertanyaan dan jawaban untuk menghapus item.</p>
+                                
+                                <?php
+                                // Debug: Load fresh data untuk FAQ
+                                if ($current_file === 'faq') {
+                                    $content_data = loadContentData();
+                                }
+                                
+                                $faq_data = isset($content_data['faq']) ? $content_data['faq'] : [];
+                                
+                                $categories = [
+                                    'informasi_umum' => 'Informasi Umum',
+                                    'layanan_kesiswaan' => 'Layanan Kesiswaan',
+                                    'guru_tenaga_kependidikan' => 'Guru & Tenaga Kependidikan',
+                                    'ppdb' => 'PPDB'
+                                ];
+                                
+                                foreach ($categories as $cat_key => $cat_name):
+                                    $faqs = isset($faq_data[$cat_key]) && is_array($faq_data[$cat_key]) ? $faq_data[$cat_key] : [];
+                                ?>
+                                    <div style="margin-bottom: 30px; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background: #f9f9f9;">
+                                        <h5 style="color: #003399; margin-top: 0; margin-bottom: 20px; border-bottom: 2px solid #e36159; padding-bottom: 10px;"><?php echo $cat_name; ?></h5>
+                                        
+                                        <?php 
+                                        // Tampilkan existing FAQs + 2 empty rows untuk entry baru
+                                        $total_rows = max(2, count($faqs) + 1);
+                                        for ($i = 0; $i < $total_rows; $i++): 
+                                        ?>
+                                            <?php $faq = $faqs[$i] ?? ['question' => '', 'answer' => '']; ?>
+                                            <div style="margin-bottom: 20px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #e0e0e0;">
+                                                <div style="color: #666; font-size: 12px; margin-bottom: 10px;">Item <?php echo $i+1; ?></div>
+                                                <div class="form-group">
+                                                    <label style="font-weight: 600; color: #333;">Pertanyaan:</label>
+                                                    <input type="text" name="faq[<?php echo $cat_key; ?>][<?php echo $i; ?>][question]" 
+                                                        class="form-control" 
+                                                        value="<?php echo htmlspecialchars($faq['question']); ?>"
+                                                        placeholder="Masukkan pertanyaan...">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label style="font-weight: 600; color: #333;">Jawaban:</label>
+                                                    <textarea name="faq[<?php echo $cat_key; ?>][<?php echo $i; ?>][answer]" 
+                                                            class="form-control" rows="4"
+                                                            placeholder="Masukkan jawaban (bisa menggunakan HTML tags)..."><?php echo htmlspecialchars($faq['answer']); ?></textarea>
+                                                    <small style="color: #999; display: block; margin-top: 5px;">Anda bisa menggunakan tag HTML seperti &lt;strong&gt;, &lt;a&gt;, &lt;ol&gt;, &lt;li&gt;, dsb.</small>
+                                                </div>
+                                            </div>
+                                        <?php endfor; ?>
+                                    </div>
+                                <?php endforeach; ?>
+                                
+                                <div class="form-actions">
+                                    <button type="button" onclick="if(confirm('Batalkan perubahan?')) window.location.replace('admin-pengaturan.php?file=index&section=hero')" class="btn btn-danger" style="background: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; margin-right: 10px;">
+                                        <span style="margin-right: 5px;">✕</span> Batalkan
+                                    </button>
+                                    <button type="button" onclick="if(confirm('Reset semua form ke nilai awal?')) document.querySelector('.editor-form').reset()" class="btn btn-secondary" style="background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; margin-right: 10px;">
+                                        <span style="margin-right: 5px;">↻</span> Reset
+                                    </button>
+                                    <button type="button" onclick="submitFAQForm()" class="btn btn-success" style="background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;">
+                                        <span style="margin-right: 5px;">✓</span> Simpan Semua FAQ
+                                    </button>
+                                </div>
+                            </div>
                         <?php elseif ($current_file === 'profil' && $current_section === 'visi-misi'): ?>
                             <!-- Visi Misi Profil Editor -->
                             <div class="form-section">
@@ -1379,22 +1758,119 @@ Bukti pembayaran (jika ada)</pre>
                             </div>
                             
                         <?php else: ?>
-                            <!-- Editor default untuk section lain -->
+                        <?php endif; ?>
+                        <?php if ($current_file === 'kontak'): ?>
                             <div class="form-section">
-                                <h4>Edit Konten</h4>
+                                <h4>Informasi Alamat</h4>
                                 <div class="form-group">
-                                    <label for="content">Konten:</label>
-                                    <textarea id="content" name="content" class="form-control" rows="10"><?php echo htmlspecialchars($current_content['content'] ?? ''); ?></textarea>
+                                    <label for="address">Alamat Kantor:</label>
+                                    <textarea id="address" name="address" class="form-control" rows="4"><?php echo htmlspecialchars($current_content['address'] ?? ''); ?></textarea>
+                                    <small style="color:#666">Gunakan Enter untuk baris baru.</small>
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                <h4>Informasi Kontak</h4>
+                                <div class="form-group">
+                                    <label for="phone">Nomor Telepon:</label>
+                                    <input type="text" id="phone" name="phone" class="form-control" value="<?php echo htmlspecialchars($current_content['phone'] ?? ''); ?>">
+                                </div>
+                                <div class="form-group">
+                                    <label for="fax">Nomor Fax:</label>
+                                    <input type="text" id="fax" name="fax" class="form-control" value="<?php echo htmlspecialchars($current_content['fax'] ?? ''); ?>">
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Alamat Email:</label>
+                                    <input type="text" id="email" name="email" class="form-control" value="<?php echo htmlspecialchars($current_content['email'] ?? ''); ?>">
+                                </div>
+                                <div class="form-group">
+                                    <label for="website">Website:</label>
+                                    <input type="text" id="website" name="website" class="form-control" value="<?php echo htmlspecialchars($current_content['website'] ?? ''); ?>">
+                                </div>
+                            </div>
+                            
+                            <div class="form-section">
+                                <h4>Jam Operasional</h4>
+                                <div class="form-group">
+                                    <label for="hours_weekdays">Senin - Kamis:</label>
+                                    <input type="text" id="hours_weekdays" name="hours_weekdays" class="form-control" value="<?php echo htmlspecialchars($current_content['hours_weekdays'] ?? ''); ?>">
+                                </div>
+                                <div class="form-group">
+                                    <label for="hours_friday">Jumat:</label>
+                                    <input type="text" id="hours_friday" name="hours_friday" class="form-control" value="<?php echo htmlspecialchars($current_content['hours_friday'] ?? ''); ?>">
+                                </div>
+                            </div>
+                            <div class="form-section">
+                                <h4>Google Maps</h4>
+                                <div class="format-hint">
+                                    <h5>Cara mengambil link:</h5>
+                                    <ul>
+                                        <li>Buka Google Maps, cari lokasi kantor.</li>
+                                        <li>Klik tombol <strong>Bagikan (Share)</strong> -> <strong>Sematkan Peta (Embed a map)</strong>.</li>
+                                        <li>Copy hanya bagian url di dalam tanda kutip <code>src="..."</code>.</li>
+                                    </ul>
+                                </div>
+                                <div class="form-group">
+                                    <label for="map_embed_url">Link Embed Map (src):</label>
+                                    <textarea id="map_embed_url" name="map_embed_url" class="form-control" rows="3" placeholder="Contoh: https://www.google.com/maps/embed?pb=..."><?php echo htmlspecialchars($current_content['map_embed_url'] ?? ''); ?></textarea>
                                 </div>
                             </div>
                         <?php endif; ?>
+                        <?php if ($current_file === 'profil'): ?>
+                            
+                            <?php if ($current_section === 'hero'): ?>
+                                <div class="form-section">
+                                    <h4>Hero Section</h4>
+                                    <div class="form-group">
+                                        <label for="hero_title">Judul Utama:</label>
+                                        <input type="text" id="hero_title" name="hero_title" class="form-control" value="<?php echo htmlspecialchars($current_content['hero_title'] ?? ''); ?>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="hero_subtitle">Subjudul:</label>
+                                        <input type="text" id="hero_subtitle" name="hero_subtitle" class="form-control" value="<?php echo htmlspecialchars($current_content['hero_subtitle'] ?? ''); ?>">
+                                    </div>
+                                </div>
+
+                            <?php elseif ($current_section === 'visi-misi'): ?>
+                                <div class="form-section">
+                                    <h4>Visi</h4>
+                                    <div class="form-group">
+                                        <textarea id="visi" name="visi" class="form-control" rows="3"><?php echo htmlspecialchars($current_content['visi'] ?? ''); ?></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-section">
+                                    <h4>Misi</h4>
+                                    <div class="format-hint">Gunakan tanda dash (-) untuk setiap poin.</div>
+                                    <div class="form-group">
+                                        <textarea id="misi" name="misi" class="form-control" rows="8"><?php echo htmlspecialchars($current_content['misi'] ?? ''); ?></textarea>
+                                    </div>
+                                </div>
+
+                            <?php elseif ($current_section === 'tupoksi'): ?>
+                                <div class="form-section">
+                                    <h4>Tugas Pokok & Fungsi</h4>
+                                    <div class="format-hint">Gunakan tanda dash (-) untuk setiap poin tupoksi.</div>
+                                    <div class="form-group">
+                                        <textarea id="tupoksi" name="tupoksi" class="form-control" rows="10"><?php echo htmlspecialchars($current_content['tupoksi'] ?? ''); ?></textarea>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+
+                        <?php endif; ?>
                         
-                        <div class="form-actions">
-                            <button type="reset" class="btn btn-outline-primary">Reset</button>
-                            <button type="submit" name="save_content" class="btn-success">
-                                <span class="icon icon-success"></span> Simpan Perubahan
+                        <?php if ($current_file !== 'faq'): ?>
+                        <div class="form-actions" style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
+                            <button type="button" onclick="if(confirm('Batalkan perubahan?')) window.location.replace('admin-pengaturan.php?file=index&section=hero')" class="btn btn-danger" style="background: #dc3545; color: white; border: none; padding: 10px 18px; border-radius: 4px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; font-size: 14px;">
+                                <span style="margin-right: 6px;">✕</span> Batalkan
+                            </button>
+                            <button type="button" onclick="if(confirm('Reset semua form ke nilai awal?')) document.querySelector('.editor-form').reset()" class="btn btn-secondary" style="background: #6c757d; color: white; border: none; padding: 10px 18px; border-radius: 4px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; font-size: 14px;">
+                                <span style="margin-right: 6px;">↻</span> Reset
+                            </button>
+                            <button type="submit" name="save_content" class="btn btn-success" style="background: #28a745; color: white; border: none; padding: 10px 18px; border-radius: 4px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; font-size: 14px;">
+                                <span style="margin-right: 6px;">✓</span> Simpan Perubahan
                             </button>
                         </div>
+                        <?php endif; ?>
                     </form>
                     
                     <!-- Modal untuk memilih gambar -->
@@ -1444,6 +1920,43 @@ Bukti pembayaran (jika ada)</pre>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Modal untuk upload icon layanan -->
+                    <div id="iconUploaderModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; align-items: center; justify-content: center;">
+                        <div style="background: white; padding: 30px; border-radius: 8px; width: 90%; max-width: 500px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                                <h3>Upload Icon Layanan</h3>
+                                <button onclick="closeIconUploader()" style="background: none; border: none; font-size: 24px; cursor: pointer;">×</button>
+                            </div>
+                            
+                            <div style="background:#fff3cd;border:1px solid #ffc107;padding:12px;border-radius:4px;margin-bottom:20px;">
+                                <strong style="color:#856404;">📐 Persyaratan Icon:</strong>
+                                <ul style="margin:8px 0 0 0;padding-left:20px;font-size:14px;">
+                                    <li>Ukuran minimal: 32x32 px</li>
+                                    <li>Ukuran maksimal: 512x512 px</li>
+                                    <li>Format: JPG, PNG, GIF, atau SVG</li>
+                                </ul>
+                            </div>
+                            
+                            <!-- Upload Area -->
+                            <div id="uploadAreaIcon" style="border:2px dashed #003399;border-radius:8px;padding:40px 20px;text-align:center;margin-bottom:20px;cursor:pointer;background:#f8faff;transition:all 0.3s ease;" onclick="document.getElementById('iconFileInput').click()" onmouseover="this.style.background='#eef4ff';this.style.borderColor='#002280';this.style.boxShadow='0 2px 8px rgba(0,51,153,0.2)'" onmouseout="this.style.background='#f8faff';this.style.borderColor='#003399';this.style.boxShadow='none'">
+                                <div style="color:#003399;margin-bottom:10px;"><i class="fa-solid fa-up-long" style="font-size:32px;"></i></div>
+                                <h4 style="margin:0 0 5px 0;color:#003399;font-size:16px;">Klik untuk memilih file</h4>
+                                <p style="margin:0;color:#999;font-size:13px;">atau seret file ke sini</p>
+                            </div>
+                            
+                            <input type="file" id="iconFileInput" accept="image/jpeg,image/png,image/gif,image/svg+xml" style="display: none;">
+                            
+                            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                                <button onclick="closeIconUploader()" style="background:white;border:1px solid #ddd;padding:8px 16px;border-radius:4px;cursor:pointer;font-weight:500;color:#666;font-size:13px;transition:all 0.2s ease;" onmouseover="this.style.background='#f5f5f5';this.style.borderColor='#999'" onmouseout="this.style.background='white';this.style.borderColor='#ddd'">
+                                    Batal
+                                </button>
+                                <button onclick="uploadIconFromModal()" style="background:#003399;color:white;border:none;padding:8px 16px;border-radius:4px;cursor:pointer;font-weight:500;font-size:13px;transition:all 0.2s ease;" onmouseover="this.style.background='#002280'" onmouseout="this.style.background='#003399'">
+                                    Upload
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
@@ -1452,6 +1965,33 @@ Bukti pembayaran (jika ada)</pre>
     <script>
         let currentImageField = '';
         
+        // Fungsi untuk submit FAQ form
+        function submitFAQForm() {
+            const form = document.getElementById('editorForm');
+            const formData = new FormData(form);
+            
+            // Tambahkan flag untuk save_faq
+            formData.append('save_faq', '1');
+            
+            fetch('admin-pengaturan.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                // Cek jika ada success parameter di response (redirect terjadi jika berhasil)
+                if (data.includes('success=1') || data.includes('FAQ berhasil')) {
+                    window.location.href = 'admin-pengaturan.php?file=faq&section=faq-content&success=1';
+                } else {
+                    alert('FAQ berhasil disimpan!');
+                    location.reload();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Gagal menyimpan FAQ. Silakan coba lagi.');
+            });
+        }
         // Fungsi untuk membuka modal pemilih gambar
         function openImageSelector(fieldId) {
             currentImageField = fieldId;
@@ -1469,6 +2009,95 @@ Bukti pembayaran (jika ada)</pre>
             if (currentImageField) {
                 document.getElementById(currentImageField).value = imageUrl;
                 closeImageSelector();
+                alert('Gambar telah dipilih. Jangan lupa klik "Simpan Perubahan" untuk menerapkan.');
+            }
+        }
+        
+        // Variabel untuk icon uploader
+        let currentIconField = '';
+        
+        // Fungsi untuk buka icon uploader modal
+        function openIconUploader(layananIdx) {
+            currentIconField = 'layanan_icon_' + layananIdx;
+            document.getElementById('iconUploaderModal').style.display = 'flex';
+        }
+        
+        // Fungsi untuk tutup icon uploader modal
+        function closeIconUploader() {
+            document.getElementById('iconUploaderModal').style.display = 'none';
+            currentIconField = '';
+        }
+        
+        // Handle icon upload dari modal
+        function uploadIconFromModal() {
+            const fileInput = document.getElementById('iconFileInput');
+            const formData = new FormData();
+            
+            if (fileInput.files.length === 0) {
+                alert('Silakan pilih file icon terlebih dahulu');
+                return;
+            }
+            
+            formData.append('upload_icon', fileInput.files[0]);
+            
+            // Kirim ke server
+            fetch('admin-pengaturan.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                // Extract URL dari response
+                const urlMatch = data.match(/URL: (assets\/uploads\/icons\/[^\s<]+)/);
+                if (urlMatch && urlMatch[1]) {
+                    const iconUrl = urlMatch[1];
+                    document.getElementById(currentIconField).value = iconUrl;
+                    
+                    // Tampilkan preview
+                    const previewDiv = document.getElementById(currentIconField).parentElement.querySelector('[style*="margin-top:10px"]');
+                    if (previewDiv) {
+                        previewDiv.innerHTML = '<img src="' + iconUrl + '" alt="Icon preview" style="max-width:100px;max-height:100px;object-fit:contain;">';
+                    }
+                    
+                    closeIconUploader();
+                    alert('Icon berhasil diupload! Jangan lupa klik "Simpan Perubahan" untuk menerapkan.');
+                } else if (data.includes('berhasil diupload')) {
+                    closeIconUploader();
+                    location.reload(); // Reload untuk refresh
+                } else {
+                    const errorMatch = data.match(/Maaf,([^<]*)/);
+                    alert(errorMatch ? 'Error:' + errorMatch[1] : 'Gagal mengupload icon');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Gagal mengupload icon. Silakan coba lagi.');
+            });
+        }
+        
+        // Tutup modal jika klik di luar untuk icon uploader
+        document.addEventListener('DOMContentLoaded', function() {
+            const iconModal = document.getElementById('iconUploaderModal');
+            if (iconModal) {
+                iconModal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeIconUploader();
+                    }
+                });
+            }
+        });
+        
+        // Fungsi untuk menutup modal
+        function closeImageSelector() {
+            document.getElementById('imageSelectorModal').style.display = 'none';
+            currentImageField = '';
+        }
+        
+        // Fungsi untuk memilih gambar untuk field tertentu
+        function selectImageForField(imageUrl) {
+            if (currentImageField) {
+                document.getElementById(currentImageField).value = imageUrl;
+                closeImageSelector();;
                 alert('Gambar telah dipilih. Jangan lupa klik "Simpan Perubahan" untuk menerapkan.');
             }
         }

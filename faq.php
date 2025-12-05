@@ -1,12 +1,36 @@
 <?php
 // Mulai session dan include functions
-session_start();
-require_once 'functions.php';
+require_once 'functions_faq.php';
 
-// Ambil data FAQ dari database jika ada, atau gunakan default
-$faq_data = getFAQData(); // Fungsi ini sudah ada di functions.php
+// Ambil data FAQ dari content.json
+$faq_data = loadFAQData();
 
-// HAPUS fungsi getFAQData() yang ada di sini karena sudah ada di functions.php
+// Debug: Cek data yang didapat
+error_log("FAQ Data loaded: " . print_r(array_keys($faq_data), true));
+
+// Kategori FAQ
+$categories = [
+    'informasi_umum' => 'Informasi Umum',
+    'layanan_kesiswaan' => 'Layanan Kesiswaan',
+    'guru_tenaga_kependidikan' => 'Seputar Guru & Tenaga Kependidikan (GTK)',
+    'ppdb' => 'Seputar PPDB'
+];
+
+// Ikon untuk setiap kategori
+$icons = [
+    'informasi_umum' => 'i',
+    'layanan_kesiswaan' => '🎓',
+    'guru_tenaga_kependidikan' => '👨‍🏫',
+    'ppdb' => '🏢'
+];
+
+// Warna untuk setiap kategori
+$colors = [
+    'informasi_umum' => '',
+    'layanan_kesiswaan' => 'green',
+    'guru_tenaga_kependidikan' => 'orange',
+    'ppdb' => 'purple'
+];
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -73,82 +97,37 @@ $faq_data = getFAQData(); // Fungsi ini sudah ada di functions.php
                 <h2>Temukan jawaban atas pertanyaan-pertanyaan yang paling sering diajukan seputar layanan, kebijakan, dan program di Dinas Pendidikan Kabupaten Paser.</h2> <br><br>
             </div>
 
-            <!-- Informasi Umum -->
-            <div class="faq-section-header">
-                <span class="icon">i</span>
-                Informasi Umum
-            </div>
+            <?php foreach ($categories as $category_key => $category_name): ?>
+                <!-- Kategori FAQ -->
+                <div class="faq-section-header <?php echo $colors[$category_key]; ?>">
+                    <span class="icon"><?php echo $icons[$category_key]; ?></span>
+                    <?php echo $category_name; ?>
+                </div>
 
-            <?php foreach ($faq_data['informasi_umum'] as $index => $faq): ?>
-            <div class="faq-item">
-                <input type="checkbox" id="faq-umum-<?php echo $index; ?>" class="faq-toggle">
-                <div class="faq-question" onclick="toggleFAQ(this)">
-                    <h3><?php echo htmlspecialchars($faq['question']); ?></h3>
-                    <span class="faq-icon">+</span>
-                </div>
-                <div class="faq-answer">
-                    <?php echo $faq['answer']; ?>
-                </div>
-            </div>
+                <?php if (isset($faq_data[$category_key]) && !empty($faq_data[$category_key])): ?>
+                    <?php foreach ($faq_data[$category_key] as $index => $faq): ?>
+                    <div class="faq-item">
+                        <input type="checkbox" id="faq-<?php echo $category_key; ?>-<?php echo $index; ?>" class="faq-toggle">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h3><?php echo htmlspecialchars($faq['question']); ?></h3>
+                            <span class="faq-icon">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <?php echo $faq['answer']; ?>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>Belum ada FAQ untuk kategori ini</h3>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Konten FAQ untuk kategori ini akan segera ditambahkan.</p>
+                        </div>
+                    </div>
+                <?php endif; ?>
             <?php endforeach; ?>
-
-            <!-- Layanan Kesiswaan -->
-            <div class="faq-section-header green">
-                <span class="icon">🎓</span>
-                Layanan Kesiswaan
-            </div>
-
-            <?php foreach ($faq_data['layanan_kesiswaan'] as $index => $faq): ?>
-            <div class="faq-item">
-                <input type="checkbox" id="faq-kesiswaan-<?php echo $index; ?>" class="faq-toggle">
-                <div class="faq-question" onclick="toggleFAQ(this)">
-                    <h3><?php echo htmlspecialchars($faq['question']); ?></h3>
-                    <span class="faq-icon">+</span>
-                </div>
-                <div class="faq-answer">
-                    <?php echo $faq['answer']; ?>
-                </div>
-            </div>
-            <?php endforeach; ?>
-
-            <!-- Guru & Tenaga Kependidikan -->
-            <div class="faq-section-header orange">
-                <span class="icon">👨‍🏫</span>
-                Seputar Guru & Tenaga Kependidikan (GTK)
-            </div>
-
-            <?php foreach ($faq_data['guru_tenaga_kependidikan'] as $index => $faq): ?>
-            <div class="faq-item">
-                <input type="checkbox" id="faq-gtk-<?php echo $index; ?>" class="faq-toggle">
-                <div class="faq-question" onclick="toggleFAQ(this)">
-                    <h3><?php echo htmlspecialchars($faq['question']); ?></h3>
-                    <span class="faq-icon">+</span>
-                </div>
-                <div class="faq-answer">
-                    <?php echo $faq['answer']; ?>
-                </div>
-            </div>
-            <?php endforeach; ?>
-
-            <!-- PPDB -->
-            <div class="faq-section-header purple">
-                <span class="icon">🏢</span>
-                Seputar PPDB
-            </div>
-
-            <?php foreach ($faq_data['ppdb'] as $index => $faq): ?>
-            <div class="faq-item">
-                <input type="checkbox" id="faq-ppdb-<?php echo $index; ?>" class="faq-toggle">
-                <div class="faq-question" onclick="toggleFAQ(this)">
-                    <h3><?php echo htmlspecialchars($faq['question']); ?></h3>
-                    <span class="faq-icon">+</span>
-                </div>
-                <div class="faq-answer">
-                    <?php echo $faq['answer']; ?>
-                </div>
-            </div>
-            <?php endforeach; ?>
-
         </div>
     </section>
 

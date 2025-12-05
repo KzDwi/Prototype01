@@ -3,6 +3,7 @@
         "hero_data": {
             "hero_text": "Pusat Layanan dan Informasi ",
             "hero_subtext": "Bersama Paser TUNTAS (TANGGUH, UNGGUL, TRANSFORMATIF, ADIL, DAN SEJAHTERA)",
+            "hero_paragraph": "Bersama Paser TUNTAS (Tangguh, Unggul, Transformatif, Adil, dan Sejahtera)",
             "hero_images": [
                 "assets\/uploads\/69317b2905d54_68716-ilustrasi-wisata-di-kabupaten-paser-kaltim.jpg",
                 "assets\/uploads\/69317b393a82f_Pemandangan_Tanah_Grogot.jpg",
@@ -62,6 +63,128 @@
                 "desc": "",
                 "icon": ""
             }
+        ]
+    },
+    "faq": {
+        "informasi_umum": [
+            {
+                "question": "Dimana alamat kantor Dinas Pendidikan Kabupaten Paser?",
+                "answer": "Kantor kami beralamat di Jl. Jenderal Sudirman No. 27, Tana Paser, Kabupaten Paser, Kalimantan Timur. Jam operasional pelayanan adalah Senin – Jumat, pukul 08.00 – 15.00."
+            },
+            {
+                "question": "Bagaimana cara menghubungi Dinas Pendidikan?",
+                "answer": "Anda dapat menghubungi kami melalui telepon di (0543) 21023 atau mengirim email ke <a href=\"mailto:disdik@paserkab.go.id\" style=\"color: #003399; text-decoration: underline;\">disdik@paserkab.go.id<\/a>. Untuk pengaduan, kami sarankan menggunakan kanal pada halaman 'Layanan Publik' kami."
+            }
+        ],
+        "layanan_kesiswaan": [
+            {
+                "question": "Bagaimana prosedur legalisir ijazah yang hilang atau rusak?",
+                "answer": "<p>Jika ijazah asli hilang atau rusak, Anda tidak bisa melakukan legalisir. Sebagai gantinya, Anda dapat mengurus <strong>Surat Keterangan Pengganti Ijazah (SKPI)<\/strong>. Prosedurnya adalah:<\/p><ol style=\"margin-left: 20px; line-height: 1.6;\"><li>Membuat Surat Keterangan Kehilangan dari Kepolisian.<\/li><li>Datang ke sekolah asal yang mengeluarkan ijazah.<\/li><li>Jika sekolah sudah tidak beroperasi, datang ke Dinas Pendidikan dengan membawa surat dari kepolisian dan dokumen pendukung lainnya (fotokopi ijazah jika ada, KTP, dll).<\/li><\/ol>"
+            },
+            {
+                "question": "Apakah pindah sekolah (mutasi) antar kabupaten\/kota dikenakan biaya?",
+                "answer": "Tidak. Seluruh layanan pengurusan surat rekomendasi pindah sekolah (mutasi) di Dinas Pendidikan Kabupaten Paser adalah <strong>gratis<\/strong> dan tidak dipungut biaya."
+            }
+        ],
+        "guru_tenaga_kependidikan": [
+            {
+                "question": "Bagaimana cara memeriksa status validasi data untuk Tunjangan Profesi Guru (TPG)?",
+                "answer": "Status validasi data guru dapat dipantau secara mandiri melalui laman <a href=\"https:\/\/info.gtk.kemdikbud.go.id\" target=\"_blank\" style=\"color: #003399; text-decoration: underline;\">Info GTK<\/a> menggunakan akun PTK masing-masing. Pastikan data Anda di Dapodik sudah sinkron dan valid melalui operator sekolah."
+            },
+            {
+                "question": "Saya adalah guru honorer, apakah bisa mendapatkan bantuan\/insentif dari dinas?",
+                "answer": "Pemerintah Daerah Kabupaten Paser memiliki kebijakan terkait insentif atau bantuan untuk guru non-ASN. Informasi mengenai kriteria, besaran, dan jadwal pencairan akan diumumkan secara resmi melalui surat edaran ke sekolah-sekolah. Silakan berkoordinasi dengan kepala sekolah Anda."
+            }
+        ],
+        "ppdb": [
+            {
+                "question": "Kapan jadwal pelaksanaan PPDB tahun ini?",
+                "answer": "Jadwal lengkap, petunjuk teknis, dan informasi mengenai jalur pendaftaran (Zonasi, Afirmasi, Prestasi, Perpindahan Tugas Orang Tua) akan dipublikasikan melalui website resmi PPDB Kabupaten Paser. Mohon pantau website dan media sosial resmi kami secara berkala."
+            },
+            {
+                "question": "Apa yang harus dilakukan jika ada kendala saat pendaftaran PPDB online?",
+                "answer": "Jika terjadi kendala teknis, Anda dapat menghubungi <strong>Help Desk PPDB<\/strong> yang nomor kontaknya akan kami sediakan di situs resmi PPDB selama periode pendaftaran berlangsung. Anda juga bisa datang ke posko PPDB di sekolah terdekat atau di kantor Dinas Pendidikan."
+            }
+        ]
+    },
+    "layanan": {
+        "title": "Layanan Administrasi Kunci untuk Institusi & Individu",
+        "layanan_data": [
+            {
+                "id": "legalisir-ijazah",
+                "title": "Legalisir Dokumen Kelulusan",
+                "subtitle": "Untuk keperluan melamar kerja, melanjutkan studi, dan administrasi lain",
+                "description": "Layanan legalisir ijazah dan dokumen kelulusan untuk keperluan administrasi.",
+                "icon": "fas fa-scroll",
+                "popup_desc": "",
+                "cara_kerja": [],
+                "persyaratan": []
+            },
+            {
+                "id": "surat-mutasi",
+                "title": "Surat Keterangan Pindah Sekolah",
+                "subtitle": "Dokumen resmi untuk perpindahan siswa antar sekolah\/daerah",
+                "description": "Layanan penerbitan surat keterangan pindah sekolah untuk siswa yang akan berpindah.",
+                "icon": "fas fa-exchange-alt",
+                "popup_desc": "",
+                "cara_kerja": [],
+                "persyaratan": []
+            },
+            {
+                "id": "tunjangan-guru",
+                "title": "Pengusulan Tunjangan Profesi Guru",
+                "subtitle": "Bantuan pengusulan tunjangan bagi guru yang berhak",
+                "description": "Layanan pengusulan tunjangan profesi guru bagi guru yang memenuhi persyaratan.",
+                "icon": "fas fa-chalkboard-teacher",
+                "popup_desc": "",
+                "cara_kerja": [],
+                "persyaratan": []
+            },
+            {
+                "id": "izin-pendirian",
+                "title": "Izin Pendirian Satuan Pendidikan",
+                "subtitle": "Pendampingan untuk perizinan operasional satuan pendidikan baru",
+                "description": "Layanan perizinan pendirian satuan pendidikan baru meliputi PAUD, SD, SMP, LKP.",
+                "icon": "fas fa-building",
+                "popup_desc": "",
+                "cara_kerja": [],
+                "persyaratan": []
+            },
+            {
+                "id": "izin-belajar",
+                "title": "Pengurusan Izin Belajar dan Tugas Belajar",
+                "subtitle": "Rekomendasi dan izin bagi ASN yang melanjutkan studi",
+                "description": "Penerbitan surat rekomendasi atau izin untuk melanjutkan pendidikan ke jenjang yang lebih tinggi.",
+                "icon": "fas fa-graduation-cap",
+                "popup_desc": "",
+                "cara_kerja": [],
+                "persyaratan": []
+            }
+        ],
+        "contact_section": {
+            "title": "Butuh Bantuan Administrasi Cepat?",
+            "subtitle": "Isi formulir di bawah ini dan Admin akan menghubungi Anda dalam 2x24 jam.",
+            "service_options": []
+        }
+    },
+    "kontak_page": {
+        "address": "Jl. Jenderal Sudirman No. 27\r\nTanah Grogot, Kabupaten Paser\r\nKalimantan Timur 76251",
+        "phone": "(0543) 21023 ",
+        "fax": "(0543) 21024",
+        "email": "disdik@paserkab.go.id",
+        "hours_weekdays": "08.00 - 16.00 WITA ",
+        "hours_friday": "08.00 - 11.00 WITA",
+        "website": "disdik.paserkab.go.id",
+        "map_embed_url": "https:\/\/www.google.com\/maps\/embed?pb=!1m18!1m12!1m3!1d3987.6060327839327!2d116.1914303!3d-1.9081035!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2df047988e6b3c0b%3A0xdaa84941bfe1b7df!2sJl.%20Jenderal%20Sudirman%20No.27%2C%20Tanah%20Grogot%2C%20Kec.%20Tanah%20Grogot%2C%20Kabupaten%20Paser%2C%20Kalimantan%20Timur%2076251!5e0!3m2!1sid!2sid!4v1764218368388!5m2!1sid!2sid"
+    },
+    "profil": {
+        "visi": "Mewujudkan Pendidikan dan Kebudayaan Kabupaten Paser yang Berkualitas, Berkarakter, dan Berdaya Saing",
+        "misi": [
+            "Meningkatkan akses dan mutu pendidikan dasar dan menengah",
+            "Mengembangkan pendidikan karakter berbasis kearifan lokal",
+            "Meningkatkan kompetensi dan kesejahteraan pendidik dan tenaga kependidikan",
+            "Mengembangkan potensi seni dan budaya daerah",
+            "Memperkuat tata kelola pendidikan yang transparan dan akuntabel"
         ]
     }
 }

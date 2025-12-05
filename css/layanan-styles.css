@@ -152,6 +152,22 @@ body {
     font-size: 3.5em;
     color: #003399;
     margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80px;
+}
+
+.layanan-icon i {
+    font-size: 3.5em;
+}
+
+.layanan-icon img {
+    max-width: 100%;
+    max-height: 80px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
 }
 
 .layanan-card h3 {

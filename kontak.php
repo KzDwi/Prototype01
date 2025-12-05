@@ -1,3 +1,30 @@
+<?php
+// Load Data dari content.json
+$file_path = 'data/content.json';
+$kontak_data = [];
+
+// Default Data (Fallback jika JSON belum ada/kosong)
+$default_data = [
+    'address' => "Jl. Jenderal Sudirman No. 27\nTanah Grogot, Kabupaten Paser\nKalimantan Timur 76251",
+    'phone' => "(0543) 21023",
+    'fax' => "(0543) 21024",
+    'email' => "disdik@paserkab.go.id",
+    'hours_weekdays' => "08.00 - 16.00 WITA",
+    'hours_friday' => "08.00 - 11.00 WITA",
+    'map_embed_url' => "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3987.6060327839327!2d116.1914303!3d-1.9081035!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2df047988e6b3c0b%3A0xdaa84941bfe1b7df!2sJl.%20Jenderal%20Sudirman%20No.27%2C%20Tanah%20Grogot%2C%20Kec.%20Tanah%20Grogot%2C%20Kabupaten%20Paser%2C%20Kalimantan%20Timur%2076251!5e0!3m2!1sid!2sid!4v1764218368388!5m2!1sid!2sid"
+];
+
+if (file_exists($file_path)) {
+    $json = json_decode(file_get_contents($file_path), true);
+    if (isset($json['kontak_page'])) {
+        $kontak_data = array_merge($default_data, $json['kontak_page']);
+    } else {
+        $kontak_data = $default_data;
+    }
+} else {
+    $kontak_data = $default_data;
+}
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -421,9 +448,7 @@
                     </div>
                     <h3>Alamat Kantor</h3>
                     <p>
-                        Jl. Jenderal Sudirman No. 27<br>
-                        Tanah Grogot, Kabupaten Paser<br>
-                        Kalimantan Timur 76251
+                        <?php echo nl2br(htmlspecialchars($kontak_data['address'])); ?>
                     </p>
                 </div>
                 
@@ -433,10 +458,10 @@
                     </div>
                     <h3>Telepon & Email</h3>
                     <p>
-                        <strong>Telepon:</strong> (0543) 21023<br>
-                        <strong>Fax:</strong> (0543) 21024<br>
-                        <strong>Email:</strong> disdik@paserkab.go.id<br>
-                        <strong>Website:</strong> disdik.paserkab.go.id
+                        <strong>Telepon:</strong> <?php echo htmlspecialchars($kontak_data['phone']); ?><br>
+                        <strong>Fax:</strong> <?php echo htmlspecialchars($kontak_data['fax']); ?><br>
+                        <strong>Email:</strong> <?php echo htmlspecialchars($kontak_data['email']); ?><br>
+                        <strong>Website:</strong> <?php echo htmlspecialchars($kontak_data['website'] ?? 'disdik.paserkab.go.id'); ?>
                     </p>
                 </div>
                 
@@ -446,8 +471,8 @@
                     </div>
                     <h3>Jam Operasional</h3>
                     <p>
-                        <strong>Senin - Kamis:</strong> 08.00 - 16.00 WITA<br>
-                        <strong>Jumat:</strong> 08.00 - 11.00 WITA<br>
+                        <strong>Senin - Kamis:</strong> <?php echo htmlspecialchars($kontak_data['hours_weekdays']); ?><br>
+                        <strong>Jumat:</strong> <?php echo htmlspecialchars($kontak_data['hours_friday']); ?><br>
                         <strong>Sabtu - Minggu:</strong> Libur<br>
                         <em>* Kecuali hari libur nasional</em>
                     </p>
@@ -467,7 +492,7 @@
             <div class="fade-in">
                 <div class="map-container">
                     <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3987.6060327839327!2d116.1914303!3d-1.9081035!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2df047988e6b3c0b%3A0xdaa84941bfe1b7df!2sJl.%20Jenderal%20Sudirman%20No.27%2C%20Tanah%20Grogot%2C%20Kec.%20Tanah%20Grogot%2C%20Kabupaten%20Paser%2C%20Kalimantan%20Timur%2076251!5e0!3m2!1sid!2sid!4v1764218368388!5m2!1sid!2sid" 
+                        src="<?php echo htmlspecialchars($kontak_data['map_embed_url']); ?>"
                         allowfullscreen="" 
                         loading="lazy" 
                         referrerpolicy="no-referrer-when-downgrade">
