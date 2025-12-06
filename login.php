@@ -266,6 +266,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <ul>
                         <li><a href="index.php" onclick="closeMobileMenu()">Beranda</a></li>
                         <li><a href="profil.php" onclick="closeMobileMenu()">Profil</a></li>
+                        <li><a href="Statistik.php" onclick="closeMobileMenu()">Data & Statistik</a></li>
                         <li><a href="layanan.php" onclick="closeMobileMenu(); scrollToLayanan();">Layanan</a></li>
                         <li><a href="berita.php" onclick="closeMobileMenu()">Berita</a></li>
                         <li><a href="kontak.php" onclick="closeMobileMenu()">Kontak</a></li>
